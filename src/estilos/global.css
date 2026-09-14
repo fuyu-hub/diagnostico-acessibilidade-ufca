@@ -20,6 +20,13 @@ body {
   background: var(--bg);
 }
 
+/* Textos justificados por padrão */
+p, .texto-justificado {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+
 /* Estrutura da aplicação responsiva */
 .app-shell {
   width: 100%;

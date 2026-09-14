@@ -165,31 +165,24 @@ export default function DashboardVistoria() {
           {/* Card de Métricas do Dashboard com Índice Decimal */}
           <section className={styles.cardDashboard}>
             <div className={styles.blocoIAA}>
-              <div>
+              <div className={styles.infoIAA}>
                 <span className={styles.progressoLabel}>Índice de Avaliação de Acessibilidade (IAA)</span>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
+                <p className={styles.subtituloIAA}>
                   Baseado nas conformidades da norma ABNT NBR 9050
                 </p>
               </div>
 
-              {/* Destaque da Nota Decimal (Sem fundo verde, rótulo branco) */}
-              <div className={styles.destaqueNota}>
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                    Classificação
-                  </span>
-                  <strong style={{ color: '#FFFFFF', fontSize: '1.05rem', letterSpacing: 0.5 }}>
+              {/* Destaque da Nota Decimal e Classificação Integrada */}
+              <div className={styles.painelClassificacao} style={{ borderColor: classificacao.borda || 'var(--border-strong)' }}>
+                <div className={styles.blocoNota} style={{ color: classificacao.cor }}>
+                  {classificacao.notaFormatada}
+                </div>
+                <div className={styles.divisorNota} />
+                <div className={styles.blocoTextoClassificacao}>
+                  <span className={styles.rotuloClassificacao}>Classificação</span>
+                  <strong className={styles.valorClassificacao}>
                     {classificacao.rotulo}
                   </strong>
-                </div>
-                <div style={{
-                  fontSize: '2.4rem',
-                  fontWeight: 800,
-                  color: classificacao.cor,
-                  lineHeight: 1,
-                  fontFeatureSettings: '"tnum"',
-                }}>
-                  {classificacao.notaFormatada}
                 </div>
               </div>
             </div>

@@ -11,10 +11,10 @@ export default function Painel() {
   return (
     <div className="app-shell">
       <div className="tela-body" style={{ padding: '24px 20px' }}>
-        {/* Cabecalho */}
+        {/* Cabeçalho */}
         <div className={styles.header}>
           <div>
-            <span className={styles.eyebrow}>Diagnostico NBR 9050</span>
+            <span className={styles.eyebrow}>Diagnóstico NBR 9050</span>
             <h1 className={styles.titulo}>Vistorias</h1>
           </div>
           <button className={styles.btnSettings} aria-label="Ajustes" onClick={() => navigate('/ajustes')}>
@@ -29,7 +29,7 @@ export default function Painel() {
           </div>
           <div>
             <p className={styles.novaLabel}>Criar Nova Vistoria</p>
-            <p className={styles.novaDesc}>Cadastrar instituicao e iniciar diagnostico</p>
+            <p className={styles.novaDesc}>Cadastrar instituição e iniciar diagnóstico</p>
           </div>
         </button>
 
@@ -50,7 +50,7 @@ export default function Painel() {
         {vistorias.length === 0 && (
           <div className={styles.vazio}>
             <p>Nenhuma vistoria registrada.</p>
-            <p>Crie uma nova para comecar.</p>
+            <p>Crie uma nova para começar.</p>
           </div>
         )}
       </div>

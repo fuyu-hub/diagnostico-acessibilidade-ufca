@@ -3,6 +3,8 @@
   font-weight: 600;
   line-height: 1.5;
   margin-bottom: 16px;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .accordionRow {
@@ -21,6 +23,8 @@
   color: var(--text-secondary);
   line-height: 1.7;
   padding-bottom: 14px;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .obsWrap {
