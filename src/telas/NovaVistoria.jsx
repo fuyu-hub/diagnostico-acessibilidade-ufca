@@ -91,8 +91,8 @@ export default function NovaVistoria() {
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14, marginBottom: 16 }}>
-                <div style={{ gridColumn: 'span 2' }}>
+              <div className="form-grid-2" style={{ marginBottom: 16 }}>
+                <div className="col-span-2">
                   <label className="label-secao">Endereço completo</label>
                   <input
                     type="text"
@@ -123,7 +123,7 @@ export default function NovaVistoria() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 16 }}>
+              <div className="form-grid-3" style={{ marginBottom: 16 }}>
                 <div>
                   <label className="label-secao">Código INEP</label>
                   <input
@@ -163,7 +163,7 @@ export default function NovaVistoria() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
+              <div className="form-grid-3">
                 <div>
                   <label className="label-secao">Número de alunos matriculados (aprox.)</label>
                   <input
@@ -203,7 +203,7 @@ export default function NovaVistoria() {
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 600, margin: 0 }}>Dados da Vistoria Técnica</h3>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 20 }}>
+              <div className="form-grid-3" style={{ marginBottom: 20 }}>
                 <div>
                   <label className="label-secao">Data da vistoria</label>
                   <input

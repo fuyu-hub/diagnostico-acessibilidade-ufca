@@ -65,18 +65,18 @@ export default function Resultado() {
             </span>
 
             {/* Cards de contagem */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, width: '100%', maxWidth: 480, marginTop: 12 }}>
-              <div className="stat-card">
-                <div className="stat-val" style={{ color: 'var(--text-success)' }}>{indiceGeral.conf}</div>
-                <div className="stat-lbl">Conformes</div>
+            <div className={styles.gridContagem}>
+              <div className={styles.statCardResumo}>
+                <div className={styles.statValResumo} style={{ color: 'var(--text-success)' }}>{indiceGeral.conf}</div>
+                <div className={styles.statLblResumo}>Conformes</div>
               </div>
-              <div className="stat-card">
-                <div className="stat-val" style={{ color: 'var(--text-danger)' }}>{indiceGeral.nc}</div>
-                <div className="stat-lbl">Não conf.</div>
+              <div className={styles.statCardResumo}>
+                <div className={styles.statValResumo} style={{ color: 'var(--text-danger)' }}>{indiceGeral.nc}</div>
+                <div className={styles.statLblResumo}>Não conf.</div>
               </div>
-              <div className="stat-card">
-                <div className="stat-val" style={{ color: 'var(--text-warning)' }}>{indiceGeral.na}</div>
-                <div className="stat-lbl">N/A</div>
+              <div className={styles.statCardResumo}>
+                <div className={styles.statValResumo} style={{ color: 'var(--text-warning)' }}>{indiceGeral.na}</div>
+                <div className={styles.statLblResumo}>N/A</div>
               </div>
             </div>
           </div>
@@ -106,8 +106,8 @@ export default function Resultado() {
           </section>
 
           {/* Índice por Seção */}
-          <div className="cartao" style={{ marginBottom: 28, padding: '22px 24px' }}>
-            <p className="label-secao" style={{ marginBottom: 16 }}>Índice por Seção de Acessibilidade</p>
+          <div className={styles.cardSecoesContainer}>
+            <p className="label-secao" style={{ marginBottom: 14 }}>Índice por Seção de Acessibilidade</p>
             <div className={styles.gridSecoesResultado}>
               {indicesPorSecao.map(s => (
                 <div key={s.id} className={styles.cardSecaoResultado}>

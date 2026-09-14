@@ -15,9 +15,19 @@ import styles from './DashboardVistoria.module.css';
 export default function DashboardVistoria() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getVistoria, atualizarVistoria } = useVistoria();
+  const { getVistoria, atualizarVistoria, removerVistoria } = useVistoria();
 
   const vistoria = getVistoria(id);
+
+  function handleExcluirVistoria() {
+    const confirmacao = window.confirm(
+      `Deseja realmente excluir a vistoria "${vistoria?.nome}"?\n\nEsta ação é irreversível e todos os dados cadastrais e respostas de itens serão removidos permanentemente.`
+    );
+    if (confirmacao) {
+      removerVistoria(id);
+      navigate('/');
+    }
+  }
 
   const [form, setForm] = useState({
     nome: vistoria?.nome || '',
@@ -126,24 +136,35 @@ export default function DashboardVistoria() {
         <div className={styles.container}>
           {/* Cabeçalho da Vistoria */}
           <div className={styles.cabecalhoVistoria}>
-            <div>
-              <h2 className={styles.titulo}>{vistoria.nome}</h2>
-              <p className={styles.subtitulo}>
-                <IconMapPin size={16} /> {vistoria.bairro ? `${vistoria.bairro}, ` : ''}{vistoria.cidade || 'Local não informado'} ·
-                <IconCalendar size={16} /> {vistoria.data ? vistoria.data.split('-').reverse().join('/') : 'Data não informada'}
+            <div className={styles.cabecalhoConteudo}>
+              <div className={styles.tituloLinha}>
+                <h2 className={styles.titulo}>{vistoria.nome}</h2>
+                <span className={`tag ${ativa ? (temPendente ? 'ativa' : 'salva') : 'salva'}`}>
+                  {ativa ? (temPendente ? 'Em andamento' : 'Concluída') : 'Nova'}
+                </span>
+              </div>
+              <div className={styles.metaInfo}>
+                <span className={styles.metaItem}>
+                  <IconMapPin size={15} />
+                  <span>{vistoria.bairro ? `${vistoria.bairro}, ` : ''}{vistoria.cidade || 'Local não informado'}</span>
+                </span>
+                <span className={styles.metaItem}>
+                  <IconCalendar size={15} />
+                  <span>{vistoria.data ? vistoria.data.split('-').reverse().join('/') : 'Data não informada'}</span>
+                </span>
                 {vistoria.horarioInicio && (
-                  <> · <IconClock size={16} /> {vistoria.horarioInicio}{vistoria.horarioTermino ? ` às ${vistoria.horarioTermino}` : ''}</>
+                  <span className={styles.metaItem}>
+                    <IconClock size={15} />
+                    <span>{vistoria.horarioInicio}{vistoria.horarioTermino ? ` às ${vistoria.horarioTermino}` : ''}</span>
+                  </span>
                 )}
-              </p>
+              </div>
             </div>
-            <span className={`tag ${ativa ? (temPendente ? 'ativa' : 'salva') : 'salva'}`} style={{ alignSelf: 'flex-start' }}>
-              {ativa ? (temPendente ? 'Em andamento' : 'Concluída') : 'Nova'}
-            </span>
           </div>
 
           {/* Card de Métricas do Dashboard com Índice Decimal */}
           <section className={styles.cardDashboard}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+            <div className={styles.blocoIAA}>
               <div>
                 <span className={styles.progressoLabel}>Índice de Avaliação de Acessibilidade (IAA)</span>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
@@ -152,14 +173,7 @@ export default function DashboardVistoria() {
               </div>
 
               {/* Destaque da Nota Decimal (Sem fundo verde, rótulo branco) */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 14,
-                background: 'transparent',
-                border: 'none',
-                padding: 0,
-              }}>
+              <div className={styles.destaqueNota}>
                 <div style={{ textAlign: 'right' }}>
                   <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Classificação
@@ -190,23 +204,23 @@ export default function DashboardVistoria() {
             </div>
 
             <div className={styles.gridMetricas}>
-              <div className={styles.miniCard}>
+              <div className={`${styles.miniCard} ${styles.miniCardProgresso}`}>
                 <span className={styles.miniCardNumero} style={{ color: 'var(--accent)' }}>{respondidos}</span>
                 <span className={styles.miniCardLabel}>Respondidos</span>
               </div>
-              <div className={styles.miniCard}>
+              <div className={`${styles.miniCard} ${styles.miniCardProgresso}`}>
                 <span className={styles.miniCardNumero} style={{ color: 'var(--text-muted)' }}>{pendentes}</span>
                 <span className={styles.miniCardLabel}>Pendentes</span>
               </div>
-              <div className={styles.miniCard}>
+              <div className={`${styles.miniCard} ${styles.miniCardResultado}`}>
                 <span className={styles.miniCardNumero} style={{ color: 'var(--text-success)' }}>{indice.conf}</span>
                 <span className={styles.miniCardLabel}>Conformes</span>
               </div>
-              <div className={styles.miniCard}>
+              <div className={`${styles.miniCard} ${styles.miniCardResultado}`}>
                 <span className={styles.miniCardNumero} style={{ color: 'var(--text-danger)' }}>{indice.nc}</span>
                 <span className={styles.miniCardLabel}>Não Conf.</span>
               </div>
-              <div className={styles.miniCard}>
+              <div className={`${styles.miniCard} ${styles.miniCardResultado}`}>
                 <span className={styles.miniCardNumero} style={{ color: 'var(--text-warning)' }}>{indice.na}</span>
                 <span className={styles.miniCardLabel}>N/A</span>
               </div>
@@ -266,8 +280,8 @@ export default function DashboardVistoria() {
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14, marginBottom: 16 }}>
-                <div style={{ gridColumn: 'span 2' }}>
+              <div className="form-grid-2" style={{ marginBottom: 16 }}>
+                <div className="col-span-2">
                   <label className="label-secao">Endereço completo</label>
                   <input
                     type="text"
@@ -298,7 +312,7 @@ export default function DashboardVistoria() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 16 }}>
+              <div className="form-grid-3" style={{ marginBottom: 16 }}>
                 <div>
                   <label className="label-secao">Código INEP</label>
                   <input
@@ -338,7 +352,7 @@ export default function DashboardVistoria() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 20 }}>
+              <div className="form-grid-3" style={{ marginBottom: 20 }}>
                 <div>
                   <label className="label-secao">Número de alunos (aprox.)</label>
                   <input
@@ -376,7 +390,7 @@ export default function DashboardVistoria() {
                   Horários e Equipe da Vistoria
                 </h4>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 16 }}>
+                <div className="form-grid-3" style={{ marginBottom: 16 }}>
                   <div>
                     <label className="label-secao">Data da vistoria</label>
                     <input
@@ -501,6 +515,25 @@ export default function DashboardVistoria() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
               <IconInfoCircle size={16} />
               <span>Os módulos de exportação automática em PDF e planilha estão em fase de homologação técnica.</span>
+            </div>
+          </section>
+
+          {/* Zona de Perigo / Excluir Vistoria */}
+          <section className={styles.cardZonaPerigo}>
+            <div className={styles.perigoConteudo}>
+              <div>
+                <h4 className={styles.perigoTitulo}>Excluir esta vistoria</h4>
+                <p className={styles.perigoDesc}>
+                  Esta ação removerá permanentemente todos os dados da instituição, respostas e fotos deste diagnóstico.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.btnExcluirVistoria}
+                onClick={handleExcluirVistoria}
+              >
+                <IconTrash size={18} /> Excluir Vistoria
+              </button>
             </div>
           </section>
         </div>

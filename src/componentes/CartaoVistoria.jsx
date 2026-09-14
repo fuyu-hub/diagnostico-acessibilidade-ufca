@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import { IconMapPin, IconArrowRight, IconListCheck } from '@tabler/icons-react';
+import { IconMapPin, IconArrowRight, IconListCheck, IconTrash } from '@tabler/icons-react';
+import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS } from '../dados/checklist';
 import styles from './CartaoVistoria.module.css';
 
 export default function CartaoVistoria({ vistoria }) {
   const navigate = useNavigate();
+  const { removerVistoria } = useVistoria();
   const total = TODOS_ITENS.length;
   const respostas = vistoria.respostas || {};
   const respondidos = Object.keys(respostas).length;
@@ -34,6 +36,16 @@ export default function CartaoVistoria({ vistoria }) {
     navigate(`/checklist/${vistoria.id}/itens`);
   }
 
+  function handleExcluir(e) {
+    e?.stopPropagation();
+    const confirmacao = window.confirm(
+      `Deseja realmente excluir a vistoria "${vistoria.nome}" permanentemente?`
+    );
+    if (confirmacao) {
+      removerVistoria(vistoria.id);
+    }
+  }
+
   return (
     <div className={`cartao ${ativa ? 'destaque' : ''} ${styles.card}`}>
       <div className={styles.cabecalho}>
@@ -43,9 +55,20 @@ export default function CartaoVistoria({ vistoria }) {
             <IconMapPin size={14} /> {vistoria.cidade} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : ''}
           </p>
         </div>
-        <span className={`tag ${ativa ? 'ativa' : 'salva'}`}>
-          {ativa ? (temPendente ? 'Em andamento' : 'Concluída') : 'Nova'}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span className={`tag ${ativa ? 'ativa' : 'salva'}`}>
+            {ativa ? (temPendente ? 'Em andamento' : 'Concluída') : 'Nova'}
+          </span>
+          <button
+            type="button"
+            className={styles.btnExcluir}
+            onClick={handleExcluir}
+            aria-label="Excluir vistoria"
+            title="Excluir vistoria"
+          >
+            <IconTrash size={16} />
+          </button>
+        </div>
       </div>
 
       <div className={styles.progresso} onClick={handleAbrirDashboard} style={{ cursor: 'pointer' }}>
