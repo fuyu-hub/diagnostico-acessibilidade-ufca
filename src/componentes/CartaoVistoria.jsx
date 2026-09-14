@@ -15,6 +15,11 @@ export default function CartaoVistoria({ vistoria }) {
   const primeiroPendenteIdx = TODOS_ITENS.findIndex(item => !respostas[item.id]?.valor);
   const temPendente = primeiroPendenteIdx !== -1;
 
+  function handleAbrirDashboard(e) {
+    e?.stopPropagation();
+    navigate(`/vistoria/${vistoria.id}`);
+  }
+
   function handleContinuar(e) {
     e?.stopPropagation();
     if (temPendente) {
@@ -32,7 +37,7 @@ export default function CartaoVistoria({ vistoria }) {
   return (
     <div className={`cartao ${ativa ? 'destaque' : ''} ${styles.card}`}>
       <div className={styles.cabecalho}>
-        <div className={styles.info} onClick={handleVerSecoes} style={{ cursor: 'pointer' }}>
+        <div className={styles.info} onClick={handleAbrirDashboard} style={{ cursor: 'pointer' }}>
           <h3 className={styles.nome}>{vistoria.nome}</h3>
           <p className={styles.detalhe}>
             <IconMapPin size={14} /> {vistoria.cidade} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : ''}
@@ -43,7 +48,7 @@ export default function CartaoVistoria({ vistoria }) {
         </span>
       </div>
 
-      <div className={styles.progresso} onClick={handleVerSecoes} style={{ cursor: 'pointer' }}>
+      <div className={styles.progresso} onClick={handleAbrirDashboard} style={{ cursor: 'pointer' }}>
         <div className="progresso-track" style={{ flex: 1 }}>
           <div className="progresso-fill" style={{ width: `${pct}%` }} />
         </div>

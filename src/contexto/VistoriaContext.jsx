@@ -51,8 +51,16 @@ export function VistoriaProvider({ children }) {
     setVistorias(prev => prev.filter(v => v.id !== id));
   }
 
+  function atualizarVistoria(id, novosDados) {
+    setVistorias(prev =>
+      prev.map(v =>
+        v.id === id ? { ...v, ...novosDados } : v
+      )
+    );
+  }
+
   return (
-    <VistoriaContext.Provider value={{ vistorias, criarVistoria, responderItem, getVistoria, removerVistoria }}>
+    <VistoriaContext.Provider value={{ vistorias, criarVistoria, responderItem, getVistoria, removerVistoria, atualizarVistoria }}>
       {children}
     </VistoriaContext.Provider>
   );

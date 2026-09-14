@@ -1,0 +1,275 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cabecalhoVistoria {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.titulo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 6px 0;
+  color: var(--text-primary);
+}
+
+.subtitulo {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+/* Card de Métricas do Dashboard */
+.cardDashboard {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.progressoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progressoLabel {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.progressoValor {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.gridMetricas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .gridMetricas {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.miniCard {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.miniCardNumero {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.miniCardLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.acoesChecklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+@media (min-width: 600px) {
+  .acoesChecklist {
+    flex-direction: row;
+  }
+}
+
+.btnAcaoPrimario {
+  flex: 2;
+  height: 52px;
+}
+
+.btnAcaoSecundario {
+  flex: 1;
+  height: 52px;
+}
+
+/* Card de Configurações e Parâmetros */
+.cardParametros {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.secaoTitulo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--text-primary);
+}
+
+.secaoSubtitulo {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.gridCampos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .gridCampos {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.linhaAvaliador {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.btnExcluirAvaliador {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-danger);
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.btnExcluirAvaliador:hover {
+  background: var(--bg-danger);
+  border-color: var(--border-danger);
+}
+
+.btnAdicionarAvaliador {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+  font-weight: 500;
+  padding: 6px 0;
+}
+
+.btnSalvarParametros {
+  height: 48px;
+  margin-top: 8px;
+}
+
+/* Card de Exportação */
+.cardExportacao {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.gridExportacao {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 600px) {
+  .gridExportacao {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.itemExportacaoDesativado {
+  background: var(--surface-2);
+  border: 1px dashed var(--border-strong);
+  border-radius: 14px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0.75;
+  cursor: not-allowed;
+  user-select: none;
+}
+
+.itemExportacaoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.itemExportacaoTitulo {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badgeEmBreve {
+  background: rgba(234, 179, 8, 0.18);
+  color: var(--text-warning);
+  border: 1px solid var(--border-warning);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.itemExportacaoDesc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}

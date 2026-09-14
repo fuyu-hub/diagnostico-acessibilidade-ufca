@@ -8,6 +8,7 @@ import Triagem from './telas/Triagem';
 import ResumoBloco from './telas/ResumoBloco';
 import Resultado from './telas/Resultado';
 import Ajustes from './telas/Ajustes';
+import DashboardVistoria from './telas/DashboardVistoria';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/" element={<Painel />} />
           <Route path="/nova" element={<NovaVistoria />} />
           <Route path="/ajustes" element={<Ajustes />} />
+          <Route path="/vistoria/:id" element={<DashboardVistoria />} />
           <Route path="/checklist/:id/itens" element={<ListaItens />} />
           <Route path="/checklist/:id/item/:n" element={<ItemChecklist />} />
           <Route path="/checklist/:id/triagem/:itemId" element={<Triagem />} />

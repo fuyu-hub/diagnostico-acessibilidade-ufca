@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconCheck, IconUserPlus } from '@tabler/icons-react';
+import { IconCheck, IconUserPlus, IconTrash } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import Topbar from '../componentes/Topbar';
 
@@ -27,6 +27,17 @@ export default function NovaVistoria() {
 
   function adicionarAvaliador() {
     setForm(prev => ({ ...prev, avaliadores: [...prev.avaliadores, ''] }));
+  }
+
+  function removerAvaliador(idx) {
+    if (form.avaliadores.length <= 1) {
+      setForm(prev => ({ ...prev, avaliadores: [''] }));
+      return;
+    }
+    setForm(prev => ({
+      ...prev,
+      avaliadores: prev.avaliadores.filter((_, i) => i !== idx),
+    }));
   }
 
   function iniciar() {
@@ -80,14 +91,39 @@ export default function NovaVistoria() {
           <div style={{ marginBottom: 28 }}>
             <label className="label-secao">Avaliadores</label>
             {form.avaliadores.map((a, i) => (
-              <input
-                key={i}
-                type="text"
-                placeholder={`Nome do avaliador ${i + 1}`}
-                value={a}
-                onChange={e => setAvaliador(i, e.target.value)}
-                style={{ marginBottom: 10 }}
-              />
+              <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10, alignItems: 'center' }}>
+                <input
+                  type="text"
+                  placeholder={`Nome do avaliador ${i + 1}`}
+                  value={a}
+                  onChange={e => setAvaliador(i, e.target.value)}
+                  style={{ flex: 1 }}
+                />
+                {form.avaliadores.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removerAvaliador(i)}
+                    aria-label="Excluir avaliador"
+                    title="Excluir avaliador"
+                    style={{
+                      background: 'var(--surface-1)',
+                      border: '1px solid var(--border)',
+                      borderRadius: 12,
+                      width: 48,
+                      height: 48,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      color: 'var(--text-danger)',
+                      flexShrink: 0,
+                      transition: 'background-color 0.15s',
+                    }}
+                  >
+                    <IconTrash size={18} />
+                  </button>
+                )}
+              </div>
             ))}
             <button
               type="button"
@@ -96,6 +132,7 @@ export default function NovaVistoria() {
                 background: 'none', border: 'none', color: 'var(--text-primary)',
                 fontSize: '0.9rem', cursor: 'pointer', display: 'flex',
                 alignItems: 'center', gap: 8, fontFamily: 'inherit', fontWeight: 500,
+                marginTop: 6,
               }}
             >
               <IconUserPlus size={20} /> Adicionar outro avaliador
