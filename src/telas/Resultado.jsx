@@ -1,26 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { IconFileTypePdf, IconRefresh, IconArrowLeft } from '@tabler/icons-react';
+import { IconFileTypePdf, IconRefresh, IconArrowLeft, IconCheck, IconX, IconMinus, IconDashboard } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS, SECOES, ITENS_POR_SECAO } from '../dados/checklist';
+import { calcularIndiceItens, FAIXAS_INDICE } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
 import styles from './Resultado.module.css';
-
-// Calcula indice de uma lista de itens dado o mapa de respostas
-function calcularIndice(itens, respostas) {
-  // Apenas itens tecnicos nao-automaticos entram no calculo
-  const contaveis = itens.filter(i => i.tipo === 'tecnico');
-  const conf  = contaveis.filter(i => respostas[i.id]?.valor === 'conforme').length;
-  const nc    = contaveis.filter(i => respostas[i.id]?.valor === 'nao-conforme').length;
-  const total = conf + nc; // N/A excluido
-  return { conf, nc, na: contaveis.filter(i => respostas[i.id]?.valor === 'nao-aplica').length, total, pct: total > 0 ? Math.round((conf / total) * 100) : null };
-}
-
-function corPct(pct) {
-  if (pct === null) return 'var(--text-muted)';
-  if (pct >= 70) return 'var(--text-success)';
-  if (pct >= 50) return 'var(--text-warning)';
-  return 'var(--text-danger)';
-}
 
 export default function Resultado() {
   const { id } = useParams();
@@ -32,74 +16,120 @@ export default function Resultado() {
 
   const respostas = vistoria.respostas || {};
 
-  // Indice geral (media dos indices de secao)
-  const indicesPorSecao = SECOES.map(s => ({
-    ...s,
-    ...calcularIndice(ITENS_POR_SECAO[s.id] || [], respostas),
-  }));
+  // Índice Geral consolidado
+  const indiceGeral = calcularIndiceItens(TODOS_ITENS, respostas);
+  const { classificacao: classGeral } = indiceGeral;
 
-  const secoesAvaliadas = indicesPorSecao.filter(s => s.total > 0);
-  const mediaGeral = secoesAvaliadas.length > 0
-    ? Math.round(secoesAvaliadas.reduce((acc, s) => acc + (s.pct ?? 0), 0) / secoesAvaliadas.length)
-    : null;
-
-  const totalConf = indicesPorSecao.reduce((a, s) => a + s.conf, 0);
-  const totalNC   = indicesPorSecao.reduce((a, s) => a + s.nc, 0);
-  const totalNA   = indicesPorSecao.reduce((a, s) => a + s.na, 0);
+  // Índices por seção
+  const indicesPorSecao = SECOES.map(s => {
+    const itensSecao = ITENS_POR_SECAO[s.id] || [];
+    const ind = calcularIndiceItens(itensSecao, respostas);
+    return {
+      ...s,
+      ...ind,
+    };
+  });
 
   return (
     <div className="app-shell">
-      <Topbar titulo="Resultado do Diagnóstico" voltar={`/checklist/${id}/resumo-bloco`} />
+      <Topbar titulo="Resultado do Diagnóstico" voltar={`/checklist/${id}/itens`} />
 
-      <div className="tela-body" style={{ padding: '24px 20px' }}>
+      <div className="tela-body" style={{ padding: '24px 20px 48px' }}>
         <div className={styles.container}>
-          <p style={{ fontSize: '1.2rem', fontWeight: 600, textAlign: 'center', marginBottom: 4 }}>
-            {vistoria.nome}
-          </p>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: 28 }}>
-            {vistoria.cidade} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : ''}
-          </p>
+          <div className={styles.cabecalho}>
+            <h2 className={styles.titulo}>{vistoria.nome}</h2>
+            <p className={styles.subtitulo}>
+              {vistoria.bairro ? `${vistoria.bairro}, ` : ''}{vistoria.cidade || 'Local não informado'} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : 'Data não informada'}
+            </p>
+          </div>
 
-          {/* Cards de stat gerais */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginBottom: 28 }}>
-            <div className="stat-card">
-              <div className="stat-val" style={{ color: corPct(mediaGeral) }}>
-                {mediaGeral !== null ? `${mediaGeral}%` : '--'}
+          {/* Card Destaque Nota Geral */}
+          <div className={styles.cardNotaGeral}>
+            <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: 0.8, fontWeight: 600 }}>
+              Índice de Avaliação de Acessibilidade (IAA) Geral
+            </span>
+
+            <div className={styles.notaGeralValor} style={{ color: classGeral.cor }}>
+              {classGeral.notaFormatada}
+            </div>
+
+            <span
+              className={styles.badgeClassificacaoGeral}
+              style={{
+                color: classGeral.cor,
+                background: classGeral.bg,
+                borderColor: classGeral.borda,
+              }}
+            >
+              {classGeral.rotulo}
+            </span>
+
+            {/* Cards de contagem */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, width: '100%', maxWidth: 480, marginTop: 12 }}>
+              <div className="stat-card">
+                <div className="stat-val" style={{ color: 'var(--text-success)' }}>{indiceGeral.conf}</div>
+                <div className="stat-lbl">Conformes</div>
               </div>
-              <div className="stat-lbl">Média Geral</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-val" style={{ color: 'var(--text-danger)' }}>{totalNC}</div>
-              <div className="stat-lbl">Não conf.</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-val" style={{ color: 'var(--text-warning)' }}>{totalNA}</div>
-              <div className="stat-lbl">N/A</div>
+              <div className="stat-card">
+                <div className="stat-val" style={{ color: 'var(--text-danger)' }}>{indiceGeral.nc}</div>
+                <div className="stat-lbl">Não conf.</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-val" style={{ color: 'var(--text-warning)' }}>{indiceGeral.na}</div>
+                <div className="stat-lbl">N/A</div>
+              </div>
             </div>
           </div>
 
-          {/* Indice por secao */}
-          <div className="cartao" style={{ marginBottom: 24, padding: '20px 24px' }}>
-            <p className="label-secao" style={{ marginBottom: 16 }}>Índice por Seção</p>
+          {/* Tabela Oficial de Interpretação do Índice (Imagem 2) */}
+          <section className={styles.cardTabelaInterpretacao}>
+            <h3 className={styles.tabelaTitulo}>Interpretação do Índice</h3>
+            <div className={styles.tabelaGrid}>
+              {FAIXAS_INDICE.map(faixa => (
+                <div
+                  key={faixa.rotulo}
+                  className={styles.tabelaLinha}
+                  style={{
+                    background: faixa.rotulo === classGeral.rotulo ? faixa.bg : 'transparent',
+                  }}
+                >
+                  <div className={styles.tabelaFaixa}>
+                    <span className={styles.tabelaDot} style={{ background: faixa.cor }} />
+                    <span>{faixa.faixaTexto}</span>
+                  </div>
+                  <span className={styles.tabelaRotulo} style={{ color: faixa.cor }}>
+                    {faixa.rotulo}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Índice por Seção */}
+          <div className="cartao" style={{ marginBottom: 28, padding: '22px 24px' }}>
+            <p className="label-secao" style={{ marginBottom: 16 }}>Índice por Seção de Acessibilidade</p>
             <div className={styles.gridSecoesResultado}>
               {indicesPorSecao.map(s => (
                 <div key={s.id} className={styles.cardSecaoResultado}>
                   <span className={styles.nomeSecao}>{s.nome}</span>
-                  <span style={{ fontWeight: 700, color: corPct(s.pct) }}>
-                    {s.pct !== null ? `${s.pct}%` : '--'}
-                  </span>
+                  <div className={styles.badgeSecao} style={{ color: s.classificacao.cor }}>
+                    <span className={styles.notaSecaoValor}>{s.classificacao.notaFormatada}</span>
+                    {s.total > 0 && (
+                      <span className={styles.notaSecaoRotulo}>{s.classificacao.rotulo}</span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
           <div className={styles.botoesWrap}>
-            <button className="btn-nav primario">
-              <IconFileTypePdf size={20} /> Exportar PDF (Relatório Vistoria)
+            <button className="btn-nav primario" onClick={() => navigate(`/vistoria/${id}`)}>
+              <IconDashboard size={18} /> Painel da Vistoria e Ficha
             </button>
 
             <button className="btn-nav" onClick={() => navigate(`/checklist/${id}/itens`)}>
-              <IconRefresh size={18} /> Revisar Respostas
+              <IconRefresh size={18} /> Revisar Seções e Itens
             </button>
 
             <button
@@ -107,7 +137,7 @@ export default function Resultado() {
               style={{ border: 'none', color: 'var(--text-secondary)' }}
               onClick={() => navigate('/')}
             >
-              <IconArrowLeft size={18} /> Voltar ao Painel
+              <IconArrowLeft size={18} /> Voltar ao Início
             </button>
           </div>
         </div>

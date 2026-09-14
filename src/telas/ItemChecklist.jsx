@@ -112,7 +112,7 @@ export default function ItemChecklist() {
   function proximoItem() {
     const proximo = itemIdx + 2;
     if (proximo <= TODOS_ITENS.length) navigate(`/checklist/${id}/item/${proximo}`);
-    else navigate(`/checklist/${id}/resumo-bloco`);
+    else navigate(`/checklist/${id}/resultado`);
   }
 
   function itemAnterior() {

@@ -22,7 +22,7 @@ export default function App() {
           <Route path="/checklist/:id/itens" element={<ListaItens />} />
           <Route path="/checklist/:id/item/:n" element={<ItemChecklist />} />
           <Route path="/checklist/:id/triagem/:itemId" element={<Triagem />} />
-          <Route path="/checklist/:id/resumo-bloco" element={<ResumoBloco />} />
+          <Route path="/checklist/:id/resumo-bloco" element={<Resultado />} />
           <Route path="/checklist/:id/resultado" element={<Resultado />} />
         </Routes>
       </BrowserRouter>

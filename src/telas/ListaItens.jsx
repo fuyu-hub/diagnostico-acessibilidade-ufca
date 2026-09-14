@@ -6,6 +6,7 @@ import {
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS, SECOES, ITENS_POR_SECAO } from '../dados/checklist';
+import { calcularIndiceItens } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
 import styles from './ListaItens.module.css';
 
@@ -130,6 +131,8 @@ export default function ListaItens() {
                 const respondidosSecao = itensSecao.filter(i => respostas[i.id]?.valor).length;
                 const pctSecao = itensSecao.length > 0 ? Math.round((respondidosSecao / itensSecao.length) * 100) : 0;
                 const pendenteSecao = itensSecao.find(item => !respostas[item.id]?.valor);
+                const indiceSecao = calcularIndiceItens(itensSecao, respostas);
+                const { classificacao } = indiceSecao;
 
                 return (
                   <div
@@ -140,11 +143,14 @@ export default function ListaItens() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div className={styles.cardSecaoTopo}>
                         <p className={styles.nomeSecao}>{s.nome}</p>
-                        {pctSecao === 100 && (
-                          <span className={styles.tagSecaoConcluida}>
-                            <IconCheck size={14} /> 100%
-                          </span>
-                        )}
+
+                        <span
+                          className={styles.notaSecaoValor}
+                          style={{ color: classificacao.cor }}
+                          title={indiceSecao.total > 0 ? `Nota: ${classificacao.notaFormatada} (${classificacao.rotulo})` : 'Ainda sem itens avaliados'}
+                        >
+                          {classificacao.notaFormatada}
+                        </span>
                       </div>
 
                       <p className={styles.progressoSecaoTxt}>

@@ -216,6 +216,30 @@
   color: var(--text-primary);
 }
 
+.notaSecaoBadge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: 1.5px solid;
+  flex-shrink: 0;
+}
+
+.notaSecaoValor {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1;
+  font-feature-settings: "tnum";
+}
+
+.notaSecaoRotulo {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
 .tagSecaoConcluida {
   font-size: 0.7rem;
   font-weight: 600;

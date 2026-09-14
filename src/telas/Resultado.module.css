@@ -3,10 +3,120 @@
   margin: 0 auto;
 }
 
+.cabecalho {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.titulo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: var(--text-primary);
+}
+
+.subtitulo {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Card Destaque Nota Geral */
+.cardNotaGeral {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.notaGeralValor {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+  font-feature-settings: "tnum";
+}
+
+.badgeClassificacaoGeral {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 6px 18px;
+  border-radius: 999px;
+  border: 1.5px solid;
+  text-transform: uppercase;
+}
+
+/* Tabela de Interpretação Oficial (Imagem 2) */
+.cardTabelaInterpretacao {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.tabelaTitulo {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 16px 0;
+  text-align: center;
+}
+
+.tabelaGrid {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tabelaLinha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  font-size: 0.88rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabelaLinha:last-child {
+  border-bottom: none;
+}
+
+.tabelaFaixa {
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tabelaDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.tabelaRotulo {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-size: 0.82rem;
+}
+
+/* Grid de Seções */
 .gridSecoesResultado {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 8px;
+  gap: 10px;
 }
 
 @media (min-width: 700px) {
@@ -21,8 +131,8 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.88rem;
-  padding: 12px 16px;
-  border-radius: 12px;
+  padding: 14px 18px;
+  border-radius: 14px;
   background: var(--surface-2);
   border: 1px solid var(--border);
   gap: 12px;
@@ -38,11 +148,30 @@
   white-space: nowrap;
 }
 
+.badgeSecao {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.notaSecaoValor {
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-feature-settings: "tnum";
+}
+
+.notaSecaoRotulo {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .botoesWrap {
-  max-width: 440px;
+  max-width: 480px;
   margin: 28px auto 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
-
