@@ -8,25 +8,22 @@ export default function NovaVistoria() {
   const navigate = useNavigate();
   const { criarVistoria } = useVistoria();
 
+  // Valores vazios por padrão para que os placeholders com exemplos da UFCA sejam exibidos como texto cinza
   const [form, setForm] = useState({
-    nome: 'Universidade Federal do Cariri - UFCA (Campus Juazeiro do Norte)',
-    endereco: 'Av. Tenente Raimundo Rocha, 1639',
-    bairro: 'Cidade Universitária',
-    cidade: 'Juazeiro do Norte, CE',
-    inep: '23000001',
-    rede: 'Federal',
-    nivelEnsino: 'Superior',
-    numAlunos: '2500',
-    numPavimentos: '3',
-    anoConstrucao: '2013',
+    nome: '',
+    endereco: '',
+    bairro: '',
+    cidade: '',
+    inep: '',
+    rede: 'Municipal',
+    nivelEnsino: 'Fundamental',
+    numAlunos: '',
+    numPavimentos: '',
+    anoConstrucao: '',
     data: new Date().toISOString().split('T')[0],
-    horarioInicio: '08:30',
-    horarioTermino: '11:30',
-    avaliadores: [
-      'Samuel Sousa Santos',
-      'Camilo Erdos Viana da Silva',
-      'Danilo Ferreira da Silva',
-    ],
+    horarioInicio: '',
+    horarioTermino: '',
+    avaliadores: [''],
   });
 
   function set(campo, valor) {
@@ -87,7 +84,7 @@ export default function NovaVistoria() {
                 <label className="label-secao">Nome da escola / instituição *</label>
                 <input
                   type="text"
-                  placeholder="Ex: Escola de Ensino Fundamental Padre Cícero"
+                  placeholder="Ex: Universidade Federal do Cariri - UFCA (Campus Juazeiro do Norte)"
                   value={form.nome}
                   onChange={e => set('nome', e.target.value)}
                   required
@@ -99,7 +96,7 @@ export default function NovaVistoria() {
                   <label className="label-secao">Endereço completo</label>
                   <input
                     type="text"
-                    placeholder="Ex: Rua São Pedro, 1234"
+                    placeholder="Ex: Av. Tenente Raimundo Rocha, 1639"
                     value={form.endereco}
                     onChange={e => set('endereco', e.target.value)}
                   />
@@ -109,7 +106,7 @@ export default function NovaVistoria() {
                   <label className="label-secao">Bairro</label>
                   <input
                     type="text"
-                    placeholder="Ex: Centro"
+                    placeholder="Ex: Cidade Universitária"
                     value={form.bairro}
                     onChange={e => set('bairro', e.target.value)}
                   />
@@ -119,7 +116,7 @@ export default function NovaVistoria() {
                   <label className="label-secao">Cidade / Município</label>
                   <input
                     type="text"
-                    placeholder="Ex: Juazeiro do Norte"
+                    placeholder="Ex: Juazeiro do Norte, CE"
                     value={form.cidade}
                     onChange={e => set('cidade', e.target.value)}
                   />
@@ -131,7 +128,7 @@ export default function NovaVistoria() {
                   <label className="label-secao">Código INEP</label>
                   <input
                     type="text"
-                    placeholder="Ex: 23012345"
+                    placeholder="Ex: 23000001"
                     value={form.inep}
                     onChange={e => set('inep', e.target.value)}
                   />
@@ -142,17 +139,6 @@ export default function NovaVistoria() {
                   <select
                     value={form.rede}
                     onChange={e => set('rede', e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '14px 16px',
-                      background: 'var(--surface-2)',
-                      border: '1.5px solid var(--border)',
-                      borderRadius: 12,
-                      color: 'var(--text-primary)',
-                      fontFamily: 'inherit',
-                      fontSize: '0.95rem',
-                      outline: 'none',
-                    }}
                   >
                     <option value="Municipal">Municipal</option>
                     <option value="Estadual">Estadual</option>
@@ -167,17 +153,6 @@ export default function NovaVistoria() {
                   <select
                     value={form.nivelEnsino}
                     onChange={e => set('nivelEnsino', e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '14px 16px',
-                      background: 'var(--surface-2)',
-                      border: '1.5px solid var(--border)',
-                      borderRadius: 12,
-                      color: 'var(--text-primary)',
-                      fontFamily: 'inherit',
-                      fontSize: '0.95rem',
-                      outline: 'none',
-                    }}
                   >
                     <option value="Infantil">Educação Infantil</option>
                     <option value="Fundamental">Ensino Fundamental</option>
@@ -193,7 +168,7 @@ export default function NovaVistoria() {
                   <label className="label-secao">Número de alunos matriculados (aprox.)</label>
                   <input
                     type="number"
-                    placeholder="Ex: 450"
+                    placeholder="Ex: 2500"
                     value={form.numAlunos}
                     onChange={e => set('numAlunos', e.target.value)}
                   />
@@ -203,7 +178,7 @@ export default function NovaVistoria() {
                   <label className="label-secao">Número de pavimentos</label>
                   <input
                     type="number"
-                    placeholder="Ex: 2"
+                    placeholder="Ex: 3"
                     value={form.numPavimentos}
                     onChange={e => set('numPavimentos', e.target.value)}
                   />
@@ -213,7 +188,7 @@ export default function NovaVistoria() {
                   <label className="label-secao">Ano de construção / última reforma</label>
                   <input
                     type="text"
-                    placeholder="Ex: 1998 / 2021"
+                    placeholder="Ex: 2013 / 2022"
                     value={form.anoConstrucao}
                     onChange={e => set('anoConstrucao', e.target.value)}
                   />
@@ -263,7 +238,12 @@ export default function NovaVistoria() {
                   <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10, alignItems: 'center' }}>
                     <input
                       type="text"
-                      placeholder={`Nome do avaliador ${i + 1}`}
+                      placeholder={
+                        i === 0 ? 'Ex: Samuel Sousa Santos' :
+                        i === 1 ? 'Ex: Camilo Erdos Viana da Silva' :
+                        i === 2 ? 'Ex: Danilo Ferreira da Silva' :
+                        `Nome do avaliador ${i + 1}`
+                      }
                       value={a}
                       onChange={e => setAvaliador(i, e.target.value)}
                       style={{ flex: 1 }}

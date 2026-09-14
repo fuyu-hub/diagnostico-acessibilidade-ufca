@@ -151,26 +151,25 @@ export default function DashboardVistoria() {
                 </p>
               </div>
 
-              {/* Destaque da Nota Decimal */}
+              {/* Destaque da Nota Decimal (Sem fundo verde, rótulo branco) */}
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 12,
-                background: classificacao.bg,
-                border: `1.5px solid ${classificacao.borda}`,
-                padding: '8px 16px',
-                borderRadius: 14,
+                gap: 14,
+                background: 'transparent',
+                border: 'none',
+                padding: 0,
               }}>
                 <div style={{ textAlign: 'right' }}>
                   <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Classificação
                   </span>
-                  <strong style={{ color: classificacao.cor, fontSize: '0.92rem', letterSpacing: 0.5 }}>
+                  <strong style={{ color: '#FFFFFF', fontSize: '1.05rem', letterSpacing: 0.5 }}>
                     {classificacao.rotulo}
                   </strong>
                 </div>
                 <div style={{
-                  fontSize: '2rem',
+                  fontSize: '2.4rem',
                   fontWeight: 800,
                   color: classificacao.cor,
                   lineHeight: 1,
@@ -260,7 +259,7 @@ export default function DashboardVistoria() {
                 <label className="label-secao">Nome da escola / instituição *</label>
                 <input
                   type="text"
-                  placeholder="Ex: Escola Estadual Prof. Aníbal de Freitas"
+                  placeholder="Ex: Universidade Federal do Cariri - UFCA (Campus Juazeiro do Norte)"
                   value={form.nome}
                   onChange={e => setCampo('nome', e.target.value)}
                   required
@@ -272,7 +271,7 @@ export default function DashboardVistoria() {
                   <label className="label-secao">Endereço completo</label>
                   <input
                     type="text"
-                    placeholder="Ex: Rua São Pedro, 1234"
+                    placeholder="Ex: Av. Tenente Raimundo Rocha, 1639"
                     value={form.endereco}
                     onChange={e => setCampo('endereco', e.target.value)}
                   />
@@ -282,7 +281,7 @@ export default function DashboardVistoria() {
                   <label className="label-secao">Bairro</label>
                   <input
                     type="text"
-                    placeholder="Ex: Centro"
+                    placeholder="Ex: Cidade Universitária"
                     value={form.bairro}
                     onChange={e => setCampo('bairro', e.target.value)}
                   />
@@ -304,7 +303,7 @@ export default function DashboardVistoria() {
                   <label className="label-secao">Código INEP</label>
                   <input
                     type="text"
-                    placeholder="Ex: 23012345"
+                    placeholder="Ex: 23000001"
                     value={form.inep}
                     onChange={e => setCampo('inep', e.target.value)}
                   />
@@ -315,17 +314,6 @@ export default function DashboardVistoria() {
                   <select
                     value={form.rede}
                     onChange={e => setCampo('rede', e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '14px 16px',
-                      background: 'var(--surface-2)',
-                      border: '1.5px solid var(--border)',
-                      borderRadius: 12,
-                      color: 'var(--text-primary)',
-                      fontFamily: 'inherit',
-                      fontSize: '0.95rem',
-                      outline: 'none',
-                    }}
                   >
                     <option value="Municipal">Municipal</option>
                     <option value="Estadual">Estadual</option>
@@ -340,17 +328,6 @@ export default function DashboardVistoria() {
                   <select
                     value={form.nivelEnsino}
                     onChange={e => setCampo('nivelEnsino', e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '14px 16px',
-                      background: 'var(--surface-2)',
-                      border: '1.5px solid var(--border)',
-                      borderRadius: 12,
-                      color: 'var(--text-primary)',
-                      fontFamily: 'inherit',
-                      fontSize: '0.95rem',
-                      outline: 'none',
-                    }}
                   >
                     <option value="Infantil">Educação Infantil</option>
                     <option value="Fundamental">Ensino Fundamental</option>
@@ -366,7 +343,7 @@ export default function DashboardVistoria() {
                   <label className="label-secao">Número de alunos (aprox.)</label>
                   <input
                     type="number"
-                    placeholder="Ex: 450"
+                    placeholder="Ex: 2500"
                     value={form.numAlunos}
                     onChange={e => setCampo('numAlunos', e.target.value)}
                   />
@@ -376,7 +353,7 @@ export default function DashboardVistoria() {
                   <label className="label-secao">Número de pavimentos</label>
                   <input
                     type="number"
-                    placeholder="Ex: 2"
+                    placeholder="Ex: 3"
                     value={form.numPavimentos}
                     onChange={e => setCampo('numPavimentos', e.target.value)}
                   />
@@ -386,7 +363,7 @@ export default function DashboardVistoria() {
                   <label className="label-secao">Ano de construção / reforma</label>
                   <input
                     type="text"
-                    placeholder="Ex: 1998 / 2021"
+                    placeholder="Ex: 2013 / 2022"
                     value={form.anoConstrucao}
                     onChange={e => setCampo('anoConstrucao', e.target.value)}
                   />
@@ -434,7 +411,12 @@ export default function DashboardVistoria() {
                     <div key={i} className={styles.linhaAvaliador}>
                       <input
                         type="text"
-                        placeholder={`Nome do avaliador ${i + 1}`}
+                        placeholder={
+                          i === 0 ? 'Ex: Samuel Sousa Santos' :
+                          i === 1 ? 'Ex: Camilo Erdos Viana da Silva' :
+                          i === 2 ? 'Ex: Danilo Ferreira da Silva' :
+                          `Nome do avaliador ${i + 1}`
+                        }
                         value={avaliador}
                         onChange={e => setAvaliador(i, e.target.value)}
                         style={{ flex: 1 }}
