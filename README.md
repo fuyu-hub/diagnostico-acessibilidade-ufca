@@ -1,12 +1,28 @@
-# Diagnóstico de Acessibilidade - UFCA
+# Diagnóstico das Condições de Acessibilidade - UFCA
 
-Repositório da aplicação web desenvolvida para o Projeto de Extensão de Diagnóstico de Acessibilidade da Universidade Federal do Cariri (UFCA).
+Repositório da aplicação web desenvolvida no âmbito do Projeto de Extensão Universitária **"Diagnóstico das condições de acessibilidade em estabelecimentos públicos de ensino da cidade de Juazeiro do Norte/CE"** (Código: PJ180-2026), vinculado à Universidade Federal do Cariri (UFCA).
 
-O sistema tem como objetivo auxiliar na realização de vistorias técnicas e no levantamento sistemático das condições de acessibilidade nos ambientes e edificações universitárias, orientando-se pelos parâmetros estabelecidos pela norma ABNT NBR 9050 (Acessibilidade a edificações, mobiliário, espaços e equipamentos urbanos).
+## Sobre o Projeto
 
-## Estrutura e Tecnologias
+O projeto tem como objetivo central analisar as condições gerais de acessibilidade espacial e arquitetônica em instituições públicas de ensino no município de Juazeiro do Norte (CE), subsidiando gestores públicos e direções escolares com diagnósticos técnicos que orientem a eliminação de barreiras arquitetônicas e a implementação dos princípios do desenho universal.
 
-A aplicação foi construída com tecnologias web voltadas para uso em múltiplos dispositivos:
+A aplicação digital operacionaliza o levantamento de dados em vistorias *in loco*, permitindo a coleta estruturada de evidências técnicas, anotações de campo, registros fotográficos e o cômputo automatizado do Índice de Avaliação de Acessibilidade (IAA).
+
+### Referencial Normativo e Legal
+
+- **ABNT NBR 9050:2020**: Acessibilidade a edificações, mobiliário, espaços e equipamentos urbanos.
+- **Lei Federal nº 10.098/2000**: Normas gerais e critérios básicos para a promoção da acessibilidade.
+- **Constituição da República Federativa do Brasil (1988)**: Garantia dos direitos fundamentais à educação e ao livre deslocamento.
+
+## Funcionalidades da Aplicação
+
+- Roteiro estruturado de checklist com divisão por setores espaciais (acesso, circulação, sanitários, mobiliário, etc.);
+- Perguntas de triagem contextual com encadeamento automático de itens não aplicáveis (N/A);
+- Registro de conformidades, não conformidades, observações técnicas e registro fotográfico de apoio;
+- Cálculo do Índice de Avaliação de Acessibilidade (IAA), discriminado por seção e índice consolidado;
+- Interface responsiva orientada à utilização em campo por meio de dispositivos móveis, tablets ou computadores.
+
+## Tecnologias Empregadas
 
 - React
 - Vite
@@ -15,24 +31,46 @@ A aplicação foi construída com tecnologias web voltadas para uso em múltiplo
 
 ## Instruções de Instalação e Execução
 
-Pré-requisitos: Node.js (versão LTS recomendada) e gerenciador de pacotes npm.
+### Pré-requisitos
+- Node.js (versão 18 ou superior)
+- Gerenciador de pacotes npm
 
-1. Instalação das dependências:
+### Procedimento
+
+1. Clonar o repositório:
+```bash
+git clone https://github.com/fuyu-hub/diagnostico-acessibilidade-ufca.git
+cd diagnostico-acessibilidade-ufca
+```
+
+2. Instalar as dependências do projeto:
 ```bash
 npm install
 ```
 
-2. Execução em ambiente de desenvolvimento:
+3. Iniciar o servidor local de desenvolvimento:
 ```bash
 npm run dev
 ```
 
-3. Compilação para produção:
+4. Compilar para distribuição em produção:
 ```bash
 npm run build
 ```
 
-## Vínculo Institucional
+## Dados Institucionais e Equipe
 
-Universidade Federal do Cariri (UFCA)  
-Projeto de Extensão: Diagnóstico de Acessibilidade
+- **Instituição Proponente**: Universidade Federal do Cariri (UFCA)
+- **Unidade Acadêmica**: Centro de Ciências e Tecnologia (CCT)
+- **Instituição Co-Executora**: Universidade Regional do Cariri (URCA)
+- **Edital**: Edital 03/2025/PROEX (Projetos Ampla Concorrência 2026)
+- **Área do Conhecimento (CNPq)**: Engenharias / Direitos Humanos e Justiça
+
+### Coordenação
+- Profa. Antonia Fabiana Marques Almeida (Coordenadora)
+- Prof. Marcos José Timbó Lima Gomes (Coordenador Adjunto)
+
+### Equipe Discente (Voluntários)
+- Samuel Sousa Santos
+- Camilo Erdos Viana da Silva
+- Danilo Ferreira da Silva
