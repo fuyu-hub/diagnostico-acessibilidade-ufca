@@ -1,0 +1,22 @@
+.wrap {
+  padding: 0 20px;
+  margin-top: 8px;
+  width: 100%;
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+  .wrap {
+    padding: 0 32px;
+    margin-top: 12px;
+  }
+}

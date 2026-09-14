@@ -1,0 +1,78 @@
+import { useNavigate } from 'react-router-dom';
+import { IconMapPin, IconArrowRight, IconListCheck } from '@tabler/icons-react';
+import { TODOS_ITENS } from '../dados/checklist';
+import styles from './CartaoVistoria.module.css';
+
+export default function CartaoVistoria({ vistoria }) {
+  const navigate = useNavigate();
+  const total = TODOS_ITENS.length;
+  const respostas = vistoria.respostas || {};
+  const respondidos = Object.keys(respostas).length;
+  const pct = total > 0 ? Math.round((respondidos / total) * 100) : 0;
+  const ativa = respondidos > 0;
+
+  // Encontra o item mais anterior que não foi preenchido
+  const primeiroPendenteIdx = TODOS_ITENS.findIndex(item => !respostas[item.id]?.valor);
+  const temPendente = primeiroPendenteIdx !== -1;
+
+  function handleContinuar(e) {
+    e?.stopPropagation();
+    if (temPendente) {
+      navigate(`/checklist/${vistoria.id}/item/${primeiroPendenteIdx + 1}`);
+    } else {
+      navigate(`/checklist/${vistoria.id}/resultado`);
+    }
+  }
+
+  function handleVerSecoes(e) {
+    e?.stopPropagation();
+    navigate(`/checklist/${vistoria.id}/itens`);
+  }
+
+  return (
+    <div className={`cartao ${ativa ? 'destaque' : ''} ${styles.card}`}>
+      <div className={styles.cabecalho}>
+        <div className={styles.info} onClick={handleVerSecoes} style={{ cursor: 'pointer' }}>
+          <h3 className={styles.nome}>{vistoria.nome}</h3>
+          <p className={styles.detalhe}>
+            <IconMapPin size={14} /> {vistoria.cidade} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : ''}
+          </p>
+        </div>
+        <span className={`tag ${ativa ? 'ativa' : 'salva'}`}>
+          {ativa ? (temPendente ? 'Em andamento' : 'Concluída') : 'Nova'}
+        </span>
+      </div>
+
+      <div className={styles.progresso} onClick={handleVerSecoes} style={{ cursor: 'pointer' }}>
+        <div className="progresso-track" style={{ flex: 1 }}>
+          <div className="progresso-fill" style={{ width: `${pct}%` }} />
+        </div>
+        <span className={styles.contagem}>{respondidos}/{total} itens</span>
+      </div>
+
+      <div className={styles.rodape}>
+        <button
+          type="button"
+          className={styles.btnSecoes}
+          onClick={handleVerSecoes}
+          aria-label="Ver seções"
+        >
+          <IconListCheck size={16} /> Seções
+        </button>
+
+        <button
+          type="button"
+          className={`btn-nav ${ativa ? 'primario' : ''} ${styles.btnContinuar}`}
+          onClick={handleContinuar}
+        >
+          {!ativa
+            ? 'Iniciar'
+            : temPendente
+              ? 'Continuar'
+              : 'Ver Resultado'}
+          <IconArrowRight size={16} />
+        </button>
+      </div>
+    </div>
+  );
+}

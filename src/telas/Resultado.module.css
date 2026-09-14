@@ -1,0 +1,48 @@
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.gridSecoesResultado {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+@media (min-width: 700px) {
+  .gridSecoesResultado {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+.cardSecaoResultado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  gap: 12px;
+}
+
+.nomeSecao {
+  color: var(--text-primary);
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.botoesWrap {
+  max-width: 440px;
+  margin: 28px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+

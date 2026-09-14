@@ -1,0 +1,349 @@
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import {
+  IconCheck, IconX, IconMinus, IconCircle, IconChevronRight,
+  IconChevronDown, IconChevronUp, IconArrowRight
+} from '@tabler/icons-react';
+import { useVistoria } from '../contexto/VistoriaContext';
+import { TODOS_ITENS, SECOES, ITENS_POR_SECAO } from '../dados/checklist';
+import Topbar from '../componentes/Topbar';
+import styles from './ListaItens.module.css';
+
+const FILTROS = ['Todos', 'Pendentes', 'Não conforme'];
+
+function iconeResposta(valor) {
+  if (valor === 'conforme')     return <IconCheck size={22} color="var(--text-success)" />;
+  if (valor === 'nao-conforme') return <IconX size={22} color="var(--text-danger)" />;
+  if (valor === 'nao-aplica')   return <IconMinus size={22} color="var(--text-warning)" />;
+  return <IconCircle size={22} color="var(--border-strong)" />;
+}
+
+export default function ListaItens() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { getVistoria } = useVistoria();
+  const vistoria = getVistoria(id);
+
+  const secaoParam = searchParams.get('secao') ? parseInt(searchParams.get('secao'), 10) : null;
+  const subgrupoParam = searchParams.get('subgrupo');
+
+  const [filtro, setFiltro] = useState('Todos');
+  const [secaoAberta, setSecaoAberta] = useState(secaoParam);
+  const [expandidos, setExpandidos] = useState({});
+
+  const respostas = vistoria?.respostas || {};
+  const respondidos = Object.keys(respostas).length;
+
+  // Auto-expande subgrupos com pendências ao abrir a seção
+  useEffect(() => {
+    if (secaoParam) {
+      setSecaoAberta(secaoParam);
+      const itens = ITENS_POR_SECAO[secaoParam] || [];
+      const exp = {};
+      let temPendente = false;
+      itens.forEach(item => {
+        if (item.subgrupo && !respostas[item.id]?.valor) {
+          exp[item.subgrupo] = true;
+          temPendente = true;
+        }
+      });
+      if (!temPendente && itens.length > 0 && itens[0].subgrupo) {
+        exp[itens[0].subgrupo] = true;
+      }
+      if (subgrupoParam) exp[subgrupoParam] = true;
+      setExpandidos(exp);
+    } else {
+      setSecaoAberta(null);
+    }
+  }, [secaoParam, subgrupoParam]);
+
+  function abrirSecao(sId) {
+    setSecaoAberta(sId);
+    setSearchParams({ secao: sId });
+  }
+
+  function fecharSecao() {
+    setSecaoAberta(null);
+    setSearchParams({});
+  }
+
+  function expandirTodos() {
+    const exp = {};
+    itensDaSecao.forEach(item => {
+      if (item.subgrupo) exp[item.subgrupo] = true;
+    });
+    setExpandidos(exp);
+  }
+
+  function recolherTodos() {
+    setExpandidos({});
+  }
+
+  if (!vistoria) return null;
+
+  function toggleSubgrupo(sg) {
+    setExpandidos(prev => ({ ...prev, [sg]: !prev[sg] }));
+  }
+
+  const itensDaSecao = secaoAberta ? (ITENS_POR_SECAO[secaoAberta] || []) : [];
+
+  const itensFiltrados = itensDaSecao.filter(item => {
+    const resp = respostas[item.id]?.valor;
+    if (filtro === 'Pendentes')     return !resp;
+    if (filtro === 'Não conforme')  return resp === 'nao-conforme';
+    return true;
+  });
+
+  // Agrupa por subgrupo
+  const porSubgrupo = [];
+  let sgAtual = null;
+  for (const item of itensFiltrados) {
+    if (item.subgrupo !== sgAtual) {
+      sgAtual = item.subgrupo;
+      porSubgrupo.push({ subgrupo: sgAtual, itens: [] });
+    }
+    porSubgrupo[porSubgrupo.length - 1].itens.push(item);
+  }
+
+  // Indice global do item em TODOS_ITENS (para navegacao)
+  const idxGlobal = (item) => TODOS_ITENS.findIndex(i => i.id === item.id);
+
+  // Primeiro pendente da seção aberta
+  const primeiroPendenteSecao = itensDaSecao.find(item => !respostas[item.id]?.valor);
+  const itensSecaoRespondidos = itensDaSecao.filter(i => respostas[i.id]?.valor).length;
+
+  if (!secaoAberta) {
+    return (
+      <div className="app-shell">
+        <Topbar titulo={`Seções — ${vistoria.nome}`} voltar="/" />
+
+        <div className="tela-body" style={{ padding: '0 0 32px' }}>
+          <div style={{ padding: '20px 20px 0' }}>
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: 20 }}>
+              {respondidos} de {TODOS_ITENS.length} itens avaliados no total
+            </p>
+
+            <div className={styles.gridSecoes}>
+              {SECOES.map(s => {
+                const itensSecao = ITENS_POR_SECAO[s.id] || [];
+                const respondidosSecao = itensSecao.filter(i => respostas[i.id]?.valor).length;
+                const pctSecao = itensSecao.length > 0 ? Math.round((respondidosSecao / itensSecao.length) * 100) : 0;
+                const pendenteSecao = itensSecao.find(item => !respostas[item.id]?.valor);
+
+                return (
+                  <div
+                    key={s.id}
+                    className={styles.cardSecao}
+                    onClick={() => abrirSecao(s.id)}
+                  >
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className={styles.cardSecaoTopo}>
+                        <p className={styles.nomeSecao}>{s.nome}</p>
+                        {pctSecao === 100 && (
+                          <span className={styles.tagSecaoConcluida}>
+                            <IconCheck size={14} /> 100%
+                          </span>
+                        )}
+                      </div>
+
+                      <p className={styles.progressoSecaoTxt}>
+                        {respondidosSecao} de {itensSecao.length} respondidos ({pctSecao}%)
+                      </p>
+
+                      <div className="progresso-track" style={{ height: 4, marginTop: 10 }}>
+                        <div className="progresso-fill" style={{ width: `${pctSecao}%` }} />
+                      </div>
+
+                      <div className={styles.cardSecaoRodape}>
+                        {pendenteSecao ? (
+                          <button
+                            type="button"
+                            className={styles.btnSecaoRapida}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/checklist/${id}/item/${idxGlobal(pendenteSecao) + 1}`);
+                            }}
+                            title={`Ir para o primeiro item pendente: #${pendenteSecao.id}`}
+                          >
+                            {respondidosSecao > 0 ? 'Continuar' : 'Iniciar'}
+                            <IconArrowRight size={14} />
+                          </button>
+                        ) : (
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                            Seção concluída
+                          </span>
+                        )}
+                        <span className={styles.verSubgruposLink}>
+                          Ver subgrupos <IconChevronRight size={14} />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const secao = SECOES.find(s => s.id === secaoAberta) || SECOES[0];
+
+  return (
+    <div className="app-shell">
+      <Topbar titulo={secao.nome} voltar={fecharSecao} />
+
+      <div className={`tela-body ${styles.slideIn}`} style={{ padding: '0 0 32px' }}>
+
+        {/* Card de Ação no Topo da Seção */}
+        <div style={{ padding: '16px 20px 0' }}>
+          {primeiroPendenteSecao ? (
+            <div className={styles.cardAcaoTopo}>
+              <div className={styles.cardAcaoTexto}>
+                <div className={styles.cardAcaoTags}>
+                  <span className={styles.tagProximo}>
+                    {itensSecaoRespondidos > 0 ? 'Continuar de onde parou' : 'Iniciar Seção'}
+                  </span>
+                  <span className={styles.tagSubgrupoBadge}>
+                    {primeiroPendenteSecao.subgrupo}
+                  </span>
+                </div>
+                <p className={styles.proximoPergunta}>
+                  <strong>Item #{primeiroPendenteSecao.id}:</strong> {primeiroPendenteSecao.pergunta}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className={`btn-nav primario ${styles.btnContinuarSecao}`}
+                onClick={() => navigate(`/checklist/${id}/item/${idxGlobal(primeiroPendenteSecao) + 1}`)}
+              >
+                {itensSecaoRespondidos > 0 ? 'Continuar' : 'Começar'}
+                <IconArrowRight size={18} />
+              </button>
+            </div>
+          ) : (
+            <div className={styles.cardConcluidoTopo}>
+              <div className={styles.concluidoEsquerda}>
+                <div className={styles.iconeSucessoSecao}>
+                  <IconCheck size={24} />
+                </div>
+                <div>
+                  <p style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.98rem' }}>
+                    Seção {secaoAberta} concluída!
+                  </p>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 2 }}>
+                    Todos os {itensDaSecao.length} itens desta seção foram avaliados.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className={styles.btnProximaSecao}
+                onClick={() => {
+                  const proxSecao = SECOES.find(s => (ITENS_POR_SECAO[s.id] || []).some(i => !respostas[i.id]?.valor));
+                  if (proxSecao) abrirSecao(proxSecao.id);
+                  else navigate(`/checklist/${id}/resultado`);
+                }}
+              >
+                Próxima Seção <IconArrowRight size={16} />
+              </button>
+            </div>
+          )}
+
+          {/* Chips de filtro e Toggle Expandir */}
+          <div className={styles.chipsBarra}>
+            <div className={styles.chips}>
+              {FILTROS.map(f => (
+                <button
+                  key={f}
+                  className={`chip ${filtro === f ? 'ativo' : ''}`}
+                  onClick={() => setFiltro(f)}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className={styles.btnToggleExpandidos}
+              onClick={() => {
+                const todosAbertos = porSubgrupo.every(sg => expandidos[sg.subgrupo]);
+                if (todosAbertos) recolherTodos();
+                else expandirTodos();
+              }}
+            >
+              {porSubgrupo.every(sg => expandidos[sg.subgrupo]) ? 'Recolher todos' : 'Expandir todos'}
+            </button>
+          </div>
+        </div>
+
+        {/* Itens agrupados por subgrupo */}
+        <div style={{ padding: '0 20px' }}>
+          {porSubgrupo.length === 0 && (
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', padding: '20px 0' }}>
+              Nenhum item encontrado para este filtro.
+            </p>
+          )}
+
+          {porSubgrupo.map(({ subgrupo, itens }) => {
+            const isExpanded = expandidos[subgrupo];
+            const itensPendentesNoSg = itens.filter(i => !respostas[i.id]?.valor).length;
+            const todosRespondidosNoSg = itensPendentesNoSg === 0;
+
+            return (
+              <div key={subgrupo} style={{ marginBottom: 14 }}>
+                {subgrupo && (
+                  <div className={styles.subgrupoHeader} onClick={() => toggleSubgrupo(subgrupo)}>
+                    <div className={styles.subgrupoHeaderEsquerda}>
+                      <span className={styles.subgrupoLabel}>{subgrupo}</span>
+                      <span className={styles.subgrupoContagem}>({itens.length})</span>
+                    </div>
+
+                    <div className={styles.subgrupoHeaderDireita}>
+                      {todosRespondidosNoSg ? (
+                        <span className={`tag salva ${styles.tagStatusSubgrupo}`}>
+                          <IconCheck size={13} color="var(--text-success)" /> Concluído
+                        </span>
+                      ) : (
+                        <span className={`tag triagem ${styles.tagStatusSubgrupo}`}>
+                          {itensPendentesNoSg} {itensPendentesNoSg === 1 ? 'pendente' : 'pendentes'}
+                        </span>
+                      )}
+                      {isExpanded ? <IconChevronUp size={18} color="var(--text-muted)" /> : <IconChevronDown size={18} color="var(--text-muted)" />}
+                    </div>
+                  </div>
+                )}
+                {isExpanded && itens.map(item => {
+                  const resp = respostas[item.id]?.valor;
+                  const idx = idxGlobal(item);
+                  return (
+                    <div
+                      key={item.id}
+                      className={styles.listaLinhaResponsiva}
+                      onClick={() => navigate(`/checklist/${id}/item/${idx + 1}`)}
+                    >
+                      {iconeResposta(resp)}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: '0.92rem', fontWeight: 500, lineHeight: 1.4 }}>
+                          {item.pergunta}
+                        </p>
+                        <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: 4 }}>
+                          #{item.id} · {item.tipo === 'triagem' ? 'Triagem' : 'Item técnico'}
+                        </p>
+                      </div>
+                      <IconChevronRight size={18} color="var(--text-muted)" />
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}

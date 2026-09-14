@@ -1,0 +1,36 @@
+/* Tokens de design — espelho do protótipo */
+:root {
+  --bg: #000000;
+  --surface-1: #121212;
+  --surface-2: #0a0a0a;
+  --surface-3: #1e1e1e;
+
+  --border: rgba(255, 255, 255, 0.14);
+  --border-strong: rgba(255, 255, 255, 0.24);
+  --border-stronger: rgba(255, 255, 255, 0.40);
+
+  --text-primary: #ffffff;
+  --text-secondary: #a8a8a8;
+  --text-muted: #6e6e6e;
+
+  --fill-accent: #3b82f6;
+  --btn-primary-bg: #ffffff;
+  --btn-primary-fg: #000000;
+
+  --bg-success: rgba(77, 217, 138, 0.16);
+  --border-success: rgba(77, 217, 138, 0.40);
+  --text-success: #4dd98a;
+
+  --bg-danger: rgba(240, 110, 110, 0.16);
+  --border-danger: rgba(240, 110, 110, 0.40);
+  --text-danger: #f06e6e;
+
+  --bg-warning: rgba(234, 179, 8, 0.16);
+  --border-warning: rgba(234, 179, 8, 0.48);
+  --text-warning: #facc15;
+
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+}
