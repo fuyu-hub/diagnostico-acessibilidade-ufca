@@ -75,7 +75,7 @@ export default function CartaoVistoria({ vistoria }) {
         <div className="progresso-track" style={{ flex: 1 }}>
           <div className="progresso-fill" style={{ width: `${pct}%` }} />
         </div>
-        <span className={styles.contagem}>{respondidos}/{total} itens</span>
+        <span className={styles.contagem}>{respondidos}/{total}</span>
       </div>
 
       <div className={styles.rodape}>

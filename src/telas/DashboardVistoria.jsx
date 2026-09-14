@@ -172,24 +172,23 @@ export default function DashboardVistoria() {
                 </p>
               </div>
 
-              {/* Destaque da Nota Decimal e Classificação Integrada */}
-              <div className={styles.painelClassificacao} style={{ borderColor: classificacao.borda || 'var(--border-strong)' }}>
-                <div className={styles.blocoNota} style={{ color: classificacao.cor }}>
-                  {classificacao.notaFormatada}
-                </div>
-                <div className={styles.divisorNota} />
-                <div className={styles.blocoTextoClassificacao}>
-                  <span className={styles.rotuloClassificacao}>Classificação</span>
+              {/* Classificação discreta sem fundo */}
+              <div className={styles.classificacaoDiscreta}>
+                <span className={styles.rotuloClassificacao}>Classificação</span>
+                <div className={styles.classificacaoLinhaDesktop}>
                   <strong className={styles.valorClassificacao}>
                     {classificacao.rotulo}
                   </strong>
+                  <span className={styles.blocoNota} style={{ color: classificacao.cor }}>
+                    {classificacao.notaFormatada}
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className={styles.progressoHeader}>
               <span className={styles.progressoLabel}>Preenchimento do Checklist</span>
-              <span className={styles.progressoValor}>{pct}% ({respondidos}/{total} itens)</span>
+              <span className={styles.progressoValor}>{pct}% ({respondidos}/{total})</span>
             </div>
 
             <div className="progresso-track">
