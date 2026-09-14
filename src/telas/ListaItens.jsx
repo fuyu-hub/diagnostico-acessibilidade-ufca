@@ -12,9 +12,9 @@ import styles from './ListaItens.module.css';
 const FILTROS = ['Todos', 'Pendentes', 'Não conforme'];
 
 function iconeResposta(valor) {
-  if (valor === 'conforme')     return <IconCheck size={22} color="var(--text-success)" />;
-  if (valor === 'nao-conforme') return <IconX size={22} color="var(--text-danger)" />;
-  if (valor === 'nao-aplica')   return <IconMinus size={22} color="var(--text-warning)" />;
+  if (valor === 'conforme' || valor === 'sim')     return <IconCheck size={22} color="var(--text-success)" />;
+  if (valor === 'nao-conforme' || valor === 'nao') return <IconX size={22} color="var(--text-danger)" />;
+  if (valor === 'nao-aplica')                     return <IconMinus size={22} color="var(--text-warning)" />;
   return <IconCircle size={22} color="var(--border-strong)" />;
 }
 

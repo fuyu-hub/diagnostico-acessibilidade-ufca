@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { IconCheck, IconX, IconFilter } from '@tabler/icons-react';
+import { IconCheck, IconX, IconMinus, IconFilter } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import Topbar from '../componentes/Topbar';
 import BarraProgresso from '../componentes/BarraProgresso';
@@ -20,11 +20,21 @@ export default function Triagem() {
     setSelecionado(valor);
     responderItem(id, parseInt(itemId, 10), { valor });
 
-    if (valor === 'nao') {
-      // Marca dependentes como N/A (hardcoded para o item 7)
+    if (valor === 'nao' || valor === 'nao-aplica') {
+      // Marca dependentes como N/A (hardcoded para o item 7/8)
       [8, 9, 10, 11].forEach(dep =>
-        responderItem(id, dep, { valor: 'nao-aplica', obs: 'Triagem: sem rebaixamento no trajeto.', foto: null })
+        responderItem(id, dep, {
+          valor: 'nao-aplica',
+          obs: valor === 'nao-aplica' ? 'Triagem: não se aplica no trajeto.' : 'Triagem: sem rebaixamento no trajeto.',
+          foto: null,
+          automatico: true,
+        })
       );
+    } else {
+      [8, 9, 10, 11].forEach(dep => {
+        const respDep = vistoria.respostas?.[dep];
+        if (respDep?.automatico) responderItem(id, dep, null);
+      });
     }
   }
 
@@ -56,9 +66,16 @@ export default function Triagem() {
           <span className="icone"><IconX size={20} /></span> Não
         </button>
 
+        <button
+          className={`btn-resposta ${selecionado === 'nao-aplica' ? 'nao-aplica' : ''}`}
+          onClick={() => responder('nao-aplica')}
+        >
+          <span className="icone"><IconMinus size={20} /></span> Não se aplica
+        </button>
+
         <div style={{ background: 'var(--surface-1)', borderRadius: 14, padding: 14, border: '1px solid var(--border)', marginTop: 16 }}>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-            Se "Não", os itens 8, 9, 10 e 11 serão marcados <strong>Não se aplica (N/A)</strong> automaticamente.
+            Se "Não" ou "Não se aplica", os itens dependentes serão marcados <strong>Não se aplica (N/A)</strong> automaticamente.
           </p>
         </div>
 

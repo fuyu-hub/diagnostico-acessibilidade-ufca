@@ -20,8 +20,9 @@ const OPCOES_TECNICO = [
 ];
 
 const OPCOES_TRIAGEM = [
-  { valor: 'sim', label: 'Sim', icone: <IconCheck size={20} /> },
-  { valor: 'nao', label: 'Não', icone: <IconX size={20} /> },
+  { valor: 'sim',        label: 'Sim',           icone: <IconCheck size={20} /> },
+  { valor: 'nao',        label: 'Não',           icone: <IconX size={20} /> },
+  { valor: 'nao-aplica', label: 'Não se aplica', icone: <IconMinus size={20} /> },
 ];
 
 export default function ItemChecklist() {
@@ -69,16 +70,16 @@ export default function ItemChecklist() {
 
   function aplicarDependencias(valor) {
     if (!item.dependentes?.length) return null;
-    if (valor === 'nao') {
+    if (valor === 'nao' || valor === 'nao-aplica') {
       item.dependentes.forEach(depId => {
         responderItem(id, depId, {
           valor: 'nao-aplica',
-          obs: `Triagem #${item.id}: resposta Não — aplicado automaticamente.`,
+          obs: `Triagem #${item.id}: resposta ${valor === 'nao-aplica' ? 'Não se aplica' : 'Não'} — aplicado automaticamente.`,
           foto: null,
           automatico: true,
         });
       });
-      if (item.acaoSeNao === 'gatilho_nc_dependentes_na') {
+      if (valor === 'nao' && item.acaoSeNao === 'gatilho_nc_dependentes_na') {
         return { valor: 'nao-conforme', obs, foto };
       }
     } else {
@@ -162,7 +163,7 @@ export default function ItemChecklist() {
 
             {ehTriagem && item.acaoSeNao === 'dependentes_na' && item.dependentes?.length > 0 && (
               <div className={styles.alertaInfo}>
-                <p>Se "Não": itens {item.dependentes.join(', ')} serão marcados automaticamente como N/A.</p>
+                <p>Se "Não" ou "Não se aplica": itens {item.dependentes.join(', ')} serão marcados automaticamente como N/A.</p>
               </div>
             )}
 
