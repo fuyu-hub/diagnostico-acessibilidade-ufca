@@ -35,8 +35,12 @@ export default function Ajustes() {
             <div className={styles.secaoHeader}>
               <div className={styles.secaoInfo}>
                 <h3 className={styles.secaoTitulo}>
-                  {somAtivo ? <IconVolume size={20} color="var(--accent)" /> : <IconVolumeOff size={20} color="var(--text-muted)" />}
-                  Efeitos Sonoros
+                  {somAtivo ? (
+                    <IconVolume size={20} color="var(--accent, #3b82f6)" />
+                  ) : (
+                    <IconVolumeOff size={20} color="var(--text-muted)" />
+                  )}
+                  <span>Efeitos Sonoros</span>
                 </h3>
                 <p className={styles.secaoDesc}>
                   Sons interativos com retorno auditivo imediato ao selecionar Conforme, Não Conforme e Não se Aplica.
@@ -101,7 +105,7 @@ export default function Ajustes() {
               <div className={styles.secaoInfo}>
                 <h3 className={styles.secaoTitulo}>
                   <IconInfoCircle size={20} color="var(--text-muted)" />
-                  Sobre o Diagnóstico NBR 9050
+                  <span>Sobre o Diagnóstico NBR 9050</span>
                 </h3>
                 <p className={styles.secaoDesc}>
                   Aplicação web para levantamento técnico de acessibilidade espacial em edificações públicas de ensino, desenvolvida no âmbito do projeto de extensão da Universidade Federal do Cariri (UFCA).
