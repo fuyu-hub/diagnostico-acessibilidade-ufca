@@ -72,7 +72,7 @@
       "referencia": "6.12 (Circulação Externa), 6.12.3",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Trena/Fita métrica] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "calcada_faixa_livre.png"
     },
     {
       "id": 3,
@@ -84,7 +84,7 @@
       "referencia": "6.3 (Circulação - Piso), 6.3.2",
       "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
       "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
-      "imagem": null
+      "imagem": "calcada_faixa_livre.png"
     },
     {
       "id": 4,
@@ -94,9 +94,9 @@
       "pergunta": "A inclinação transversal da \"faixa livre\" (passeio) das calçadas não é superior a 3%?",
       "dependeDe": null,
       "referencia": "6.3 (Circulação - Piso), 6.3.3; 6.12 (Circulação Externa), 6.12.1, 6.12.3",
-      "dica": "Use nível digital/inclinômetro. Meça em pelo menos 3 pontos ao longo do trecho e registre o maior valor encontrado.",
-      "comoAveriguar": "Posicione o inclinômetro sobre o piso/rampa/escada em 3 pontos distintos e registre o maior valor.",
-      "imagem": null
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 3% equivale a no máximo 1,7 graus no celular.\nMétodo alternativo: apoie um nível de bolha sobre uma régua escolar de 30 cm e coloque um calço de 1 cm (ex: uma borracha escolar) em uma das pontas. Se a bolha centralizar, a superfície tem exatamente ~3% de caimento (1 cm de queda em 30 cm).",
+      "comoAveriguar": "Coloque o seu celular deitado diretamente sobre o piso da calçada, atravessado no sentido do muro para a rua (inclinação transversal). Meça em 3 pontos diferentes da faixa livre e anote o maior valor. Se o celular marcar 1,7° ou menos, o trecho está Conforme.",
+      "imagem": "calcada_inclinacao_transversal.png"
     },
     {
       "id": 5,
@@ -108,7 +108,7 @@
       "referencia": "5.4 (Aplicações Essenciais), 5.4.6; Mota (2024, p.25)",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": null
+      "imagem": "piso_tatil_externo.png"
     },
     {
       "id": 6,
@@ -118,8 +118,8 @@
       "pergunta": "Desníveis no piso de até 5 mm podem estar sem tratamento, desníveis entre 5 mm e 20 mm possuem inclinação máxima de 1:2 (50%), e desníveis acima de 20 mm são tratados como degraus com rampa associada?\n(Ideal não haver desníveis)",
       "dependeDe": null,
       "referencia": "6.12 (Circulação Externa), 6.12.7.3",
-      "dica": "Use nível digital/inclinômetro; 8,33% equivale aproximadamente a 1:12. Meça em pelo menos 3 pontos ao longo do percurso.",
-      "comoAveriguar": "[Trena/] Posicione o inclinômetro sobre o piso/rampa em 3 pontos distintos e registre o maior valor encontrado.",
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. A inclinação máxima de 1:2 (50%) para desníveis chanfrados equivale a no máximo 26,6 graus na tela do seu celular.",
+      "comoAveriguar": "[Trena/Régua e Celular] Meça a altura vertical do desnível. Se estiver entre 5 mm e 20 mm, apoie o celular na face chanfrada: se marcar 26,6° ou menos (1:2 / 50%), está Conforme. Se acima de 20 mm, deve haver rampa associada.",
       "imagem": null
     },
     {
@@ -163,7 +163,7 @@
       "referencia": "5.4 (Aplicações Essenciais), 5.4.6; 6.12 (Circulação Externa), 6.12.8",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": null
+      "imagem": "piso_tatil_externo.png"
     },
     {
       "id": 10,
@@ -173,8 +173,8 @@
       "pergunta": "O rebaixo da calçada tem largura mínima de 1,20m e declividade de, no máximo, 8,33%. (Ideal largura mínima de 1,50m e declividade máxima de 5%)",
       "dependeDe": 8,
       "referencia": "6.12 (Circulação Externa), 6.12.3",
-      "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
-      "comoAveriguar": "[Trena/Fita métrica/Visual] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 8,33% equivale a no máximo 4,8 graus na tela do seu celular (ideal de 5% = até 2,9°).",
+      "comoAveriguar": "[Inclinômetro/Celular e Trena] Meça a largura do rebaixo com a trena (mín. 1,20 m). Para a inclinação, coloque o celular deitado na rampa no sentido do caimento (em direção à rua). Meça em 3 pontos. Se o celular marcar 4,8° ou menos (ideal até 2,9°), o rebaixo está Conforme.",
       "imagem": null
     },
     {
@@ -290,8 +290,8 @@
       "pergunta": "A inclinação transversal dos degraus e patamares da escada externa não é superior a 2%?",
       "dependeDe": 13,
       "referencia": "6.8 (Escadas), 6.8.5; 6.6 (Rampas)",
-      "dica": "Use nível digital/inclinômetro. Meça em pelo menos 3 pontos ao longo do trecho e registre o maior valor encontrado.",
-      "comoAveriguar": "Posicione o inclinômetro sobre o piso/rampa/escada em 3 pontos distintos e registre o maior valor.",
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 2% equivale a no máximo 1,1 graus na tela do seu celular.",
+      "comoAveriguar": "Coloque o celular deitado diretamente sobre o piso do degrau ou patamar da escada externa, atravessado no sentido da largura para escoamento. Meça em 3 degraus/pontos diferentes e anote o maior valor. Se o celular marcar 1,1° ou menos, o trecho está Conforme.",
       "imagem": null
     },
     {
@@ -358,8 +358,8 @@
       "pergunta": "A declividade das rampas respeita os limites da norma: até 8,33% para rampas novas (máximo de 15 segmentos com 80 cm de desnível máximo cada) e, em reformas, no máximo 12,5% com desnível máximo de 0,075 m por segmento (1 segmento).",
       "dependeDe": 20,
       "referencia": "6.6 (Rampas), 6.6.2.1 e 6.6.2.2",
-      "dica": "Use nível digital/inclinômetro; 8,33% equivale aproximadamente a 1:12. Meça em pelo menos 3 pontos ao longo do percurso.",
-      "comoAveriguar": "Posicione o inclinômetro sobre o piso/rampa em 3 pontos distintos e registre o maior valor encontrado.",
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 8,33% equivale a no máximo 4,8 graus na tela do seu celular (em reformas excepcionais até 12,5% = 7,1°).",
+      "comoAveriguar": "Coloque o celular deitado diretamente sobre o piso da rampa, alinhado no sentido da subida/descida (longitudinal). Meça no início, meio e fim de cada segmento de rampa. Se o celular marcar 4,8° ou menos (ou até 7,1° em reformas de pequeno porte), a rampa está Conforme.",
       "imagem": null
     },
     {
@@ -370,9 +370,9 @@
       "pergunta": "A inclinação transversal máxima da rampa externa não supera 3%?",
       "dependeDe": 20,
       "referencia": "6.6 (Rampas), 6.6.2.4",
-      "dica": "Use nível digital/inclinômetro. Meça em pelo menos 3 pontos ao longo do trecho e registre o maior valor encontrado.",
-      "comoAveriguar": "Posicione o inclinômetro sobre o piso/rampa/escada em 3 pontos distintos e registre o maior valor.",
-      "imagem": null
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 3% equivale a no máximo 1,7 graus no celular.\nMétodo alternativo: apoie um nível de bolha sobre uma régua escolar de 30 cm e coloque um calço de 1 cm (ex: uma borracha escolar) em uma das pontas. Se a bolha centralizar, a superfície tem exatamente ~3% de caimento (1 cm de queda em 30 cm).",
+      "comoAveriguar": "Coloque o seu celular deitado sobre o piso da rampa, atravessado perpendicularmente ao sentido da rampa (de um corrimão ao outro). Meça em 3 pontos e anote o maior valor. Se marcar 1,7° ou menos, o trecho está Conforme.",
+      "imagem": "calcada_inclinacao_transversal.png"
     },
     {
       "id": 26,
@@ -663,7 +663,7 @@
       "referencia": "5.4 (Aplicações Essenciais), 5.4.6; Mota (2024, p.25)",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": null
+      "imagem": "piso_tatil_externo.png"
     },
     {
       "id": 48,
@@ -675,7 +675,7 @@
       "referencia": "5.2 (Sinalização), 5.2.9.1.1; Mota (2024, p. 30)",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": null
+      "imagem": "piso_tatil_externo.png"
     },
     {
       "id": 49,
@@ -757,8 +757,8 @@
       "pergunta": "A inclinação transversal do piso do corredor não é superior a 2%?",
       "dependeDe": null,
       "referencia": "6.3 (Circulação - Piso), 6.3.3",
-      "dica": "Use nível digital/inclinômetro. Meça em pelo menos 3 pontos ao longo do trecho e registre o maior valor encontrado.",
-      "comoAveriguar": "Posicione o inclinômetro sobre o piso/rampa/escada em 3 pontos distintos e registre o maior valor.",
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 2% equivale a no máximo 1,1 graus na tela do seu celular.",
+      "comoAveriguar": "Coloque o seu celular deitado diretamente sobre o piso do corredor, atravessado no sentido de uma parede à outra (inclinação transversal). Meça em 3 pontos diferentes e anote o maior valor. Se o celular marcar 1,1° ou menos, o trecho está Conforme.",
       "imagem": null
     },
     {
@@ -769,8 +769,8 @@
       "pergunta": "A inclinação longitudinal do piso do corredor é inferior a 5%?",
       "dependeDe": null,
       "referencia": "6.3 (Circulação - Piso), 6.3.3",
-      "dica": "Use nível digital/inclinômetro. Meça em pelo menos 3 pontos ao longo do trecho e registre o maior valor encontrado.",
-      "comoAveriguar": "Posicione o inclinômetro sobre o piso/rampa/escada em 3 pontos distintos e registre o maior valor.",
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 5% equivale a no máximo 2,9 graus na tela do seu celular.",
+      "comoAveriguar": "Coloque o seu celular deitado diretamente sobre o piso do corredor, alinhado no sentido em que as pessoas caminham (longitudinal). Meça em 3 pontos ao longo do percurso. Se marcar menos de 2,9°, o piso está Conforme (se atingir 5% ou mais, deve atender aos parâmetros de rampa).",
       "imagem": null
     },
     {
@@ -909,8 +909,8 @@
       "pergunta": "A inclinação transversal dos degraus e patamares da escada interna não é superior a 1%?",
       "dependeDe": 63,
       "referencia": "6.8 (Escadas), 6.8.5; 6.6 (Rampas)",
-      "dica": "Use nível digital/inclinômetro. Meça em pelo menos 3 pontos ao longo do trecho e registre o maior valor encontrado.",
-      "comoAveriguar": "Posicione o inclinômetro sobre o piso/rampa/escada em 3 pontos distintos e registre o maior valor.",
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 1% equivale a no máximo 0,6 graus na tela do seu celular.",
+      "comoAveriguar": "Coloque o celular deitado diretamente sobre o piso do degrau ou patamar da escada interna, no sentido transversal. Meça em pelo menos 3 degraus/pontos. Se marcar 0,6° ou menos, o trecho está Conforme.",
       "imagem": null
     },
     {
@@ -1037,8 +1037,8 @@
       "pergunta": "A declividade das rampas respeita os limites da norma: até 8,33% para rampas novas (máximo de 15 segmentos com 80 cm de desnível máximo cada) e, em reformas, no máximo 12,5% com desnível máximo de 0,075 m por segmento (1 segmento). Verificar tabela 5 para valores completos (NBR 9050:2020, p. 58)",
       "dependeDe": 72,
       "referencia": "6.6 (Rampas), 6.6.2.1 e 6.6.2.2",
-      "dica": "Use nível digital/inclinômetro; 8,33% equivale aproximadamente a 1:12. Meça em pelo menos 3 pontos ao longo do percurso.",
-      "comoAveriguar": "Posicione o inclinômetro sobre o piso/rampa em 3 pontos distintos e registre o maior valor encontrado.",
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 8,33% equivale a no máximo 4,8 graus na tela do seu celular (em reformas excepcionais até 12,5% = 7,1°).",
+      "comoAveriguar": "Coloque o celular deitado diretamente sobre o piso da rampa interna, alinhado no sentido da subida/descida (longitudinal). Meça no início, meio e fim de cada segmento. Se o celular marcar 4,8° ou menos (ou até 7,1° em reformas), a rampa está Conforme.",
       "imagem": null
     },
     {
@@ -1049,8 +1049,8 @@
       "pergunta": "A inclinação transversal máxima da rampa interna não supera 2%?",
       "dependeDe": 72,
       "referencia": "6.6 (Rampas), 6.6.2.4",
-      "dica": "Use nível digital/inclinômetro. Meça em pelo menos 3 pontos ao longo do trecho e registre o maior valor encontrado.",
-      "comoAveriguar": "Posicione o inclinômetro sobre o piso/rampa/escada em 3 pontos distintos e registre o maior valor.",
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 2% equivale a no máximo 1,1 graus na tela do seu celular.",
+      "comoAveriguar": "Coloque o celular deitado sobre o piso da rampa interna, atravessado perpendicularmente de um corrimão ao outro (inclinação transversal). Meça em 3 pontos distintos e anote o maior valor. Se marcar 1,1° ou menos, o trecho está Conforme.",
       "imagem": null
     },
     {
@@ -2548,8 +2548,8 @@
       "pergunta": "O piso do box do chuveiro está em nível com o piso adjacente (sem soleira), com inclinação de até 2% para escoamento? Além disso, o box possui dimensão mínima de 0,90m x 0,95m?",
       "dependeDe": 190,
       "referencia": "9.3 (Mesas ou Superfícies), 9.3.1.2; 4.3 (Área de Circulação e Manobra), 4.3.4",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Visual/Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
+      "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de até 2% de caimento equivale a no máximo 1,1 graus na tela do seu celular.",
+      "comoAveriguar": "[Trena e Celular/Inclinômetro] Meça com a trena as dimensões do box (mín. 0,90 m x 0,95 m) e verifique se o piso está em nível (sem soleira). Para o escoamento, coloque o celular deitado no piso em direção ao ralo. Se marcar 1,1° ou menos, a inclinação está Conforme.",
       "imagem": null
     },
     {
