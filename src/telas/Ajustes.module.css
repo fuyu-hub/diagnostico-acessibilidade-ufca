@@ -1,0 +1,171 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.secaoCard {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.secaoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.secaoInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.secaoTitulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.secaoDesc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Switch Toggle */
+.switchLabel {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.switchInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background-color: var(--surface-2);
+  border: 1.5px solid var(--border-strong);
+  border-radius: 28px;
+  transition: all 0.2s ease;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--text-muted);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.switchInput:checked + .slider {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.switchInput:checked + .slider:before {
+  transform: translateX(24px);
+  background-color: #ffffff;
+}
+
+/* Grade de Teste de Sons */
+.blocoTesteSons {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tituloTeste {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.gradeTestes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 480px) {
+  .gradeTestes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.btnTeste {
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.btnTeste:active {
+  transform: scale(0.97);
+}
+
+.btnTesteConforme {
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: var(--text-success);
+}
+.btnTesteConforme:hover {
+  background: rgba(34, 197, 94, 0.24);
+}
+
+.btnTesteNaoConforme {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: var(--text-danger);
+}
+.btnTesteNaoConforme:hover {
+  background: rgba(239, 68, 68, 0.24);
+}
+
+.btnTesteNaoAplica {
+  background: rgba(148, 163, 184, 0.14);
+  border-color: rgba(148, 163, 184, 0.35);
+  color: var(--text-secondary);
+}
+.btnTesteNaoAplica:hover {
+  background: rgba(148, 163, 184, 0.24);
+}

@@ -9,6 +9,7 @@ import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS } from '../dados/checklist';
 import Topbar from '../componentes/Topbar';
 import BarraProgresso from '../componentes/BarraProgresso';
+import { tocarSomResposta } from '../utilitarios/som';
 import styles from './ItemChecklist.module.css';
 
 const ITENS_CONTAVEIS = TODOS_ITENS.filter(i => i.tipo === 'tecnico');
@@ -92,6 +93,7 @@ export default function ItemChecklist() {
   }
 
   function selecionar(valor) {
+    tocarSomResposta(valor);
     const override = aplicarDependencias(valor);
     responderItem(id, item.id, override || { valor, obs, foto });
   }
@@ -126,7 +128,6 @@ export default function ItemChecklist() {
   return (
     <div className="app-shell">
       <Topbar
-        eyebrow={`Item #${item.id} de ${TODOS_ITENS.length}`}
         titulo={item.subgrupo || 'Item'}
         voltar={() => navigate(`/checklist/${id}/itens?secao=${item.secaoId || 1}&subgrupo=${encodeURIComponent(item.subgrupo || '')}`)}
         acaoDireita={{

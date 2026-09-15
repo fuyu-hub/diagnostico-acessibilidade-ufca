@@ -4,6 +4,7 @@ import { IconCheck, IconX, IconMinus, IconFilter } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import Topbar from '../componentes/Topbar';
 import BarraProgresso from '../componentes/BarraProgresso';
+import { tocarSomResposta } from '../utilitarios/som';
 
 export default function Triagem() {
   const { id, itemId } = useParams();
@@ -17,6 +18,7 @@ export default function Triagem() {
   if (!vistoria) return null;
 
   function responder(valor) {
+    tocarSomResposta(valor);
     setSelecionado(valor);
     responderItem(id, parseInt(itemId, 10), { valor });
 
