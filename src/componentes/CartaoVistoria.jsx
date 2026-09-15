@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconMapPin, IconArrowRight, IconListCheck, IconTrash } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS } from '../dados/checklist';
+import ModalExcluirVistoria from './ModalExcluirVistoria';
 import styles from './CartaoVistoria.module.css';
 
 export default function CartaoVistoria({ vistoria }) {
@@ -36,14 +38,16 @@ export default function CartaoVistoria({ vistoria }) {
     navigate(`/checklist/${vistoria.id}/itens`);
   }
 
+  const [modalAberto, setModalAberto] = useState(false);
+
   function handleExcluir(e) {
     e?.stopPropagation();
-    const confirmacao = window.confirm(
-      `Deseja realmente excluir a vistoria "${vistoria.nome}" permanentemente?`
-    );
-    if (confirmacao) {
-      removerVistoria(vistoria.id);
-    }
+    setModalAberto(true);
+  }
+
+  function handleConfirmarExclusao() {
+    setModalAberto(false);
+    removerVistoria(vistoria.id);
   }
 
   return (
@@ -101,6 +105,13 @@ export default function CartaoVistoria({ vistoria }) {
           <IconArrowRight size={16} />
         </button>
       </div>
+
+      <ModalExcluirVistoria
+        aberto={modalAberto}
+        nomeVistoria={vistoria.nome}
+        onConfirmar={handleConfirmarExclusao}
+        onCancelar={() => setModalAberto(false)}
+      />
     </div>
   );
 }

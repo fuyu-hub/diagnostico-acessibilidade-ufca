@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { IconCheck, IconUserPlus, IconTrash, IconBuilding, IconClipboardCheck } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import Topbar from '../componentes/Topbar';
+import SeletorNivelEnsino from '../componentes/SeletorNivelEnsino';
 
 export default function NovaVistoria() {
   const navigate = useNavigate();
@@ -14,9 +15,8 @@ export default function NovaVistoria() {
     endereco: '',
     bairro: '',
     cidade: '',
-    inep: '',
     rede: 'Municipal',
-    nivelEnsino: 'Fundamental',
+    nivelEnsino: ['Fundamental'],
     numAlunos: '',
     numPavimentos: '',
     anoConstrucao: '',
@@ -84,7 +84,7 @@ export default function NovaVistoria() {
                 <label className="label-secao">Nome da escola / instituição *</label>
                 <input
                   type="text"
-                  placeholder="Ex: Universidade Federal do Cariri - UFCA (Campus Juazeiro do Norte)"
+                  placeholder="Ex: Universidade Federal do Cariri - UFCA"
                   value={form.nome}
                   onChange={e => set('nome', e.target.value)}
                   required
@@ -123,17 +123,7 @@ export default function NovaVistoria() {
                 </div>
               </div>
 
-              <div className="form-grid-3" style={{ marginBottom: 16 }}>
-                <div>
-                  <label className="label-secao">Código INEP</label>
-                  <input
-                    type="text"
-                    placeholder="Ex: 23000001"
-                    value={form.inep}
-                    onChange={e => set('inep', e.target.value)}
-                  />
-                </div>
-
+              <div className="form-grid-2" style={{ marginBottom: 16 }}>
                 <div>
                   <label className="label-secao">Rede de Ensino</label>
                   <select
@@ -148,24 +138,15 @@ export default function NovaVistoria() {
                   </select>
                 </div>
 
-                <div>
-                  <label className="label-secao">Nível de Ensino</label>
-                  <select
-                    value={form.nivelEnsino}
-                    onChange={e => set('nivelEnsino', e.target.value)}
-                  >
-                    <option value="Infantil">Educação Infantil</option>
-                    <option value="Fundamental">Ensino Fundamental</option>
-                    <option value="Médio">Ensino Médio</option>
-                    <option value="Ambos">Ambos (Fundamental e Médio)</option>
-                    <option value="Superior">Superior / Técnico</option>
-                  </select>
-                </div>
+                <SeletorNivelEnsino
+                  valores={form.nivelEnsino}
+                  onChange={novos => set('nivelEnsino', novos)}
+                />
               </div>
 
               <div className="form-grid-3">
                 <div>
-                  <label className="label-secao">Número de alunos matriculados (aprox.)</label>
+                  <label className="label-secao">Número de alunos (aprox.)</label>
                   <input
                     type="number"
                     placeholder="Ex: 2500"
@@ -185,10 +166,10 @@ export default function NovaVistoria() {
                 </div>
 
                 <div>
-                  <label className="label-secao">Ano de construção / última reforma</label>
+                  <label className="label-secao">Ano de construção</label>
                   <input
                     type="text"
-                    placeholder="Ex: 2013 / 2022"
+                    placeholder="Ex: 2006"
                     value={form.anoConstrucao}
                     onChange={e => set('anoConstrucao', e.target.value)}
                   />
@@ -238,12 +219,7 @@ export default function NovaVistoria() {
                   <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10, alignItems: 'center' }}>
                     <input
                       type="text"
-                      placeholder={
-                        i === 0 ? 'Ex: Samuel Sousa Santos' :
-                        i === 1 ? 'Ex: Camilo Erdos Viana da Silva' :
-                        i === 2 ? 'Ex: Danilo Ferreira da Silva' :
-                        `Nome do avaliador ${i + 1}`
-                      }
+                      placeholder={`Nome do avaliador ${i + 1}`}
                       value={a}
                       onChange={e => setAvaliador(i, e.target.value)}
                       style={{ flex: 1 }}

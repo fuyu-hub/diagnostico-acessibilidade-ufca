@@ -63,85 +63,6 @@
   gap: 20px;
 }
 
-.blocoIAA {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.infoIAA {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.subtituloIAA {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  margin: 0;
-  text-align: justify;
-  text-justify: inter-word;
-}
-
-/* Classificação discreta sem fundo */
-.classificacaoDiscreta {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-.rotuloClassificacao {
-  font-size: 0.76rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 500;
-}
-
-.classificacaoLinhaDesktop {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.valorClassificacao {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #FFFFFF;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
-.blocoNota {
-  font-size: 1.55rem;
-  font-weight: 800;
-  line-height: 1;
-  font-feature-settings: "tnum";
-}
-
-@media (min-width: 640px) {
-  .classificacaoDiscreta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-    text-align: right;
-  }
-
-  .classificacaoLinhaDesktop {
-    gap: 10px;
-  }
-
-  .blocoNota {
-    font-size: 2.2rem;
-  }
-}
-
 .progressoHeader {
   display: flex;
   justify-content: space-between;
@@ -155,7 +76,7 @@
 }
 
 .progressoValor {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--accent);
 }
@@ -179,6 +100,7 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 12px;
   }
+
   .miniCardProgresso,
   .miniCardResultado {
     grid-column: span 1;
@@ -396,18 +318,20 @@
   background: var(--surface-1);
   border: 1px solid var(--border-danger);
   border-radius: 20px;
-  padding: 22px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  padding: 20px 22px;
 }
 
 .perigoConteudo {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   gap: 16px;
+}
+
+.perigoInfo {
+  flex: 1;
+  min-width: 0;
 }
 
 .perigoTitulo {
@@ -434,14 +358,17 @@
   font-family: inherit;
   font-size: 0.9rem;
   font-weight: 600;
-  padding: 12px 20px;
+  padding: 12px;
   border-radius: 12px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   cursor: pointer;
   transition: all 0.15s ease;
   flex-shrink: 0;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .btnExcluirVistoria:hover {
@@ -449,3 +376,16 @@
   border-color: var(--text-danger);
 }
 
+.btnExcluirTexto {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .btnExcluirVistoria {
+    padding: 12px 18px;
+  }
+
+  .btnExcluirTexto {
+    display: inline;
+  }
+}

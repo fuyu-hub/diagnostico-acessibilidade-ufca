@@ -35,7 +35,6 @@ export function VistoriaProvider({ children }) {
       // Ficha da Instituição (modelo oficial)
       endereco: dados.endereco || '',
       bairro: dados.bairro || '',
-      inep: dados.inep || '',
       rede: dados.rede || '',
       nivelEnsino: dados.nivelEnsino || '',
       numAlunos: dados.numAlunos || '',

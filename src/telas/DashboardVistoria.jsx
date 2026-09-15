@@ -8,8 +8,10 @@ import {
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS } from '../dados/checklist';
-import { calcularIndiceItens, FAIXAS_INDICE } from '../dados/classificacao';
+import { calcularIndiceItens } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
+import SeletorNivelEnsino from '../componentes/SeletorNivelEnsino';
+import ModalExcluirVistoria from '../componentes/ModalExcluirVistoria';
 import styles from './DashboardVistoria.module.css';
 
 export default function DashboardVistoria() {
@@ -18,15 +20,12 @@ export default function DashboardVistoria() {
   const { getVistoria, atualizarVistoria, removerVistoria } = useVistoria();
 
   const vistoria = getVistoria(id);
+  const [modalExcluirAberto, setModalExcluirAberto] = useState(false);
 
-  function handleExcluirVistoria() {
-    const confirmacao = window.confirm(
-      `Deseja realmente excluir a vistoria "${vistoria?.nome}"?\n\nEsta ação é irreversível e todos os dados cadastrais e respostas de itens serão removidos permanentemente.`
-    );
-    if (confirmacao) {
-      removerVistoria(id);
-      navigate('/');
-    }
+  function handleConfirmarExclusao() {
+    setModalExcluirAberto(false);
+    removerVistoria(id);
+    navigate('/');
   }
 
   const [form, setForm] = useState({
@@ -34,9 +33,16 @@ export default function DashboardVistoria() {
     endereco: vistoria?.endereco || '',
     bairro: vistoria?.bairro || '',
     cidade: vistoria?.cidade || '',
-    inep: vistoria?.inep || '',
     rede: vistoria?.rede || 'Municipal',
-    nivelEnsino: vistoria?.nivelEnsino || 'Fundamental',
+    nivelEnsino: Array.isArray(vistoria?.nivelEnsino)
+      ? vistoria.nivelEnsino
+      : vistoria?.nivelEnsino === 'Ambos'
+        ? ['Fundamental', 'Médio']
+        : vistoria?.nivelEnsino === 'Superior'
+          ? ['Superior']
+          : vistoria?.nivelEnsino
+            ? [vistoria.nivelEnsino]
+            : ['Fundamental'],
     numAlunos: vistoria?.numAlunos || '',
     numPavimentos: vistoria?.numPavimentos || '1',
     anoConstrucao: vistoria?.anoConstrucao || '',
@@ -62,7 +68,7 @@ export default function DashboardVistoria() {
     );
   }
 
-  // Estatísticas e Índice em formato decimal x,x
+  // Estatísticas de preenchimento e contagens
   const total = TODOS_ITENS.length;
   const respostas = vistoria.respostas || {};
   const respondidos = Object.keys(respostas).length;
@@ -70,7 +76,6 @@ export default function DashboardVistoria() {
   const pct = total > 0 ? Math.round((respondidos / total) * 100) : 0;
 
   const indice = calcularIndiceItens(TODOS_ITENS, respostas);
-  const { classificacao } = indice;
 
   const primeiroPendenteIdx = TODOS_ITENS.findIndex(item => !respostas[item.id]?.valor);
   const temPendente = primeiroPendenteIdx !== -1;
@@ -162,37 +167,17 @@ export default function DashboardVistoria() {
             </div>
           </div>
 
-          {/* Card de Métricas do Dashboard com Índice Decimal */}
+          {/* Card de Métricas do Dashboard */}
           <section className={styles.cardDashboard}>
-            <div className={styles.blocoIAA}>
-              <div className={styles.infoIAA}>
-                <span className={styles.progressoLabel}>Índice de Avaliação de Acessibilidade (IAA)</span>
-                <p className={styles.subtituloIAA}>
-                  Baseado nas conformidades da norma ABNT NBR 9050
-                </p>
+            <div>
+              <div className={styles.progressoHeader}>
+                <span className={styles.progressoLabel}>Progresso do Checklist</span>
+                <span className={styles.progressoValor}>{pct}% ({respondidos}/{total})</span>
               </div>
 
-              {/* Classificação discreta sem fundo */}
-              <div className={styles.classificacaoDiscreta}>
-                <span className={styles.rotuloClassificacao}>Classificação</span>
-                <div className={styles.classificacaoLinhaDesktop}>
-                  <strong className={styles.valorClassificacao}>
-                    {classificacao.rotulo}
-                  </strong>
-                  <span className={styles.blocoNota} style={{ color: classificacao.cor }}>
-                    {classificacao.notaFormatada}
-                  </span>
-                </div>
+              <div className="progresso-track" style={{ marginTop: 10 }}>
+                <div className="progresso-fill" style={{ width: `${pct}%` }} />
               </div>
-            </div>
-
-            <div className={styles.progressoHeader}>
-              <span className={styles.progressoLabel}>Preenchimento do Checklist</span>
-              <span className={styles.progressoValor}>{pct}% ({respondidos}/{total})</span>
-            </div>
-
-            <div className="progresso-track">
-              <div className="progresso-fill" style={{ width: `${pct}%` }} />
             </div>
 
             <div className={styles.gridMetricas}>
@@ -206,7 +191,7 @@ export default function DashboardVistoria() {
               </div>
               <div className={`${styles.miniCard} ${styles.miniCardResultado}`}>
                 <span className={styles.miniCardNumero} style={{ color: 'var(--text-success)' }}>{indice.conf}</span>
-                <span className={styles.miniCardLabel}>Conformes</span>
+                <span className={styles.miniCardLabel}>Conf.</span>
               </div>
               <div className={`${styles.miniCard} ${styles.miniCardResultado}`}>
                 <span className={styles.miniCardNumero} style={{ color: 'var(--text-danger)' }}>{indice.nc}</span>
@@ -254,7 +239,7 @@ export default function DashboardVistoria() {
           {/* Card de Parâmetros e Ficha Completa da Instituição */}
           <section className={styles.cardParametros}>
             <div>
-              <h3 className={styles.secaoTitulo}>Ficha da Instituição e Parâmetros</h3>
+              <h3 className={styles.secaoTitulo}>Ficha da Instituição</h3>
               <p className={styles.secaoSubtitulo}>
                 Atualize as informações cadastrais e estruturais da escola/edificação e a equipe técnica da vistoria.
               </p>
@@ -265,7 +250,7 @@ export default function DashboardVistoria() {
                 <label className="label-secao">Nome da escola / instituição *</label>
                 <input
                   type="text"
-                  placeholder="Ex: Universidade Federal do Cariri - UFCA (Campus Juazeiro do Norte)"
+                  placeholder="Ex: Universidade Federal do Cariri - UFCA"
                   value={form.nome}
                   onChange={e => setCampo('nome', e.target.value)}
                   required
@@ -304,17 +289,7 @@ export default function DashboardVistoria() {
                 </div>
               </div>
 
-              <div className="form-grid-3" style={{ marginBottom: 16 }}>
-                <div>
-                  <label className="label-secao">Código INEP</label>
-                  <input
-                    type="text"
-                    placeholder="Ex: 23000001"
-                    value={form.inep}
-                    onChange={e => setCampo('inep', e.target.value)}
-                  />
-                </div>
-
+              <div className="form-grid-2" style={{ marginBottom: 16 }}>
                 <div>
                   <label className="label-secao">Rede de Ensino</label>
                   <select
@@ -329,19 +304,10 @@ export default function DashboardVistoria() {
                   </select>
                 </div>
 
-                <div>
-                  <label className="label-secao">Nível de Ensino</label>
-                  <select
-                    value={form.nivelEnsino}
-                    onChange={e => setCampo('nivelEnsino', e.target.value)}
-                  >
-                    <option value="Infantil">Educação Infantil</option>
-                    <option value="Fundamental">Ensino Fundamental</option>
-                    <option value="Médio">Ensino Médio</option>
-                    <option value="Ambos">Ambos (Fundamental e Médio)</option>
-                    <option value="Superior">Superior / Técnico</option>
-                  </select>
-                </div>
+                <SeletorNivelEnsino
+                  valores={form.nivelEnsino}
+                  onChange={novos => setCampo('nivelEnsino', novos)}
+                />
               </div>
 
               <div className="form-grid-3" style={{ marginBottom: 20 }}>
@@ -366,10 +332,10 @@ export default function DashboardVistoria() {
                 </div>
 
                 <div>
-                  <label className="label-secao">Ano de construção / reforma</label>
+                  <label className="label-secao">Ano de construção</label>
                   <input
                     type="text"
-                    placeholder="Ex: 2013 / 2022"
+                    placeholder="Ex: 2006"
                     value={form.anoConstrucao}
                     onChange={e => setCampo('anoConstrucao', e.target.value)}
                   />
@@ -417,12 +383,7 @@ export default function DashboardVistoria() {
                     <div key={i} className={styles.linhaAvaliador}>
                       <input
                         type="text"
-                        placeholder={
-                          i === 0 ? 'Ex: Samuel Sousa Santos' :
-                          i === 1 ? 'Ex: Camilo Erdos Viana da Silva' :
-                          i === 2 ? 'Ex: Danilo Ferreira da Silva' :
-                          `Nome do avaliador ${i + 1}`
-                        }
+                        placeholder={`Nome do avaliador ${i + 1}`}
                         value={avaliador}
                         onChange={e => setAvaliador(i, e.target.value)}
                         style={{ flex: 1 }}
@@ -451,18 +412,18 @@ export default function DashboardVistoria() {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
                 <button
                   type="submit"
                   className={`btn-nav primario ${styles.btnSalvarParametros}`}
                   disabled={!form.nome.trim()}
                 >
-                  <IconDeviceFloppy size={18} /> Salvar Ficha e Parâmetros
+                  <IconDeviceFloppy size={18} /> Salvar Dados Cadastrais
                 </button>
 
                 {salvoFeedback && (
-                  <span style={{ color: 'var(--text-success)', fontSize: '0.88rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                    <IconCheck size={18} /> Ficha atualizada com sucesso!
+                  <span style={{ color: 'var(--text-success)', fontSize: '0.88rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6, paddingLeft: 4 }}>
+                    <IconCheck size={18} /> Dados atualizados com sucesso!
                   </span>
                 )}
               </div>
@@ -487,7 +448,7 @@ export default function DashboardVistoria() {
                   <span className={styles.badgeEmBreve}>Em breve</span>
                 </div>
                 <p className={styles.itemExportacaoDesc}>
-                  Emissão de laudo diagnóstico consolidado em PDF, com fotografias anexadas, índices por setor e justificativas de não conformidade.
+                  Emissão de laudo diagnóstico consolidado em PDF, com fotografias anexadas, resultados por setor e justificativas de não conformidade.
                 </p>
               </div>
 
@@ -513,7 +474,7 @@ export default function DashboardVistoria() {
           {/* Zona de Perigo / Excluir Vistoria */}
           <section className={styles.cardZonaPerigo}>
             <div className={styles.perigoConteudo}>
-              <div>
+              <div className={styles.perigoInfo}>
                 <h4 className={styles.perigoTitulo}>Excluir esta vistoria</h4>
                 <p className={styles.perigoDesc}>
                   Esta ação removerá permanentemente todos os dados da instituição, respostas e fotos deste diagnóstico.
@@ -522,14 +483,24 @@ export default function DashboardVistoria() {
               <button
                 type="button"
                 className={styles.btnExcluirVistoria}
-                onClick={handleExcluirVistoria}
+                onClick={() => setModalExcluirAberto(true)}
+                aria-label="Excluir vistoria"
+                title="Excluir vistoria"
               >
-                <IconTrash size={18} /> Excluir Vistoria
+                <IconTrash size={20} />
+                <span className={styles.btnExcluirTexto}>Excluir Vistoria</span>
               </button>
             </div>
           </section>
         </div>
       </div>
+
+      <ModalExcluirVistoria
+        aberto={modalExcluirAberto}
+        nomeVistoria={vistoria.nome}
+        onConfirmar={handleConfirmarExclusao}
+        onCancelar={() => setModalExcluirAberto(false)}
+      />
     </div>
   );
 }
