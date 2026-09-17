@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { IconAlertTriangle, IconReplace, IconCopy, IconGitMerge, IconX } from '@tabler/icons-react';
 import { useTravaScroll } from '../utilitarios/travaScroll';
+import { useFocusTrap } from '../utilitarios/focusTrap';
 import styles from './ModalConflito.module.css';
 
 /**
@@ -15,8 +16,10 @@ export default function ModalConflito({
   onCancelarLote,
 }) {
   const [aplicarParaTodos, setAplicarParaTodos] = useState(false);
+  const modalRef = useRef(null);
 
   useTravaScroll(aberto);
+  useFocusTrap(aberto, modalRef);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -58,7 +61,7 @@ export default function ModalConflito({
       aria-modal="true"
       aria-labelledby="titulo-modal-conflito"
     >
-      <div className={styles.modal}>
+      <div ref={modalRef} className={styles.modal}>
         <div className={styles.iconeWrap}>
           <IconAlertTriangle size={32} />
         </div>

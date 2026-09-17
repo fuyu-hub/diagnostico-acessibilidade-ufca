@@ -23,7 +23,7 @@ export default function ResumoBloco() {
 
   return (
     <div className="app-shell">
-      <Topbar titulo="Resumo do Bloco" voltar={`/checklist/${id}/itens`} />
+      <Topbar titulo="Resumo do Bloco" voltar={`/vistoria/${id}`} />
 
       <div className="tela-body" style={{ padding: '32px 20px' }}>
         <div className={styles.container}>

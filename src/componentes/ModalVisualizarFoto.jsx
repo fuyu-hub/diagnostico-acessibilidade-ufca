@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { IconX, IconDownload, IconArrowRight, IconNotes } from '@tabler/icons-react';
 import { baixarImagemJpg } from '../utilitarios/imagem';
 import { useTravaScroll } from '../utilitarios/travaScroll';
+import { useFocusTrap } from '../utilitarios/focusTrap';
 import styles from './ModalVisualizarFoto.module.css';
 
 export default function ModalVisualizarFoto({
@@ -21,8 +22,10 @@ export default function ModalVisualizarFoto({
   const displayNumero = numero || (titulo.match(/#(\w+)/) ? titulo.match(/#(\w+)/)[1] : '');
   const displaySubgrupo = subgrupo || (titulo ? titulo.replace(/^Item\s*#\w+\s*—\s*/, '') : '');
   const displayPergunta = pergunta || subtitulo;
+  const modalRef = useRef(null);
 
   useTravaScroll(aberto);
+  useFocusTrap(aberto, modalRef);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -58,7 +61,7 @@ export default function ModalVisualizarFoto({
 
   return (
     <div className={styles.overlay} onClick={onFechar} role="dialog" aria-modal="true">
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div ref={modalRef} className={styles.modal} onClick={(e) => e.stopPropagation()}>
         {/* Cabeçalho */}
         <div className={styles.header}>
           <div className={styles.headerInfo}>

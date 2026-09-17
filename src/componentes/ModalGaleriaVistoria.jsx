@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   IconX, IconPhoto, IconNotes
 } from '@tabler/icons-react';
 import { TODOS_ITENS } from '../dados/checklist';
 import { useTravaScroll } from '../utilitarios/travaScroll';
+import { useFocusTrap } from '../utilitarios/focusTrap';
 import ModalVisualizarFoto from './ModalVisualizarFoto';
 import styles from './ModalGaleriaVistoria.module.css';
 
@@ -16,8 +17,10 @@ export default function ModalGaleriaVistoria({
   const navigate = useNavigate();
   const [filtro, setFiltro] = useState(null); // null | 'fotos' | 'obs' | 'nao-conforme' | 'conforme'
   const [itemSelecionado, setItemSelecionado] = useState(null);
+  const modalRef = useRef(null);
 
   useTravaScroll(aberto);
+  useFocusTrap(aberto && !itemSelecionado, modalRef);
 
   function alternarFiltro(tipo) {
     setFiltro((prev) => (prev === tipo ? null : tipo));
@@ -100,7 +103,7 @@ export default function ModalGaleriaVistoria({
   return (
     <>
       <div className={styles.overlay} onClick={onFechar} role="dialog" aria-modal="true">
-        <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <div ref={modalRef} className={styles.modal} onClick={(e) => e.stopPropagation()}>
           {/* Cabeçalho */}
           <div className={styles.header}>
             <div className={styles.headerInfo}>
@@ -192,8 +195,17 @@ export default function ModalGaleriaVistoria({
                     return (
                       <div
                         key={entry.item.id}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Ver registro do item #${entry.item.id}, ${entry.resposta || 'sem resposta'}`}
                         className={`${styles.card} ${styles.cardFoto}`}
                         onClick={() => setItemSelecionado(entry)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setItemSelecionado(entry);
+                          }
+                        }}
                         title="Toque para expandir"
                       >
                         {/* Imagem */}
@@ -227,8 +239,17 @@ export default function ModalGaleriaVistoria({
                   return (
                     <div
                       key={entry.item.id}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Ver observação do item #${entry.item.id}`}
                       className={`${styles.card} ${styles.cardObservacao}`}
                       onClick={() => setItemSelecionado(entry)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setItemSelecionado(entry);
+                        }
+                      }}
                       title="Toque para expandir observação"
                     >
                       {/* Topo do card com número e sigla */}

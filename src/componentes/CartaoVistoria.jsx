@@ -51,31 +51,56 @@ export default function CartaoVistoria({ vistoria }) {
   }
 
   return (
-    <div className={`cartao ${ativa ? 'destaque' : ''} ${styles.card}`}>
+    <article
+      className={`cartao ${ativa ? 'destaque' : ''} ${styles.card}`}
+      aria-label={`Vistoria de ${vistoria.nome}`}
+    >
       <div className={styles.cabecalho}>
-        <div className={styles.info} onClick={handleAbrirDashboard} style={{ cursor: 'pointer' }}>
+        <div
+          className={styles.info}
+          onClick={handleAbrirDashboard}
+          role="button"
+          tabIndex={0}
+          aria-label={`Acessar painel de vistoria de ${vistoria.nome}`}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleAbrirDashboard();
+            }
+          }}
+          style={{ cursor: 'pointer' }}
+        >
           <h3 className={styles.nome}>{vistoria.nome}</h3>
           <p className={styles.detalhe}>
             <IconMapPin size={14} /> {vistoria.cidade} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : ''}
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span className={`tag ${ativa ? 'ativa' : 'salva'}`}>
+          <span className={`tag ${ativa ? (temPendente ? 'ativa' : 'salva') : 'salva'}`}>
             {ativa ? (temPendente ? 'Em andamento' : 'Concluída') : 'Nova'}
           </span>
           <button
             type="button"
             className={styles.btnExcluir}
             onClick={handleExcluir}
-            aria-label="Excluir vistoria"
+            aria-label={`Excluir vistoria de ${vistoria.nome}`}
             title="Excluir vistoria"
           >
-            <IconTrash size={16} />
+            <IconTrash size={18} />
           </button>
         </div>
       </div>
 
-      <div className={styles.progresso} onClick={handleAbrirDashboard} style={{ cursor: 'pointer' }}>
+      <div
+        className={styles.progresso}
+        onClick={handleAbrirDashboard}
+        role="progressbar"
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={`Progresso da vistoria: ${pct}%, ${respondidos} de ${total} itens respondidos`}
+        style={{ cursor: 'pointer' }}
+      >
         <div className="progresso-track" style={{ flex: 1 }}>
           <div className="progresso-fill" style={{ width: `${pct}%` }} />
         </div>
@@ -87,7 +112,7 @@ export default function CartaoVistoria({ vistoria }) {
           type="button"
           className={styles.btnSecoes}
           onClick={handleVerSecoes}
-          aria-label="Ver seções"
+          aria-label={`Ver seções da vistoria de ${vistoria.nome}`}
         >
           <IconListCheck size={16} /> Seções
         </button>
@@ -96,6 +121,7 @@ export default function CartaoVistoria({ vistoria }) {
           type="button"
           className={`btn-nav ${ativa ? 'primario' : ''} ${styles.btnContinuar}`}
           onClick={handleContinuar}
+          aria-label={`${!ativa ? 'Iniciar vistoria' : temPendente ? 'Continuar vistoria' : 'Ver resultado'} de ${vistoria.nome}`}
         >
           {!ativa
             ? 'Iniciar'
@@ -113,6 +139,6 @@ export default function CartaoVistoria({ vistoria }) {
         onConfirmar={handleConfirmarExclusao}
         onCancelar={() => setModalAberto(false)}
       />
-    </div>
+    </article>
   );
 }

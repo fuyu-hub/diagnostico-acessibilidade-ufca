@@ -12,6 +12,7 @@ import Topbar from '../componentes/Topbar';
 import BarraProgresso from '../componentes/BarraProgresso';
 import { tocarSomResposta } from '../utilitarios/som';
 import { comprimirImagem } from '../utilitarios/imagem.js';
+import { vibrarResposta, vibrarSuave } from '../utilitarios/haptico';
 import ModalVisualizarFoto from '../componentes/ModalVisualizarFoto';
 import styles from './ItemChecklist.module.css';
 
@@ -45,6 +46,12 @@ export default function ItemChecklist() {
   const [obs, setObs]   = useState(respostaAtual?.obs  || '');
   const [foto, setFoto] = useState(respostaAtual?.foto || null);
   const [modalFotoAberto, setModalFotoAberto] = useState(false);
+  const [mensagemAria, setMensagemAria] = useState('');
+
+  const valorAtual = respostaAtual?.valor;
+  const ehTriagem  = item?.tipo === 'triagem';
+  const opcoes     = ehTriagem ? OPCOES_TRIAGEM : OPCOES_TECNICO;
+  const temAnterior = itemIdx > 0;
 
   useEffect(() => {
     const rawObs = respostaAtual?.obs || '';
@@ -55,6 +62,117 @@ export default function ItemChecklist() {
     setComoAberto(false);
     window.scrollTo(0, 0);
   }, [item?.id]);
+
+  function aplicarDependencias(valor) {
+    if (!item?.dependentes?.length) return null;
+    if (valor === 'nao' || valor === 'nao-aplica') {
+      item.dependentes.forEach(depId => {
+        responderItem(id, depId, {
+          valor: 'nao-aplica',
+          obs: '', // Não coloca mais observação nos itens
+          foto: null,
+          automatico: true,
+          origemTriagem: item.id,
+        });
+      });
+      if (valor === 'nao' && item.acaoSeNao === 'gatilho_nc_dependentes_na') {
+        return { valor: 'nao-conforme', obs, foto };
+      }
+    } else {
+      item.dependentes.forEach(depId => {
+        const respDep = vistoria?.respostas?.[depId];
+        if (respDep?.automatico) responderItem(id, depId, null);
+      });
+    }
+    return null;
+  }
+
+  function selecionar(valor) {
+    if (!item) return;
+    tocarSomResposta(valor);
+    vibrarResposta(valor);
+    const opcao = opcoes.find(o => o.valor === valor);
+    const labelTexto = opcao ? opcao.label : valor;
+    setMensagemAria(`Item #${item.id} avaliado como ${labelTexto}.`);
+    const override = aplicarDependencias(valor);
+    responderItem(id, item.id, override || { valor, obs, foto });
+  }
+
+  function salvarObs(val) {
+    setObs(val);
+    if (valorAtual && item) responderItem(id, item.id, { valor: valorAtual, obs: val, foto });
+  }
+
+  async function handleFoto(e) {
+    const arquivo = e.target.files?.[0];
+    if (!arquivo || !item) return;
+
+    try {
+      const res = await comprimirImagem(arquivo, { qualidade: 0.75 });
+      setFoto(res.dataUrl);
+      vibrarSuave();
+      if (valorAtual) {
+        responderItem(id, item.id, { valor: valorAtual, obs, foto: res.dataUrl });
+      }
+    } catch (err) {
+      console.warn('Falha na compressão, salvando referência:', err);
+      setFoto(arquivo.name);
+      if (valorAtual) responderItem(id, item.id, { valor: valorAtual, obs, foto: arquivo.name });
+    } finally {
+      e.target.value = '';
+    }
+  }
+
+  function proximoItem() {
+    vibrarSuave();
+    const proximo = itemIdx + 2;
+    if (proximo <= TODOS_ITENS.length) navigate(`/checklist/${id}/item/${proximo}`);
+    else navigate(`/checklist/${id}/resultado`);
+  }
+
+  function itemAnterior() {
+    if (itemIdx > 0) {
+      vibrarSuave();
+      navigate(`/checklist/${id}/item/${itemIdx}`);
+    }
+  }
+
+  // Atalhos de teclado para auditores de campo (WCAG 2.1.1):
+  // 1 ou C: Conforme / Sim
+  // 2 ou N: Não conforme / Não
+  // 3 ou A: Não se aplica
+  // Seta Direita: Próximo item
+  // Seta Esquerda: Item anterior
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (!vistoria || !item || modalFotoAberto) return;
+      const tag = e.target.tagName?.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) return;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+
+      if (e.key === '1' || e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        selecionar(opcoes[0].valor);
+      } else if (e.key === '2' || e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        selecionar(opcoes[1].valor);
+      } else if (e.key === '3' || e.key === 'a' || e.key === 'A') {
+        e.preventDefault();
+        selecionar(opcoes[2].valor);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        proximoItem();
+      } else if (e.key === 'ArrowLeft') {
+        if (temAnterior) {
+          e.preventDefault();
+          itemAnterior();
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [vistoria, item, modalFotoAberto, opcoes, valorAtual, obs, foto, itemIdx, temAnterior]);
 
   if (!vistoria || !item) {
     if (carregando) {
@@ -75,10 +193,6 @@ export default function ItemChecklist() {
     ? Math.round((respondidos / ITENS_CONTAVEIS.length) * 100)
     : 0;
 
-  const valorAtual = respostaAtual?.valor;
-  const ehTriagem  = item.tipo === 'triagem';
-  const opcoes     = ehTriagem ? OPCOES_TRIAGEM : OPCOES_TECNICO;
-
   // Identifica se este item foi marcado como N/A por uma pergunta de triagem
   const triagemPai = TODOS_ITENS.find(it => it.dependentes && it.dependentes.includes(item.id));
   const foiMarcadoPorTriagem = respostaAtual?.automatico || (
@@ -96,72 +210,7 @@ export default function ItemChecklist() {
     return 'btn-resposta';
   }
 
-  function aplicarDependencias(valor) {
-    if (!item.dependentes?.length) return null;
-    if (valor === 'nao' || valor === 'nao-aplica') {
-      item.dependentes.forEach(depId => {
-        responderItem(id, depId, {
-          valor: 'nao-aplica',
-          obs: '', // Não coloca mais observação nos itens
-          foto: null,
-          automatico: true,
-          origemTriagem: item.id,
-        });
-      });
-      if (valor === 'nao' && item.acaoSeNao === 'gatilho_nc_dependentes_na') {
-        return { valor: 'nao-conforme', obs, foto };
-      }
-    } else {
-      item.dependentes.forEach(depId => {
-        const respDep = vistoria.respostas?.[depId];
-        if (respDep?.automatico) responderItem(id, depId, null);
-      });
-    }
-    return null;
-  }
-
-  function selecionar(valor) {
-    tocarSomResposta(valor);
-    const override = aplicarDependencias(valor);
-    responderItem(id, item.id, override || { valor, obs, foto });
-  }
-
-  function salvarObs(val) {
-    setObs(val);
-    if (valorAtual) responderItem(id, item.id, { valor: valorAtual, obs: val, foto });
-  }
-
-  async function handleFoto(e) {
-    const arquivo = e.target.files?.[0];
-    if (!arquivo) return;
-
-    try {
-      const res = await comprimirImagem(arquivo, { qualidade: 0.75 });
-      setFoto(res.dataUrl);
-      if (valorAtual) {
-        responderItem(id, item.id, { valor: valorAtual, obs, foto: res.dataUrl });
-      }
-    } catch (err) {
-      console.warn('Falha na compressão, salvando referência:', err);
-      setFoto(arquivo.name);
-      if (valorAtual) responderItem(id, item.id, { valor: valorAtual, obs, foto: arquivo.name });
-    } finally {
-      e.target.value = '';
-    }
-  }
-
-  function proximoItem() {
-    const proximo = itemIdx + 2;
-    if (proximo <= TODOS_ITENS.length) navigate(`/checklist/${id}/item/${proximo}`);
-    else navigate(`/checklist/${id}/resultado`);
-  }
-
-  function itemAnterior() {
-    if (itemIdx > 0) navigate(`/checklist/${id}/item/${itemIdx}`);
-  }
-
   const imagemSrc = item.imagem ? `/imagens/${item.imagem}` : null;
-  const temAnterior = itemIdx > 0;
   const respondido  = !!valorAtual;
 
   return (
@@ -187,7 +236,7 @@ export default function ItemChecklist() {
               </span>
             )}
 
-            <p className={styles.pergunta}>{item.pergunta}</p>
+            <p className={styles.pergunta} id="rotulo-pergunta-item">{item.pergunta}</p>
 
             {foiMarcadoPorTriagem && (
               <div className={styles.cardInfoTriagem}>
@@ -221,22 +270,38 @@ export default function ItemChecklist() {
 
             {item.dica && (
               <>
-                <div className={styles.accordionRow} onClick={() => setDicaAberta(v => !v)}>
-                  <span><IconBulb size={18} /> Dica</span>
+                <button
+                  type="button"
+                  className={styles.accordionRow}
+                  onClick={() => setDicaAberta(v => !v)}
+                  aria-expanded={dicaAberta}
+                  aria-controls="conteudo-dica-tecnica"
+                >
+                  <span><IconBulb size={18} /> Dica técnica</span>
                   {dicaAberta ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
-                </div>
-                {dicaAberta && <p className={styles.accordionBody}>{item.dica}</p>}
+                </button>
+                {dicaAberta && (
+                  <p id="conteudo-dica-tecnica" className={styles.accordionBody}>
+                    {item.dica}
+                  </p>
+                )}
               </>
             )}
 
             {item.comoAveriguar && (
               <>
-                <div className={styles.accordionRow} onClick={() => setComoAberto(v => !v)}>
+                <button
+                  type="button"
+                  className={styles.accordionRow}
+                  onClick={() => setComoAberto(v => !v)}
+                  aria-expanded={comoAberto}
+                  aria-controls="conteudo-como-averiguar"
+                >
                   <span><IconRuler2 size={18} /> Como averiguar</span>
                   {comoAberto ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
-                </div>
+                </button>
                 {comoAberto && (
-                  <div className={styles.accordionBody}>
+                  <div id="conteudo-como-averiguar" className={styles.accordionBody}>
                     <p>{item.comoAveriguar}</p>
                     {item.referencia && (
                       <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: 8 }}>
@@ -250,30 +315,42 @@ export default function ItemChecklist() {
           </div>
 
           <div className={styles.colunaAcao}>
-            {/* Botões de resposta */}
-            <div style={{ paddingTop: 4 }}>
-              {opcoes.map(({ valor, label, icone }) => (
-                <button
-                  key={valor}
-                  type="button"
-                  className={classeResposta(valor)}
-                  onClick={() => selecionar(valor)}
-                >
-                  <span className="icone">{icone}</span>
-                  {label}
-                </button>
-              ))}
-            </div>
+            {/* Botões de resposta em Fieldset semântico e Radiogroup (WCAG 1.3.1 e 4.1.2) */}
+            <fieldset
+              className={styles.grupoRespostas}
+              role="radiogroup"
+              aria-labelledby="rotulo-pergunta-item"
+            >
+              <legend className="sr-only">Opções de avaliação para o item #{item.id}</legend>
+              {opcoes.map(({ valor, label, icone }) => {
+                const selecionado = valorAtual === valor;
+                return (
+                  <button
+                    key={valor}
+                    type="button"
+                    role="radio"
+                    aria-checked={selecionado}
+                    aria-label={`${label}${selecionado ? ' (selecionado)' : ''}`}
+                    className={classeResposta(valor)}
+                    onClick={() => selecionar(valor)}
+                  >
+                    <span className="icone">{icone}</span>
+                    {label}
+                  </button>
+                );
+              })}
+            </fieldset>
 
             {/* Observação e foto — aparecem após selecionar */}
             {(!ehTriagem || valorAtual) && (
               <div className={styles.obsWrap}>
-                <p className={styles.obsLabel}>
+                <label htmlFor="obs-item-checklist" className={styles.obsLabel}>
                   {valorAtual === 'nao-conforme' ? 'Observação da não conformidade' :
                    valorAtual === 'nao-aplica'   ? 'Justificativa N/A' :
                    'Observações e fotos'}
-                </p>
+                </label>
                 <textarea
+                  id="obs-item-checklist"
                   rows={3}
                   placeholder="Descreva observações adicionais..."
                   value={obs}
@@ -295,12 +372,21 @@ export default function ItemChecklist() {
                 {foto ? (
                   <div className={styles.fotoAnexada}>
                     <div
+                      role="button"
+                      tabIndex={0}
+                      aria-label="Ampliar foto anexada"
                       style={{ display: 'flex', alignItems: 'center', gap: 12, overflow: 'hidden', cursor: 'pointer' }}
                       onClick={() => setModalFotoAberto(true)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setModalFotoAberto(true);
+                        }
+                      }}
                       title="Toque para ampliar a foto"
                     >
                       {typeof foto === 'string' && foto.startsWith('data:image') ? (
-                        <img src={foto} alt="Evidência fotográfica" className={styles.miniaturaFoto} />
+                        <img src={foto} alt={`Foto comprobatória do item #${item.id}`} className={styles.miniaturaFoto} />
                       ) : (
                         <IconPhoto size={24} color="var(--accent, #3b82f6)" />
                       )}
@@ -317,7 +403,7 @@ export default function ItemChecklist() {
                         setFoto(null);
                         if (valorAtual) responderItem(id, item.id, { valor: valorAtual, obs, foto: null });
                       }}
-                      aria-label="Remover foto"
+                      aria-label="Remover foto anexada do item"
                       title="Remover foto"
                     >
                       <IconTrash size={18} />
@@ -325,7 +411,18 @@ export default function ItemChecklist() {
                   </div>
                 ) : (
                   <div className={styles.grupoBotoesFoto}>
-                    <label className={styles.btnFotoAcao} title="Tirar foto usando a câmera do dispositivo">
+                    <label
+                      className={styles.btnFotoAcao}
+                      tabIndex={0}
+                      role="button"
+                      title="Tirar foto usando a câmera do dispositivo"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          e.currentTarget.querySelector('input')?.click();
+                        }
+                      }}
+                    >
                       <IconCamera size={20} color="var(--accent, #3b82f6)" />
                       <span>Câmera</span>
                       <input
@@ -337,7 +434,18 @@ export default function ItemChecklist() {
                       />
                     </label>
 
-                    <label className={styles.btnFotoAcao} title="Escolher imagem da galeria ou arquivos">
+                    <label
+                      className={styles.btnFotoAcao}
+                      tabIndex={0}
+                      role="button"
+                      title="Escolher imagem da galeria ou arquivos"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          e.currentTarget.querySelector('input')?.click();
+                        }
+                      }}
+                    >
                       <IconPhoto size={20} color="var(--accent, #3b82f6)" />
                       <span>Galeria</span>
                       <input
@@ -355,6 +463,11 @@ export default function ItemChecklist() {
         </div>
       </div>
 
+      {/* Região ao vivo para leitores de tela anunciarem respostas e ações (WCAG 4.1.3) */}
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {mensagemAria}
+      </div>
+
       {/* Barra de navegação fixa no rodapé — permite avançar e voltar livremente */}
       <div className={styles.barraNav}>
         <button
@@ -362,12 +475,13 @@ export default function ItemChecklist() {
           className={styles.btnNav}
           onClick={itemAnterior}
           disabled={!temAnterior}
-          aria-label="Item anterior"
+          aria-label="Ir para o item anterior"
+          title="Item anterior"
         >
           <IconChevronLeft size={22} />
         </button>
 
-        <div className={styles.navInfo}>
+        <div className={styles.navInfo} aria-live="polite" aria-atomic="true">
           <span className={styles.navNumero}>{itemIdx + 1}</span>
           <span className={styles.navTotal}>/ {TODOS_ITENS.length}</span>
         </div>
@@ -376,7 +490,8 @@ export default function ItemChecklist() {
           type="button"
           className={`${styles.btnNav} ${respondido ? styles.btnNavPrimario : ''} ${itemIdx + 1 === TODOS_ITENS.length ? styles.btnResumo : ''}`}
           onClick={proximoItem}
-          aria-label={itemIdx + 1 < TODOS_ITENS.length ? "Próximo item" : "Ver resumo"}
+          aria-label={itemIdx + 1 < TODOS_ITENS.length ? "Ir para o próximo item" : "Concluir e ver resumo do diagnóstico"}
+          title={itemIdx + 1 < TODOS_ITENS.length ? "Próximo item" : "Ver resumo"}
         >
           {itemIdx + 1 < TODOS_ITENS.length ? (
             <IconChevronRight size={22} />

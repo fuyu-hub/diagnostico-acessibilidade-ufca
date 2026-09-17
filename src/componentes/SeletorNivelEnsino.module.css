@@ -130,9 +130,11 @@
   cursor: pointer;
   user-select: none;
   transition: background 0.12s ease;
+  outline: none;
 }
 
-.itemOpcao:hover {
+.itemOpcao:hover,
+.itemOpcao:focus-visible {
   background: var(--surface-2);
 }
 
@@ -140,7 +142,8 @@
   background: rgba(59, 130, 246, 0.08);
 }
 
-.itemSelecionado:hover {
+.itemSelecionado:hover,
+.itemSelecionado:focus-visible {
   background: rgba(59, 130, 246, 0.14);
 }
 

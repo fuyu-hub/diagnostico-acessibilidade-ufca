@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { IconTrash, IconDownload } from '@tabler/icons-react';
 import { useTravaScroll } from '../utilitarios/travaScroll';
+import { useFocusTrap } from '../utilitarios/focusTrap';
 import styles from './ModalExcluirVistoria.module.css';
 
 export default function ModalExcluirVistoria({
@@ -13,8 +14,10 @@ export default function ModalExcluirVistoria({
   const [textoDigitado, setTextoDigitado] = useState('');
   const [exportadoComSucesso, setExportadoComSucesso] = useState(false);
   const inputRef = useRef(null);
+  const modalRef = useRef(null);
 
   useTravaScroll(aberto);
+  useFocusTrap(aberto, modalRef);
 
   const nomeEsperado = (nomeVistoria || '').trim();
   const condicaoAtendida = nomeEsperado
@@ -66,7 +69,7 @@ export default function ModalExcluirVistoria({
       aria-modal="true"
       aria-labelledby="titulo-modal-exclusao"
     >
-      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+      <div ref={modalRef} className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.iconeWrap}>
           <IconTrash size={32} />
         </div>

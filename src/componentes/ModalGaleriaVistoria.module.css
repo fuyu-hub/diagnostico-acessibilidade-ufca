@@ -80,9 +80,9 @@
   background: var(--surface-2, #334155);
   border: 1px solid var(--border, #475569);
   color: var(--text-secondary, #94a3b8);
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,12 +115,16 @@
   border: 1px solid var(--border, #334155);
   color: var(--text-secondary, #94a3b8);
   font-family: inherit;
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: 5px 11px;
-  border-radius: 8px;
+  padding: 8px 14px;
+  min-height: 38px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btnFiltro:hover {
@@ -169,11 +173,18 @@
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   user-select: none;
+  outline: none;
 }
 
 .card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.card:focus-visible {
+  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.35) !important;
 }
 
 /* Card de Foto */

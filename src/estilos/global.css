@@ -103,6 +103,19 @@ textarea {
   box-sizing: border-box;
   color-scheme: dark;
   resize: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="text"]:focus-visible,
+input[type="date"]:focus-visible,
+input[type="time"]:focus-visible,
+input[type="number"]:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline-offset: 1px !important;
+  border-color: var(--accent, #3b82f6) !important;
+  box-shadow: 0 0 0 3.5px rgba(59, 130, 246, 0.3) !important;
 }
 
 /* Grades responsivas para formulários (Mobile-first) */
@@ -344,3 +357,106 @@ input::placeholder, textarea::placeholder {
   border-bottom: 1px solid var(--border);
   cursor: pointer;
 }
+
+/* ==========================================================================
+   ACESSABILIDADE (ESCOPO 3 — WCAG 2.2 AA/AAA)
+   ========================================================================== */
+
+/* 1. Anel de foco visível universal para navegação por teclado (WCAG 2.4.7 e 2.4.11) */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline-offset: 3px !important;
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+.btn-nav:focus-visible,
+.btn-resposta:focus-visible,
+.chip:focus-visible {
+  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.35) !important;
+}
+
+/* 2. Alvos mínimos de toque recomendados para motricidade reduzida e campo (WCAG 2.5.8 — 44x44px) */
+button,
+a,
+input[type="button"],
+input[type="submit"],
+.btn-nav,
+.btn-resposta,
+[role="button"] {
+  min-height: 44px;
+}
+
+/* 3. Suporte a preferência de movimento reduzido (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 4. Suporte a preferência de alto contraste do SO (WCAG 1.4.3 e 1.4.6) */
+@media (prefers-contrast: more) {
+  :root {
+    --border: rgba(255, 255, 255, 0.65) !important;
+    --border-strong: #ffffff !important;
+    --border-stronger: #ffffff !important;
+    --text-secondary: #f1f5f9 !important;
+    --text-muted: #cbd5e1 !important;
+    --bg-success: rgba(77, 217, 138, 0.35) !important;
+    --border-success: #4ade80 !important;
+    --text-success: #86efac !important;
+    --bg-danger: rgba(240, 110, 110, 0.35) !important;
+    --border-danger: #f87171 !important;
+    --text-danger: #fca5a5 !important;
+    --bg-warning: rgba(234, 179, 8, 0.35) !important;
+    --border-warning: #facc15 !important;
+    --text-warning: #fef08a !important;
+  }
+
+  button, a, input, select, textarea, .cartao, .btn-resposta, .btn-nav {
+    border-width: 2px !important;
+  }
+
+  :focus-visible {
+    outline: 3px solid #ffffff !important;
+    outline-offset: 3px !important;
+  }
+}
+
+/* 5. Classe para ativação manual de alto contraste */
+html.alto-contraste,
+body.alto-contraste {
+  --border: rgba(255, 255, 255, 0.65) !important;
+  --border-strong: #ffffff !important;
+  --border-stronger: #ffffff !important;
+  --text-secondary: #f1f5f9 !important;
+  --text-muted: #cbd5e1 !important;
+  --bg-success: rgba(77, 217, 138, 0.35) !important;
+  --border-success: #4ade80 !important;
+  --text-success: #86efac !important;
+  --bg-danger: rgba(240, 110, 110, 0.35) !important;
+  --border-danger: #f87171 !important;
+  --text-danger: #fca5a5 !important;
+  --bg-warning: rgba(234, 179, 8, 0.35) !important;
+  --border-warning: #facc15 !important;
+  --text-warning: #fef08a !important;
+}
+

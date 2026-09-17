@@ -12,6 +12,14 @@ import styles from './ListaItens.module.css';
 
 const FILTROS = ['Todos', 'Pendentes', 'Não conforme'];
 
+function obterTextoResposta(valor, automatico) {
+  if (automatico) return 'Não se aplica por triagem';
+  if (valor === 'conforme' || valor === 'sim') return 'Conforme';
+  if (valor === 'nao-conforme' || valor === 'nao') return 'Não conforme';
+  if (valor === 'nao-aplica') return 'Não se aplica';
+  return 'Pendente';
+}
+
 function iconeResposta(valor) {
   if (valor === 'conforme' || valor === 'sim')     return <IconCheck size={22} color="var(--text-success)" />;
   if (valor === 'nao-conforme' || valor === 'nao') return <IconX size={22} color="var(--text-danger)" />;
@@ -129,7 +137,7 @@ export default function ListaItens() {
   if (!secaoAberta) {
     return (
       <div className="app-shell">
-        <Topbar titulo={`Seções — ${vistoria.nome}`} voltar="/" />
+        <Topbar titulo={`Seções — ${vistoria.nome}`} voltar={`/vistoria/${id}`} />
 
         <div className="tela-body" style={{ padding: '0 0 32px' }}>
           <div style={{ padding: '20px 20px 0' }}>
@@ -151,6 +159,15 @@ export default function ListaItens() {
                     key={s.id}
                     className={styles.cardSecao}
                     onClick={() => abrirSecao(s.id)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Seção ${s.id}: ${s.nome}. ${respondidosSecao} de ${itensSecao.length} respondidos (${pctSecao}%). ${pendenteSecao ? 'Possui pendências' : 'Concluída'}. Toque para abrir subgrupos.`}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        abrirSecao(s.id);
+                      }
+                    }}
                   >
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div className={styles.cardSecaoTopo}>
@@ -315,7 +332,14 @@ export default function ListaItens() {
             return (
               <div key={subgrupo} style={{ marginBottom: 14 }}>
                 {subgrupo && (
-                  <div className={styles.subgrupoHeader} onClick={() => toggleSubgrupo(subgrupo)}>
+                  <button
+                    type="button"
+                    className={styles.subgrupoHeader}
+                    onClick={() => toggleSubgrupo(subgrupo)}
+                    aria-expanded={isExpanded}
+                    aria-controls={`subgrupo-corpo-${encodeURIComponent(subgrupo)}`}
+                    aria-label={`Subgrupo ${subgrupo}, ${itens.length} itens. ${todosRespondidosNoSg ? 'Concluído' : `${itensPendentesNoSg} pendentes`}. ${isExpanded ? 'Toque para recolher' : 'Toque para expandir'}`}
+                  >
                     <div className={styles.subgrupoHeaderEsquerda}>
                       <span className={styles.subgrupoLabel}>{subgrupo}</span>
                       <span className={styles.subgrupoContagem}>({itens.length})</span>
@@ -333,37 +357,50 @@ export default function ListaItens() {
                       )}
                       {isExpanded ? <IconChevronUp size={18} color="var(--text-muted)" /> : <IconChevronDown size={18} color="var(--text-muted)" />}
                     </div>
+                  </button>
+                )}
+                {isExpanded && (
+                  <div id={`subgrupo-corpo-${encodeURIComponent(subgrupo)}`}>
+                    {itens.map(item => {
+                      const resp = respostas[item.id]?.valor;
+                      const idx = idxGlobal(item);
+                      return (
+                        <div
+                          key={item.id}
+                          className={styles.listaLinhaResponsiva}
+                          onClick={() => navigate(`/checklist/${id}/item/${idx + 1}`)}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`Item #${item.id}: ${item.pergunta}. Status: ${obterTextoResposta(resp, respostas[item.id]?.automatico)}`}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              navigate(`/checklist/${id}/item/${idx + 1}`);
+                            }
+                          }}
+                        >
+                          {iconeResposta(resp)}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ fontSize: '0.92rem', fontWeight: 500, lineHeight: 1.4 }}>
+                              {item.pergunta}
+                            </p>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginTop: 4 }}>
+                              <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                                #{item.id} · {item.tipo === 'triagem' ? 'Triagem' : 'Item técnico'}
+                              </span>
+                              {respostas[item.id]?.automatico && (
+                                <span className={styles.badgeTriagemNA}>
+                                  N/A por triagem
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <IconChevronRight size={18} color="var(--text-muted)" />
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
-                {isExpanded && itens.map(item => {
-                  const resp = respostas[item.id]?.valor;
-                  const idx = idxGlobal(item);
-                  return (
-                    <div
-                      key={item.id}
-                      className={styles.listaLinhaResponsiva}
-                      onClick={() => navigate(`/checklist/${id}/item/${idx + 1}`)}
-                    >
-                      {iconeResposta(resp)}
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: '0.92rem', fontWeight: 500, lineHeight: 1.4 }}>
-                          {item.pergunta}
-                        </p>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginTop: 4 }}>
-                          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                            #{item.id} · {item.tipo === 'triagem' ? 'Triagem' : 'Item técnico'}
-                          </span>
-                          {respostas[item.id]?.automatico && (
-                            <span className={styles.badgeTriagemNA}>
-                              N/A por triagem
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <IconChevronRight size={18} color="var(--text-muted)" />
-                    </div>
-                  );
-                })}
               </div>
             );
           })}

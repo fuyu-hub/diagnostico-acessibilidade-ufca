@@ -7,7 +7,17 @@
   margin-bottom: 10px;
 }
 
-.info { flex: 1; min-width: 0; }
+.info {
+  flex: 1;
+  min-width: 0;
+  border-radius: 8px;
+  outline: none;
+}
+
+.info:focus-visible {
+  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline-offset: 3px !important;
+}
 
 .nome {
   font-size: 1.05rem;
@@ -29,6 +39,13 @@
   align-items: center;
   gap: 12px;
   margin: 14px 0 8px;
+  border-radius: 8px;
+  outline: none;
+}
+
+.progresso:focus-visible {
+  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline-offset: 3px !important;
 }
 
 .contagem {
@@ -58,6 +75,10 @@
   font-size: 0.82rem;
   border-radius: 999px;
   margin-top: 0;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .btnSecoes {
@@ -68,11 +89,12 @@
   padding: 8px 14px;
   font-size: 0.8rem;
   font-weight: 500;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
+  min-height: 44px;
 }
 
 .btnSecoes:hover {
@@ -85,9 +107,9 @@
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-muted);
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
