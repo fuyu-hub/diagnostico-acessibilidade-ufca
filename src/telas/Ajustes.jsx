@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   IconVolume, IconVolumeOff, IconCheck, IconX, IconMinus, IconInfoCircle,
   IconShieldCheck, IconDownload, IconUpload
