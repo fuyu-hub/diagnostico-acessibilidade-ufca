@@ -23,7 +23,7 @@ export default function ListaItens() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { getVistoria } = useVistoria();
+  const { getVistoria, carregando } = useVistoria();
   const vistoria = getVistoria(id);
 
   const secaoParam = searchParams.get('secao') ? parseInt(searchParams.get('secao'), 10) : null;
@@ -81,7 +81,19 @@ export default function ListaItens() {
     setExpandidos({});
   }
 
-  if (!vistoria) return null;
+  if (!vistoria) {
+    if (carregando) {
+      return (
+        <div className="app-shell">
+          <Topbar titulo="Carregando..." voltar="/" />
+          <div className="tela-body" style={{ padding: '32px 20px', textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-secondary)' }}>Carregando itens da vistoria...</p>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
 
   function toggleSubgrupo(sg) {
     setExpandidos(prev => ({ ...prev, [sg]: !prev[sg] }));

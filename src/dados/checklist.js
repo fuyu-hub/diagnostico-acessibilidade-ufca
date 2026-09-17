@@ -32,3 +32,40 @@ export function subgruposDaSecao(secaoId) {
 export const ITENS_TECNICOS = TODOS_ITENS.filter(i => i.tipo === 'tecnico');
 
 export const totalItens = TODOS_ITENS.length;
+
+/**
+ * Retorna a lista de critérios técnicos aplicáveis a uma vistoria com base na triagem
+ */
+export function criteriosAplicaveis(triagem = {}, respostas = {}) {
+  return ITENS_TECNICOS.filter(item => {
+    // Regra de aplicabilidade: permite regras condicionais futuras ou ativas de triagem
+    return true;
+  });
+}
+
+/**
+ * Calcula o status canônico da vistoria ('rascunho' | 'em_andamento' | 'concluida')
+ * conforme especificado no Escopo 1 (§2.1 e §7.1)
+ */
+export function calcularStatusVistoria(respostas = {}, triagem = {}) {
+  const aplicaveis = criteriosAplicaveis(triagem, respostas);
+  if (!aplicaveis || aplicaveis.length === 0) return 'rascunho';
+
+  let respondidos = 0;
+  let pendentes = 0;
+
+  for (const item of aplicaveis) {
+    const resp = respostas[item.id] || respostas[String(item.id)];
+    const val = resp ? (typeof resp === 'object' ? (resp.resposta || resp.valor) : resp) : null;
+    if (val !== null && val !== undefined && val !== '') {
+      respondidos++;
+    } else {
+      pendentes++;
+    }
+  }
+
+  if (respondidos === 0) return 'rascunho';
+  if (pendentes === 0) return 'concluida';
+  return 'em_andamento';
+}
+

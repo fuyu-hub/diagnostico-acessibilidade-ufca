@@ -3,20 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { IconCheck, IconUserPlus, IconTrash, IconBuilding, IconClipboardCheck } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import Topbar from '../componentes/Topbar';
-import SeletorNivelEnsino from '../componentes/SeletorNivelEnsino';
+import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/SeletorNivel';
 
 export default function NovaVistoria() {
   const navigate = useNavigate();
   const { criarVistoria } = useVistoria();
 
-  // Valores vazios por padrão para que os placeholders com exemplos da UFCA sejam exibidos como texto cinza
   const [form, setForm] = useState({
     nome: '',
     endereco: '',
     bairro: '',
     cidade: '',
-    rede: 'Municipal',
-    nivelEnsino: ['Fundamental'],
+    rede: '',
+    nivelEnsino: [],
     numAlunos: '',
     numPavimentos: '',
     anoConstrucao: '',
@@ -124,23 +123,20 @@ export default function NovaVistoria() {
               </div>
 
               <div className="form-grid-2" style={{ marginBottom: 16 }}>
-                <div>
-                  <label className="label-secao">Rede de Ensino</label>
-                  <select
-                    value={form.rede}
-                    onChange={e => set('rede', e.target.value)}
-                  >
-                    <option value="Municipal">Municipal</option>
-                    <option value="Estadual">Estadual</option>
-                    <option value="Federal">Federal</option>
-                    <option value="Privada">Privada</option>
-                    <option value="Outra">Outra</option>
-                  </select>
-                </div>
+                <SeletorNivel
+                  label="Rede de Ensino"
+                  valor={form.rede}
+                  onChange={val => set('rede', val)}
+                  opcoes={OPCOES_REDE}
+                  multi={false}
+                />
 
-                <SeletorNivelEnsino
+                <SeletorNivel
+                  label="Nível de Ensino"
                   valores={form.nivelEnsino}
                   onChange={novos => set('nivelEnsino', novos)}
+                  opcoes={OPCOES_NIVEL_ENSINO}
+                  multi={true}
                 />
               </div>
 

@@ -82,6 +82,77 @@
   color: var(--text-primary);
 }
 
+.blocoBackup {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.btnBackupPreventivo {
+  background: var(--surface-2, rgba(255, 255, 255, 0.05));
+  border: 1px dashed var(--border-strong, rgba(255, 255, 255, 0.2));
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnBackupPreventivo:hover {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: #3b82f6;
+  color: #60a5fa;
+}
+
+.blocoConfirmacao {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  margin-top: 6px;
+  background: var(--surface-2, rgba(0, 0, 0, 0.2));
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.labelInput {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.labelInput strong {
+  color: #ef4444;
+  word-break: break-word;
+}
+
+.inputConfirmacao {
+  background: var(--surface-1, #1e293b);
+  border: 1.5px solid var(--border-strong, rgba(255, 255, 255, 0.2));
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.inputConfirmacao:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
 .acoes {
   display: flex;
   flex-direction: column;

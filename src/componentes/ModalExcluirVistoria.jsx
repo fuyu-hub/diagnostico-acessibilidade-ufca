@@ -1,13 +1,31 @@
-import { useEffect } from 'react';
-import { IconTrash } from '@tabler/icons-react';
+import { useState, useEffect, useRef } from 'react';
+import { IconTrash, IconDownload } from '@tabler/icons-react';
 import styles from './ModalExcluirVistoria.module.css';
 
 export default function ModalExcluirVistoria({
   aberto,
-  nomeVistoria,
+  nomeVistoria = '',
   onConfirmar,
   onCancelar,
+  onExportar,
 }) {
+  const [textoDigitado, setTextoDigitado] = useState('');
+  const [exportadoComSucesso, setExportadoComSucesso] = useState(false);
+  const inputRef = useRef(null);
+
+  const nomeEsperado = (nomeVistoria || '').trim();
+  const condicaoAtendida = nomeEsperado
+    ? textoDigitado.trim().toLowerCase() === nomeEsperado.toLowerCase()
+    : textoDigitado.trim().toUpperCase() === 'EXCLUIR';
+
+  useEffect(() => {
+    if (aberto) {
+      setTextoDigitado('');
+      setExportadoComSucesso(false);
+      setTimeout(() => inputRef.current?.focus(), 80);
+    }
+  }, [aberto]);
+
   useEffect(() => {
     function handleKeyDown(e) {
       if (e.key === 'Escape') {
@@ -28,6 +46,17 @@ export default function ModalExcluirVistoria({
 
   if (!aberto) return null;
 
+  async function handleBaixarCopia() {
+    if (onExportar) {
+      try {
+        await onExportar();
+        setExportadoComSucesso(true);
+      } catch (err) {
+        console.error('Erro ao exportar antes de excluir:', err);
+      }
+    }
+  }
+
   return (
     <div
       className={styles.overlay}
@@ -46,11 +75,40 @@ export default function ModalExcluirVistoria({
             Excluir esta vistoria?
           </h3>
           <p className={styles.mensagem}>
-            Deseja realmente excluir a vistoria{' '}
-            {nomeVistoria ? <strong>"{nomeVistoria}"</strong> : ''}?
-            <br />
-            Esta ação é permanente e removerá todas as informações, respostas do checklist e fotos deste diagnóstico.
+            Esta ação é <strong>definitiva e irreversível</strong>. Todo o histórico, respostas e fotos serão apagados permanentemente.
           </p>
+
+          {/* Sugestão de exportação preventiva */}
+          {onExportar && (
+            <div className={styles.blocoBackup}>
+              <button
+                type="button"
+                className={styles.btnBackupPreventivo}
+                onClick={handleBaixarCopia}
+              >
+                <IconDownload size={18} />
+                <span>{exportadoComSucesso ? '✓ Cópia de segurança salva' : 'Baixar cópia de segurança'}</span>
+              </button>
+            </div>
+          )}
+
+          {/* Confirmação explícita com o nome do bloco */}
+          <div className={styles.blocoConfirmacao}>
+            <label className={styles.labelInput}>
+              Para confirmar, digite exatamente <strong>{nomeEsperado || 'EXCLUIR'}</strong> abaixo:
+            </label>
+            <input
+              ref={inputRef}
+              type="text"
+              className={styles.inputConfirmacao}
+              value={textoDigitado}
+              onChange={e => setTextoDigitado(e.target.value)}
+              placeholder={nomeEsperado || 'EXCLUIR'}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck="false"
+            />
+          </div>
         </div>
 
         <div className={styles.acoes}>
@@ -58,8 +116,10 @@ export default function ModalExcluirVistoria({
             type="button"
             className={styles.btnSim}
             onClick={onConfirmar}
+            disabled={!condicaoAtendida}
+            style={{ opacity: condicaoAtendida ? 1 : 0.45, cursor: condicaoAtendida ? 'pointer' : 'not-allowed' }}
           >
-            Sim, tenho certeza
+            Excluir Definitivamente
           </button>
 
           <button
@@ -67,7 +127,7 @@ export default function ModalExcluirVistoria({
             className={styles.btnNao}
             onClick={onCancelar}
           >
-            Não, manter vistoria
+            Cancelar e Manter Vistoria
           </button>
         </div>
       </div>

@@ -9,13 +9,25 @@ import { tocarSomResposta } from '../utilitarios/som';
 export default function Triagem() {
   const { id, itemId } = useParams();
   const navigate = useNavigate();
-  const { getVistoria, responderItem } = useVistoria();
+  const { getVistoria, responderItem, carregando } = useVistoria();
   const vistoria = getVistoria(id);
   const [selecionado, setSelecionado] = useState(
     vistoria?.respostas?.[itemId]?.valor || null
   );
 
-  if (!vistoria) return null;
+  if (!vistoria) {
+    if (carregando) {
+      return (
+        <div className="app-shell">
+          <Topbar eyebrow="Aguarde" titulo="Carregando..." voltar="/" />
+          <div className="tela-body" style={{ padding: '32px 20px', textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-secondary)' }}>Carregando dados da triagem...</p>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
 
   function responder(valor) {
     tocarSomResposta(valor);

@@ -3,21 +3,21 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   IconMapPin, IconCalendar, IconUserPlus, IconTrash,
   IconArrowRight, IconListCheck, IconFileTypePdf, IconTable,
-  IconDeviceFloppy, IconCheck, IconChartBar, IconInfoCircle,
-  IconBuilding, IconClock
+  IconDeviceFloppy, IconCheck, IconChartBar,
+  IconClock, IconDownload
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS } from '../dados/checklist';
 import { calcularIndiceItens } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
-import SeletorNivelEnsino from '../componentes/SeletorNivelEnsino';
+import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/SeletorNivel';
 import ModalExcluirVistoria from '../componentes/ModalExcluirVistoria';
 import styles from './DashboardVistoria.module.css';
 
 export default function DashboardVistoria() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getVistoria, atualizarVistoria, removerVistoria } = useVistoria();
+  const { getVistoria, atualizarVistoria, removerVistoria, exportarVistoria, carregando } = useVistoria();
 
   const vistoria = getVistoria(id);
   const [modalExcluirAberto, setModalExcluirAberto] = useState(false);
@@ -55,6 +55,16 @@ export default function DashboardVistoria() {
   const [salvoFeedback, setSalvoFeedback] = useState(false);
 
   if (!vistoria) {
+    if (carregando) {
+      return (
+        <div className="app-shell">
+          <Topbar titulo="Carregando..." voltar="/" />
+          <div className="tela-body" style={{ padding: '32px 20px', textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-secondary)' }}>Carregando dados da vistoria...</p>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="app-shell">
         <Topbar titulo="Vistoria não encontrada" voltar="/" />
@@ -290,23 +300,20 @@ export default function DashboardVistoria() {
               </div>
 
               <div className="form-grid-2" style={{ marginBottom: 16 }}>
-                <div>
-                  <label className="label-secao">Rede de Ensino</label>
-                  <select
-                    value={form.rede}
-                    onChange={e => setCampo('rede', e.target.value)}
-                  >
-                    <option value="Municipal">Municipal</option>
-                    <option value="Estadual">Estadual</option>
-                    <option value="Federal">Federal</option>
-                    <option value="Privada">Privada</option>
-                    <option value="Outra">Outra</option>
-                  </select>
-                </div>
+                <SeletorNivel
+                  label="Rede de Ensino"
+                  valor={form.rede}
+                  onChange={val => setCampo('rede', val)}
+                  opcoes={OPCOES_REDE}
+                  multi={false}
+                />
 
-                <SeletorNivelEnsino
+                <SeletorNivel
+                  label="Nível de Ensino"
                   valores={form.nivelEnsino}
                   onChange={novos => setCampo('nivelEnsino', novos)}
+                  opcoes={OPCOES_NIVEL_ENSINO}
+                  multi={true}
                 />
               </div>
 
@@ -430,44 +437,71 @@ export default function DashboardVistoria() {
             </form>
           </section>
 
-          {/* Card de Exportação (Desativado / Em breve) */}
+          {/* Card de Exportação / Relatórios / Backup */}
           <section className={styles.cardExportacao}>
             <div>
-              <h3 className={styles.secaoTitulo}>Exportação de Relatórios</h3>
+              <h3 className={styles.secaoTitulo}>Exportar e Relatórios</h3>
               <p className={styles.secaoSubtitulo}>
-                Gere documentos técnicos padronizados para compor laudos e processos de adequação de acessibilidade.
+                Baixe uma cópia de segurança ou visualize os relatórios desta vistoria.
               </p>
             </div>
 
             <div className={styles.gridExportacao}>
-              <div className={styles.itemExportacaoDesativado}>
-                <div className={styles.itemExportacaoHeader}>
-                  <span className={styles.itemExportacaoTitulo}>
-                    <IconFileTypePdf size={22} color="var(--text-muted)" /> Relatório Técnico (PDF)
+              <div
+                style={{
+                  background: 'var(--surface-2)',
+                  border: '1.5px solid var(--border)',
+                  borderRadius: 14,
+                  padding: 16,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+                onClick={async () => {
+                  try {
+                    await exportarVistoria(vistoria.id);
+                  } catch (err) {
+                    console.error('Erro ao exportar:', err);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                title="Clique para baixar o backup desta vistoria"
+              >
+                <div className={styles.itemExportacaoHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span className={styles.itemExportacaoTitulo} style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600 }}>
+                    <IconDownload size={22} color="var(--accent, #3b82f6)" />
+                    <span>Fazer Backup</span>
                   </span>
-                  <span className={styles.badgeEmBreve}>Em breve</span>
+                  <span className="tag ativa" style={{ fontSize: '0.75rem', fontWeight: 600 }}>Baixar</span>
                 </div>
-                <p className={styles.itemExportacaoDesc}>
-                  Emissão de laudo diagnóstico consolidado em PDF, com fotografias anexadas, resultados por setor e justificativas de não conformidade.
+                <p className={styles.itemExportacaoDesc} style={{ margin: '8px 0 0', fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  Baixa um arquivo com todas as respostas e dados preenchidos para não perder nada.
                 </p>
               </div>
 
               <div className={styles.itemExportacaoDesativado}>
                 <div className={styles.itemExportacaoHeader}>
                   <span className={styles.itemExportacaoTitulo}>
-                    <IconTable size={22} color="var(--text-muted)" /> Planilha de Levantamento
+                    <IconFileTypePdf size={22} color="var(--text-muted)" /> Relatório em PDF
                   </span>
                   <span className={styles.badgeEmBreve}>Em breve</span>
                 </div>
                 <p className={styles.itemExportacaoDesc}>
-                  Exportação de dados tabulados em formato compatível com Excel e CSV para pesquisas, análises estatísticas e relatórios da extensão.
+                  Gera o laudo completo formatado para impressão com fotos e justificativas.
                 </p>
               </div>
-            </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
-              <IconInfoCircle size={16} />
-              <span>Os módulos de exportação automática em PDF e planilha estão em fase de homologação técnica.</span>
+              <div className={styles.itemExportacaoDesativado}>
+                <div className={styles.itemExportacaoHeader}>
+                  <span className={styles.itemExportacaoTitulo}>
+                    <IconTable size={22} color="var(--text-muted)" /> Planilha (Excel)
+                  </span>
+                  <span className={styles.badgeEmBreve}>Em breve</span>
+                </div>
+                <p className={styles.itemExportacaoDesc}>
+                  Exporta as notas e respostas em tabela para abrir no computador.
+                </p>
+              </div>
             </div>
           </section>
 
@@ -498,6 +532,7 @@ export default function DashboardVistoria() {
       <ModalExcluirVistoria
         aberto={modalExcluirAberto}
         nomeVistoria={vistoria.nome}
+        onExportar={() => exportarVistoria(vistoria.id)}
         onConfirmar={handleConfirmarExclusao}
         onCancelar={() => setModalExcluirAberto(false)}
       />

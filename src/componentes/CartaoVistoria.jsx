@@ -8,7 +8,7 @@ import styles from './CartaoVistoria.module.css';
 
 export default function CartaoVistoria({ vistoria }) {
   const navigate = useNavigate();
-  const { removerVistoria } = useVistoria();
+  const { removerVistoria, exportarVistoria } = useVistoria();
   const total = TODOS_ITENS.length;
   const respostas = vistoria.respostas || {};
   const respondidos = Object.keys(respostas).length;
@@ -109,6 +109,7 @@ export default function CartaoVistoria({ vistoria }) {
       <ModalExcluirVistoria
         aberto={modalAberto}
         nomeVistoria={vistoria.nome}
+        onExportar={() => exportarVistoria(vistoria.id)}
         onConfirmar={handleConfirmarExclusao}
         onCancelar={() => setModalAberto(false)}
       />

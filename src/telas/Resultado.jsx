@@ -1,5 +1,9 @@
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { IconFileTypePdf, IconRefresh, IconArrowLeft, IconCheck, IconX, IconMinus, IconDashboard } from '@tabler/icons-react';
+import {
+  IconRefresh, IconArrowLeft,
+  IconDashboard, IconAlertTriangle
+} from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS, SECOES, ITENS_POR_SECAO } from '../dados/checklist';
 import { calcularIndiceItens, FAIXAS_INDICE } from '../dados/classificacao';
@@ -9,12 +13,10 @@ import styles from './Resultado.module.css';
 export default function Resultado() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getVistoria } = useVistoria();
+  const { getVistoria, atualizarVistoria, carregando } = useVistoria();
   const vistoria = getVistoria(id);
 
-  if (!vistoria) return null;
-
-  const respostas = vistoria.respostas || {};
+  const respostas = vistoria?.respostas || {};
 
   // Índice Geral consolidado
   const indiceGeral = calcularIndiceItens(TODOS_ITENS, respostas);
@@ -30,6 +32,49 @@ export default function Resultado() {
     };
   });
 
+  const totalContaveis = TODOS_ITENS.filter(i => i.tipo === 'tecnico').length;
+  const respondidosCount = Object.values(respostas).filter(r => r && r.valor).length;
+  const ehParcial = respondidosCount < totalContaveis;
+
+  // Persiste snapshot auditável para defensabilidade metodológica acadêmica (§2.2 e §7.3)
+  useEffect(() => {
+    if (!vistoria) return;
+    const snapCalculado = {
+      calculadoEm: new Date().toISOString(),
+      versaoClassificacao: '1.0',
+      parcial: ehParcial,
+      percentualConformidade: indiceGeral.pct || 0,
+      itensRespondidos: respondidosCount,
+      itensAplicaveis: totalContaveis,
+      nota: indiceGeral.nota,
+      rotulo: classGeral.rotulo,
+    };
+
+    const snapAnterior = vistoria.resultadoSnapshot;
+    if (
+      !snapAnterior ||
+      snapAnterior.parcial !== ehParcial ||
+      snapAnterior.itensRespondidos !== respondidosCount ||
+      snapAnterior.percentualConformidade !== (indiceGeral.pct || 0)
+    ) {
+      atualizarVistoria(id, { resultadoSnapshot: snapCalculado });
+    }
+  }, [id, vistoria, ehParcial, respondidosCount, totalContaveis, indiceGeral.pct, indiceGeral.nota, classGeral.rotulo, atualizarVistoria]);
+
+  if (!vistoria) {
+    if (carregando) {
+      return (
+        <div className="app-shell">
+          <Topbar titulo="Carregando..." voltar="/" />
+          <div className="tela-body" style={{ padding: '32px 20px', textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-secondary)' }}>Calculando resultados...</p>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
+
   return (
     <div className="app-shell">
       <Topbar titulo="Resultado do Diagnóstico" voltar={`/checklist/${id}/itens`} />
@@ -42,6 +87,28 @@ export default function Resultado() {
               {vistoria.bairro ? `${vistoria.bairro}, ` : ''}{vistoria.cidade || 'Local não informado'} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : 'Data não informada'}
             </p>
           </div>
+
+          {ehParcial && (
+            <div
+              style={{
+                background: 'rgba(234, 179, 8, 0.12)',
+                border: '1.5px solid rgba(234, 179, 8, 0.35)',
+                borderRadius: 14,
+                padding: '12px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                color: '#eab308',
+                fontSize: '0.86rem',
+                lineHeight: 1.5,
+              }}
+            >
+              <IconAlertTriangle size={24} style={{ flexShrink: 0 }} />
+              <div>
+                <strong>Resultado Parcial:</strong> Este índice reflete os {respondidosCount} itens respondidos até o momento (de {totalContaveis} exigências técnicas).
+              </div>
+            </div>
+          )}
 
           {/* Card Destaque Nota Geral */}
           <div className={styles.cardNotaGeral}>

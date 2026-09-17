@@ -4,6 +4,7 @@ import {
   IconCheck, IconX, IconMinus, IconBulb, IconRuler2,
   IconChevronDown, IconChevronUp, IconCamera, IconTrash,
   IconListCheck, IconFilter, IconChevronLeft, IconChevronRight,
+  IconPhoto,
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS } from '../dados/checklist';
@@ -29,7 +30,7 @@ const OPCOES_TRIAGEM = [
 export default function ItemChecklist() {
   const { id, n } = useParams();
   const navigate = useNavigate();
-  const { getVistoria, responderItem } = useVistoria();
+  const { getVistoria, responderItem, salvando, carregando } = useVistoria();
 
   const vistoria = getVistoria(id);
   const itemIdx = parseInt(n, 10) - 1;
@@ -50,7 +51,19 @@ export default function ItemChecklist() {
     window.scrollTo(0, 0);
   }, [item?.id]);
 
-  if (!vistoria || !item) return null;
+  if (!vistoria || !item) {
+    if (carregando) {
+      return (
+        <div className="app-shell">
+          <Topbar titulo="Carregando..." voltar="/" />
+          <div className="tela-body" style={{ padding: '32px 20px', textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-secondary)' }}>Carregando dados do checklist...</p>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
 
   const respondidos = Object.keys(vistoria.respostas || {}).length;
   const pct = ITENS_CONTAVEIS.length > 0
@@ -104,10 +117,54 @@ export default function ItemChecklist() {
   }
 
   function handleFoto(e) {
-    const arquivo = e.target.files[0];
-    if (arquivo) {
+    const arquivo = e.target.files?.[0];
+    if (!arquivo) return;
+
+    try {
+      const img = new Image();
+      const reader = new FileReader();
+
+      reader.onload = (ev) => {
+        img.onload = () => {
+          const maxDim = 1280;
+          let w = img.width;
+          let h = img.height;
+
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          let dataUrl = canvas.toDataURL('image/webp', 0.75);
+          if (!dataUrl.startsWith('data:image/webp')) {
+            dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+          }
+
+          setFoto(dataUrl);
+          if (valorAtual) {
+            responderItem(id, item.id, { valor: valorAtual, obs, foto: dataUrl });
+          }
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(arquivo);
+    } catch (err) {
+      console.warn('Falha na compressão, salvando referência:', err);
       setFoto(arquivo.name);
       if (valorAtual) responderItem(id, item.id, { valor: valorAtual, obs, foto: arquivo.name });
+    } finally {
+      e.target.value = '';
     }
   }
 
@@ -136,7 +193,7 @@ export default function ItemChecklist() {
           fn: () => navigate(`/checklist/${id}/itens`),
         }}
       />
-      <BarraProgresso pct={Math.min(pct, 100)} label={`${respondidos} respondidos`} />
+      <BarraProgresso pct={Math.min(pct, 100)} label={`${respondidos} respondidos${salvando ? ' · Salvando...' : ''}`} />
 
       {/* Conteúdo com scroll — padding-bottom reserva espaço para a barra de nav */}
       <div className="tela-body" style={{ padding: '12px 20px 24px', paddingBottom: '84px' }}>
@@ -237,7 +294,16 @@ export default function ItemChecklist() {
 
                 {foto ? (
                   <div className={styles.fotoAnexada}>
-                    <span>{foto}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, overflow: 'hidden' }}>
+                      {typeof foto === 'string' && foto.startsWith('data:image') ? (
+                        <img src={foto} alt="Evidência fotográfica" className={styles.miniaturaFoto} />
+                      ) : (
+                        <IconPhoto size={24} color="var(--accent, #3b82f6)" />
+                      )}
+                      <span className={styles.fotoNome}>
+                        {typeof foto === 'string' && foto.startsWith('data:image') ? 'Foto anexada' : foto}
+                      </span>
+                    </div>
                     <button
                       type="button"
                       onClick={() => {
@@ -245,16 +311,36 @@ export default function ItemChecklist() {
                         if (valorAtual) responderItem(id, item.id, { valor: valorAtual, obs, foto: null });
                       }}
                       aria-label="Remover foto"
+                      title="Remover foto"
                     >
-                      <IconTrash size={16} />
+                      <IconTrash size={18} />
                     </button>
                   </div>
                 ) : (
-                  <label className={styles.btnFotoDestacado}>
-                    <IconCamera size={20} />
-                    <span>Adicionar foto como evidência</span>
-                    <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFoto} />
-                  </label>
+                  <div className={styles.grupoBotoesFoto}>
+                    <label className={styles.btnFotoAcao} title="Tirar foto usando a câmera do dispositivo">
+                      <IconCamera size={20} color="var(--accent, #3b82f6)" />
+                      <span>Câmera</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        style={{ display: 'none' }}
+                        onChange={handleFoto}
+                      />
+                    </label>
+
+                    <label className={styles.btnFotoAcao} title="Escolher imagem da galeria ou arquivos">
+                      <IconPhoto size={20} color="var(--accent, #3b82f6)" />
+                      <span>Galeria</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={handleFoto}
+                      />
+                    </label>
+                  </div>
                 )}
               </div>
             )}
