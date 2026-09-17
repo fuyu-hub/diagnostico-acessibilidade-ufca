@@ -11,6 +11,8 @@ import { TODOS_ITENS } from '../dados/checklist';
 import Topbar from '../componentes/Topbar';
 import BarraProgresso from '../componentes/BarraProgresso';
 import { tocarSomResposta } from '../utilitarios/som';
+import { comprimirImagem } from '../utilitarios/imagem.js';
+import ModalVisualizarFoto from '../componentes/ModalVisualizarFoto';
 import styles from './ItemChecklist.module.css';
 
 const ITENS_CONTAVEIS = TODOS_ITENS.filter(i => i.tipo === 'tecnico');
@@ -42,9 +44,12 @@ export default function ItemChecklist() {
   const respostaAtual = vistoria?.respostas?.[item?.id];
   const [obs, setObs]   = useState(respostaAtual?.obs  || '');
   const [foto, setFoto] = useState(respostaAtual?.foto || null);
+  const [modalFotoAberto, setModalFotoAberto] = useState(false);
 
   useEffect(() => {
-    setObs(respostaAtual?.obs || '');
+    const rawObs = respostaAtual?.obs || '';
+    const ehObsAutomatica = typeof rawObs === 'string' && (rawObs.startsWith('Triagem #') || rawObs.startsWith('Triagem:'));
+    setObs(ehObsAutomatica ? '' : rawObs);
     setFoto(respostaAtual?.foto || null);
     setDicaAberta(false);
     setComoAberto(false);
@@ -74,6 +79,15 @@ export default function ItemChecklist() {
   const ehTriagem  = item.tipo === 'triagem';
   const opcoes     = ehTriagem ? OPCOES_TRIAGEM : OPCOES_TECNICO;
 
+  // Identifica se este item foi marcado como N/A por uma pergunta de triagem
+  const triagemPai = TODOS_ITENS.find(it => it.dependentes && it.dependentes.includes(item.id));
+  const foiMarcadoPorTriagem = respostaAtual?.automatico || (
+    valorAtual === 'nao-aplica' &&
+    triagemPai &&
+    (vistoria.respostas?.[triagemPai.id]?.valor === 'nao' || vistoria.respostas?.[triagemPai.id]?.valor === 'nao-aplica')
+  );
+  const origemTriagemId = respostaAtual?.origemTriagem || triagemPai?.id;
+
   function classeResposta(valor) {
     if (valorAtual !== valor) return 'btn-resposta';
     if (valor === 'conforme' || valor === 'sim') return 'btn-resposta conforme';
@@ -88,9 +102,10 @@ export default function ItemChecklist() {
       item.dependentes.forEach(depId => {
         responderItem(id, depId, {
           valor: 'nao-aplica',
-          obs: `Triagem #${item.id}: resposta ${valor === 'nao-aplica' ? 'Não se aplica' : 'Não'} — aplicado automaticamente.`,
+          obs: '', // Não coloca mais observação nos itens
           foto: null,
           automatico: true,
+          origemTriagem: item.id,
         });
       });
       if (valor === 'nao' && item.acaoSeNao === 'gatilho_nc_dependentes_na') {
@@ -116,49 +131,16 @@ export default function ItemChecklist() {
     if (valorAtual) responderItem(id, item.id, { valor: valorAtual, obs: val, foto });
   }
 
-  function handleFoto(e) {
+  async function handleFoto(e) {
     const arquivo = e.target.files?.[0];
     if (!arquivo) return;
 
     try {
-      const img = new Image();
-      const reader = new FileReader();
-
-      reader.onload = (ev) => {
-        img.onload = () => {
-          const maxDim = 1280;
-          let w = img.width;
-          let h = img.height;
-
-          if (w > maxDim || h > maxDim) {
-            if (w > h) {
-              h = Math.round((h * maxDim) / w);
-              w = maxDim;
-            } else {
-              w = Math.round((w * maxDim) / h);
-              h = maxDim;
-            }
-          }
-
-          const canvas = document.createElement('canvas');
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-
-          let dataUrl = canvas.toDataURL('image/webp', 0.75);
-          if (!dataUrl.startsWith('data:image/webp')) {
-            dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-          }
-
-          setFoto(dataUrl);
-          if (valorAtual) {
-            responderItem(id, item.id, { valor: valorAtual, obs, foto: dataUrl });
-          }
-        };
-        img.src = ev.target.result;
-      };
-      reader.readAsDataURL(arquivo);
+      const res = await comprimirImagem(arquivo, { qualidade: 0.75 });
+      setFoto(res.dataUrl);
+      if (valorAtual) {
+        responderItem(id, item.id, { valor: valorAtual, obs, foto: res.dataUrl });
+      }
     } catch (err) {
       console.warn('Falha na compressão, salvando referência:', err);
       setFoto(arquivo.name);
@@ -206,6 +188,18 @@ export default function ItemChecklist() {
             )}
 
             <p className={styles.pergunta}>{item.pergunta}</p>
+
+            {foiMarcadoPorTriagem && (
+              <div className={styles.cardInfoTriagem}>
+                <div className={styles.cardInfoTriagemHeader}>
+                  <IconFilter size={16} />
+                  <span>Definido pela Pergunta de Triagem {origemTriagemId ? `#${origemTriagemId}` : ''}</span>
+                </div>
+                <p>
+                  Este item foi classificado automaticamente como <strong>Não se Aplica (N/A)</strong> em decorrência da resposta na triagem #{origemTriagemId}.
+                </p>
+              </div>
+            )}
 
             {imagemSrc && (
               <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid var(--border-strong)', marginBottom: 14 }}>
@@ -288,21 +282,34 @@ export default function ItemChecklist() {
 
                 {valorAtual === 'nao-aplica' && (
                   <div className={styles.alertaNA}>
-                    <p>Item desconsiderado do cálculo do índice de conformidade (N/A).</p>
+                    {foiMarcadoPorTriagem ? (
+                      <p>
+                        Item classificado como <strong>Não se Aplica</strong> automaticamente pela triagem #{origemTriagemId} (desconsiderado do cálculo do índice).
+                      </p>
+                    ) : (
+                      <p>Item desconsiderado do cálculo do índice de conformidade (N/A).</p>
+                    )}
                   </div>
                 )}
 
                 {foto ? (
                   <div className={styles.fotoAnexada}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, overflow: 'hidden' }}>
+                    <div
+                      style={{ display: 'flex', alignItems: 'center', gap: 12, overflow: 'hidden', cursor: 'pointer' }}
+                      onClick={() => setModalFotoAberto(true)}
+                      title="Toque para ampliar a foto"
+                    >
                       {typeof foto === 'string' && foto.startsWith('data:image') ? (
                         <img src={foto} alt="Evidência fotográfica" className={styles.miniaturaFoto} />
                       ) : (
                         <IconPhoto size={24} color="var(--accent, #3b82f6)" />
                       )}
-                      <span className={styles.fotoNome}>
-                        {typeof foto === 'string' && foto.startsWith('data:image') ? 'Foto anexada' : foto}
-                      </span>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className={styles.fotoNome}>
+                          {typeof foto === 'string' && foto.startsWith('data:image') ? 'Foto anexada' : foto}
+                        </span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--accent, #3b82f6)' }}>Toque para ampliar</span>
+                      </div>
                     </div>
                     <button
                       type="button"
@@ -378,6 +385,20 @@ export default function ItemChecklist() {
           )}
         </button>
       </div>
+
+      {modalFotoAberto && foto && typeof foto === 'string' && foto.startsWith('data:image') && (
+        <ModalVisualizarFoto
+          aberto={modalFotoAberto}
+          foto={foto}
+          numero={item.id}
+          subgrupo={item.subgrupo || 'Critério NBR'}
+          pergunta={item.pergunta}
+          resultado={valorAtual}
+          observacao={obs}
+          nomeArquivo={`foto_item_${item.id}`}
+          onFechar={() => setModalFotoAberto(false)}
+        />
+      )}
     </div>
   );
 }

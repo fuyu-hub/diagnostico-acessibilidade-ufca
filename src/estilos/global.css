@@ -39,6 +39,19 @@ p, .texto-justificado {
   overflow-x: hidden;
 }
 
+/* Bloqueio universal de rolagem externa quando qualquer modal estiver aberto */
+html.modal-aberto,
+body.modal-aberto {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+body.modal-aberto .app-shell,
+body.modal-aberto .tela-body {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
 /* Área de conteúdo com scroll responsiva */
 .tela-body {
   flex: 1;

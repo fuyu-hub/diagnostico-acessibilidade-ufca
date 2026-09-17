@@ -1,17 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { IconTrash, IconDownload } from '@tabler/icons-react';
+import { useTravaScroll } from '../utilitarios/travaScroll';
 import styles from './ModalExcluirVistoria.module.css';
 
 export default function ModalExcluirVistoria({
   aberto,
   nomeVistoria = '',
+  onExportar,
   onConfirmar,
   onCancelar,
-  onExportar,
 }) {
   const [textoDigitado, setTextoDigitado] = useState('');
   const [exportadoComSucesso, setExportadoComSucesso] = useState(false);
   const inputRef = useRef(null);
+
+  useTravaScroll(aberto);
 
   const nomeEsperado = (nomeVistoria || '').trim();
   const condicaoAtendida = nomeEsperado
@@ -35,12 +38,10 @@ export default function ModalExcluirVistoria({
 
     if (aberto) {
       document.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
     };
   }, [aberto, onCancelar]);
 

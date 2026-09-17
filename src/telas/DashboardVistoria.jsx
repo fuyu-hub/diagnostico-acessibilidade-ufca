@@ -4,7 +4,7 @@ import {
   IconMapPin, IconCalendar, IconUserPlus, IconTrash,
   IconArrowRight, IconListCheck, IconFileTypePdf, IconTable,
   IconDeviceFloppy, IconCheck, IconChartBar,
-  IconClock, IconDownload
+  IconClock, IconDownload, IconPhoto
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS } from '../dados/checklist';
@@ -12,6 +12,7 @@ import { calcularIndiceItens } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
 import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/SeletorNivel';
 import ModalExcluirVistoria from '../componentes/ModalExcluirVistoria';
+import ModalGaleriaVistoria from '../componentes/ModalGaleriaVistoria';
 import styles from './DashboardVistoria.module.css';
 
 export default function DashboardVistoria() {
@@ -21,6 +22,7 @@ export default function DashboardVistoria() {
 
   const vistoria = getVistoria(id);
   const [modalExcluirAberto, setModalExcluirAberto] = useState(false);
+  const [modalGaleriaAberto, setModalGaleriaAberto] = useState(false);
 
   function handleConfirmarExclusao() {
     setModalExcluirAberto(false);
@@ -243,6 +245,18 @@ export default function DashboardVistoria() {
                   Índice
                 </button>
               )}
+
+              {ativa && (
+                <button
+                  type="button"
+                  className={`btn-nav ${styles.btnAcaoSecundario}`}
+                  onClick={() => setModalGaleriaAberto(true)}
+                  title="Abrir galeria de fotos desta vistoria"
+                >
+                  <IconPhoto size={18} />
+                  Galeria
+                </button>
+              )}
             </div>
           </section>
 
@@ -448,14 +462,7 @@ export default function DashboardVistoria() {
 
             <div className={styles.gridExportacao}>
               <div
-                style={{
-                  background: 'var(--surface-2)',
-                  border: '1.5px solid var(--border)',
-                  borderRadius: 14,
-                  padding: 16,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                }}
+                className={styles.itemExportacaoAtivo}
                 onClick={async () => {
                   try {
                     await exportarVistoria(vistoria.id);
@@ -467,14 +474,14 @@ export default function DashboardVistoria() {
                 tabIndex={0}
                 title="Clique para baixar o backup desta vistoria"
               >
-                <div className={styles.itemExportacaoHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className={styles.itemExportacaoTitulo} style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600 }}>
+                <div className={styles.itemExportacaoHeader}>
+                  <span className={styles.itemExportacaoTitulo}>
                     <IconDownload size={22} color="var(--accent, #3b82f6)" />
                     <span>Fazer Backup</span>
                   </span>
                   <span className="tag ativa" style={{ fontSize: '0.75rem', fontWeight: 600 }}>Baixar</span>
                 </div>
-                <p className={styles.itemExportacaoDesc} style={{ margin: '8px 0 0', fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                <p className={styles.itemExportacaoDesc}>
                   Baixa um arquivo com todas as respostas e dados preenchidos para não perder nada.
                 </p>
               </div>
@@ -482,7 +489,8 @@ export default function DashboardVistoria() {
               <div className={styles.itemExportacaoDesativado}>
                 <div className={styles.itemExportacaoHeader}>
                   <span className={styles.itemExportacaoTitulo}>
-                    <IconFileTypePdf size={22} color="var(--text-muted)" /> Relatório em PDF
+                    <IconFileTypePdf size={22} color="var(--text-muted)" />
+                    <span>Relatório em PDF</span>
                   </span>
                   <span className={styles.badgeEmBreve}>Em breve</span>
                 </div>
@@ -494,7 +502,8 @@ export default function DashboardVistoria() {
               <div className={styles.itemExportacaoDesativado}>
                 <div className={styles.itemExportacaoHeader}>
                   <span className={styles.itemExportacaoTitulo}>
-                    <IconTable size={22} color="var(--text-muted)" /> Planilha (Excel)
+                    <IconTable size={22} color="var(--text-muted)" />
+                    <span>Planilha (Excel)</span>
                   </span>
                   <span className={styles.badgeEmBreve}>Em breve</span>
                 </div>
@@ -535,6 +544,12 @@ export default function DashboardVistoria() {
         onExportar={() => exportarVistoria(vistoria.id)}
         onConfirmar={handleConfirmarExclusao}
         onCancelar={() => setModalExcluirAberto(false)}
+      />
+
+      <ModalGaleriaVistoria
+        aberto={modalGaleriaAberto}
+        vistoria={vistoria}
+        onFechar={() => setModalGaleriaAberto(false)}
       />
     </div>
   );

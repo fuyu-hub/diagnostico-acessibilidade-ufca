@@ -1,7 +1,10 @@
 import { IconAlertTriangle, IconDownload, IconX } from '@tabler/icons-react';
+import { useTravaScroll } from '../utilitarios/travaScroll';
 import styles from './ModalConflito.module.css';
 
-export default function ModalErroCota({ aberto, erro, onExportarEmergencia, onFechar }) {
+export default function ModalErroCota({ aberto, erro: _erro, onExportarEmergencia, onFechar }) {
+  useTravaScroll(aberto);
+
   if (!aberto) return null;
 
   return (

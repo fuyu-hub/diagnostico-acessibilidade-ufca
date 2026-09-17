@@ -349,9 +349,16 @@ export default function ListaItens() {
                         <p style={{ fontSize: '0.92rem', fontWeight: 500, lineHeight: 1.4 }}>
                           {item.pergunta}
                         </p>
-                        <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: 4 }}>
-                          #{item.id} · {item.tipo === 'triagem' ? 'Triagem' : 'Item técnico'}
-                        </p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginTop: 4 }}>
+                          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                            #{item.id} · {item.tipo === 'triagem' ? 'Triagem' : 'Item técnico'}
+                          </span>
+                          {respostas[item.id]?.automatico && (
+                            <span className={styles.badgeTriagemNA}>
+                              N/A por triagem
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <IconChevronRight size={18} color="var(--text-muted)" />
                     </div>

@@ -145,7 +145,7 @@ export default function Painel() {
           title="Clique para selecionar ou arraste um arquivo de vistoria (.json) até aqui"
         >
           <IconUpload size={20} />
-          <span>{arrastando ? 'Solte o arquivo para importar' : 'Importar Vistoria (ou arraste o arquivo aqui)'}</span>
+          <span>{arrastando ? 'Solte o arquivo para importar' : 'Importar Vistoria'}</span>
         </button>
 
         {/* Lista */}

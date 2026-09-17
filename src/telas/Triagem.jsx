@@ -39,9 +39,10 @@ export default function Triagem() {
       [8, 9, 10, 11].forEach(dep =>
         responderItem(id, dep, {
           valor: 'nao-aplica',
-          obs: valor === 'nao-aplica' ? 'Triagem: não se aplica no trajeto.' : 'Triagem: sem rebaixamento no trajeto.',
+          obs: '',
           foto: null,
           automatico: true,
+          origemTriagem: parseInt(itemId, 10) || 7,
         })
       );
     } else {

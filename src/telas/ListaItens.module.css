@@ -366,3 +366,14 @@
   background: var(--surface-1);
 }
 
+.badgeTriagemNA {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(234, 179, 8, 0.15);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  letter-spacing: 0.2px;
+}
+

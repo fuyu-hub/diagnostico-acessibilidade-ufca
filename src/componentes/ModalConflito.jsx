@@ -1,5 +1,6 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { IconAlertTriangle, IconReplace, IconCopy, IconGitMerge, IconX } from '@tabler/icons-react';
+import { useTravaScroll } from '../utilitarios/travaScroll';
 import styles from './ModalConflito.module.css';
 
 /**
@@ -15,6 +16,8 @@ export default function ModalConflito({
 }) {
   const [aplicarParaTodos, setAplicarParaTodos] = useState(false);
 
+  useTravaScroll(aberto);
+
   useEffect(() => {
     function handleKeyDown(e) {
       if (e.key === 'Escape' && onCancelarLote) {
@@ -24,12 +27,10 @@ export default function ModalConflito({
 
     if (aberto) {
       document.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
     };
   }, [aberto, onCancelarLote]);
 

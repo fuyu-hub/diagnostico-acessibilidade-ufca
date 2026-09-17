@@ -258,10 +258,30 @@
   gap: 14px;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 680px) {
   .gridExportacao {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
+}
+
+.itemExportacaoAtivo {
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.itemExportacaoAtivo:hover {
+  border-color: var(--accent);
+  background: var(--surface-1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
 .itemExportacaoDesativado {
