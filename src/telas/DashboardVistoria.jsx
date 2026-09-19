@@ -57,10 +57,6 @@ export default function DashboardVistoria() {
 
   const [salvoFeedback, setSalvoFeedback] = useState(false);
 
-  const [avaliadorAtivo, setAvaliadorAtivo] = useState(() => {
-    return localStorage.getItem(`avaliadorAtivo_${id}`) || '';
-  });
-
   useEffect(() => {
     if (vistoria && !vistoria.horarioInicio) {
       const now = new Date();
@@ -69,16 +65,6 @@ export default function DashboardVistoria() {
       setForm(prev => ({ ...prev, horarioInicio: hm }));
     }
   }, [vistoria, id, atualizarVistoria]);
-
-  function handleSelecionarAvaliadorAtivo(av) {
-    if (avaliadorAtivo === av) {
-      setAvaliadorAtivo('');
-      localStorage.removeItem(`avaliadorAtivo_${id}`);
-    } else {
-      setAvaliadorAtivo(av);
-      localStorage.setItem(`avaliadorAtivo_${id}`, av);
-    }
-  }
 
   if (!vistoria) {
     if (carregando) {
@@ -205,25 +191,7 @@ export default function DashboardVistoria() {
             </div>
           </div>
 
-          {/* Seletor rápido de Avaliador Ativo */}
-          {vistoria.avaliadores && vistoria.avaliadores.length > 1 && (
-            <div className={styles.seletorAvaliadorContainer}>
-              <p className={styles.seletorAvaliadorLabel}>Quem está vistoriando agora?</p>
-              <div className={styles.seletorAvaliadorChips}>
-                {vistoria.avaliadores.filter(a => a.trim()).map((av, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    className={`${styles.chipAvaliador} ${avaliadorAtivo === av ? styles.chipAvaliadorAtivo : ''}`}
-                    onClick={() => handleSelecionarAvaliadorAtivo(av)}
-                  >
-                    {avaliadorAtivo === av && <IconCheck size={14} />}
-                    {av}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+
 
           {/* Card de Métricas do Dashboard */}
           <section className={styles.cardDashboard}>

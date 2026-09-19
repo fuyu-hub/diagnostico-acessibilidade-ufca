@@ -242,11 +242,7 @@ export default function Ajustes() {
                 <p className={styles.feedbackSucesso}>{feedbackBackup}</p>
               )}
 
-              {infoArmazenamento && (
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: 4 }}>
-                  Armazenamento do dispositivo: {infoArmazenamento.usadoMB} MB usados de {(infoArmazenamento.cotaMB / 1024).toFixed(1)} GB ({infoArmazenamento.percentualUso}%)
-                </p>
-              )}
+
             </div>
           </section>
 

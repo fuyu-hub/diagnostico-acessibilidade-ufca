@@ -29,6 +29,7 @@ export default function SeletorNivel({
   opcoes,
   multi = false,
   placeholder = 'Selecione uma opção',
+  required = false,
 }) {
   const [aberto, setAberto] = useState(false);
   const containerRef = useRef(null);
@@ -141,6 +142,26 @@ export default function SeletorNivel({
             className={`${styles.iconeSeta} ${aberto ? styles.iconeSetaGiro : ''}`}
           />
         </div>
+
+        {/* Input invisível para acionar a validação HTML5 do navegador */}
+        {required && (
+          <input
+            type="text"
+            required={required}
+            value={temValor ? 'selecionado' : ''}
+            onChange={() => {}}
+            tabIndex={-1}
+            style={{
+              opacity: 0,
+              width: 0,
+              height: 0,
+              position: 'absolute',
+              bottom: 0,
+              left: '50%',
+              pointerEvents: 'none'
+            }}
+          />
+        )}
       </button>
 
       {aberto && (

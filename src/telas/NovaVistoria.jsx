@@ -52,10 +52,11 @@ export default function NovaVistoria() {
 
   function iniciar(e) {
     e.preventDefault();
-    if (!form.nome.trim()) return;
+    const avaliadoresValidos = form.avaliadores.filter(a => a.trim() !== '');
+
     const id = criarVistoria({
       ...form,
-      avaliadores: form.avaliadores.filter(a => a.trim() !== ''),
+      avaliadores: avaliadoresValidos,
     });
     navigate(`/vistoria/${id}`);
   }
@@ -124,19 +125,21 @@ export default function NovaVistoria() {
 
               <div className="form-grid-2" style={{ marginBottom: 16 }}>
                 <SeletorNivel
-                  label="Rede de Ensino"
+                  label="Rede de Ensino *"
                   valor={form.rede}
                   onChange={val => set('rede', val)}
                   opcoes={OPCOES_REDE}
                   multi={false}
+                  required={true}
                 />
 
                 <SeletorNivel
-                  label="Nível de Ensino"
+                  label="Nível de Ensino *"
                   valores={form.nivelEnsino}
                   onChange={novos => set('nivelEnsino', novos)}
                   opcoes={OPCOES_NIVEL_ENSINO}
                   multi={true}
+                  required={true}
                 />
               </div>
 
@@ -210,13 +213,14 @@ export default function NovaVistoria() {
               </div>
 
               <div>
-                <label className="label-secao">Equipe de Avaliadores</label>
+                <label className="label-secao">Equipe de Avaliadores *</label>
                 {form.avaliadores.map((a, i) => (
                   <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10, alignItems: 'center' }}>
                     <input
                       type="text"
                       placeholder={`Nome do avaliador ${i + 1}`}
                       value={a}
+                      required={i === 0}
                       onChange={e => setAvaliador(i, e.target.value)}
                       style={{ flex: 1 }}
                     />
@@ -260,10 +264,10 @@ export default function NovaVistoria() {
               </div>
             </div>
 
+
             <button
               type="submit"
               className="btn-nav primario"
-              disabled={!form.nome.trim()}
               style={{ height: 52 }}
             >
               <IconCheck size={20} /> Salvar Ficha e Acessar Vistoria
