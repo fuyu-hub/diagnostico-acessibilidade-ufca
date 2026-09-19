@@ -5,7 +5,7 @@ import {
   IconChevronDown, IconChevronUp, IconArrowRight
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { TODOS_ITENS, SECOES, ITENS_POR_SECAO } from '../dados/checklist';
+import { TODOS_ITENS, SECOES, ITENS_POR_SECAO, ITENS_TECNICOS } from '../dados/checklist';
 import { calcularIndiceItens } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
 import styles from './ListaItens.module.css';
@@ -42,24 +42,13 @@ export default function ListaItens() {
   const [expandidos, setExpandidos] = useState({});
 
   const respostas = vistoria?.respostas || {};
-  const respondidos = Object.keys(respostas).length;
+  const respondidos = ITENS_TECNICOS.filter(i => respostas[i.id]?.valor).length;
 
-  // Auto-expande subgrupos com pendências ao abrir a seção
+  // Deixa tudo recolhido por padrão (nenhum subgrupo expandido)
   useEffect(() => {
     if (secaoParam) {
       setSecaoAberta(secaoParam);
-      const itens = ITENS_POR_SECAO[secaoParam] || [];
       const exp = {};
-      let temPendente = false;
-      itens.forEach(item => {
-        if (item.subgrupo && !respostas[item.id]?.valor) {
-          exp[item.subgrupo] = true;
-          temPendente = true;
-        }
-      });
-      if (!temPendente && itens.length > 0 && itens[0].subgrupo) {
-        exp[itens[0].subgrupo] = true;
-      }
       if (subgrupoParam) exp[subgrupoParam] = true;
       setExpandidos(exp);
     } else {
@@ -75,14 +64,6 @@ export default function ListaItens() {
   function fecharSecao() {
     setSecaoAberta(null);
     setSearchParams({});
-  }
-
-  function expandirTodos() {
-    const exp = {};
-    itensDaSecao.forEach(item => {
-      if (item.subgrupo) exp[item.subgrupo] = true;
-    });
-    setExpandidos(exp);
   }
 
   function recolherTodos() {
@@ -108,6 +89,14 @@ export default function ListaItens() {
   }
 
   const itensDaSecao = secaoAberta ? (ITENS_POR_SECAO[secaoAberta] || []) : [];
+
+  function expandirTodos() {
+    const exp = {};
+    itensDaSecao.forEach(item => {
+      if (item.subgrupo) exp[item.subgrupo] = true;
+    });
+    setExpandidos(exp);
+  }
 
   const itensFiltrados = itensDaSecao.filter(item => {
     const resp = respostas[item.id]?.valor;
@@ -142,16 +131,17 @@ export default function ListaItens() {
         <div className="tela-body" style={{ padding: '0 0 32px' }}>
           <div style={{ padding: '20px 20px 0' }}>
             <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: 20 }}>
-              {respondidos} de {TODOS_ITENS.length} itens avaliados no total
+              {respondidos} de {ITENS_TECNICOS.length} itens avaliados no total
             </p>
 
             <div className={styles.gridSecoes}>
               {SECOES.map(s => {
                 const itensSecao = ITENS_POR_SECAO[s.id] || [];
-                const respondidosSecao = itensSecao.filter(i => respostas[i.id]?.valor).length;
-                const pctSecao = itensSecao.length > 0 ? Math.round((respondidosSecao / itensSecao.length) * 100) : 0;
-                const pendenteSecao = itensSecao.find(item => !respostas[item.id]?.valor);
-                const indiceSecao = calcularIndiceItens(itensSecao, respostas);
+                const itensSecaoTecnicos = itensSecao.filter(i => i.tipo === 'tecnico');
+                const respondidosSecao = itensSecaoTecnicos.filter(i => respostas[i.id]?.valor).length;
+                const pctSecao = itensSecaoTecnicos.length > 0 ? Math.round((respondidosSecao / itensSecaoTecnicos.length) * 100) : 0;
+                const pendenteSecao = itensSecaoTecnicos.find(item => !respostas[item.id]?.valor);
+                const indiceSecao = calcularIndiceItens(itensSecaoTecnicos, respostas);
                 const { classificacao } = indiceSecao;
 
                 return (
@@ -161,7 +151,7 @@ export default function ListaItens() {
                     onClick={() => abrirSecao(s.id)}
                     role="button"
                     tabIndex={0}
-                    aria-label={`Seção ${s.id}: ${s.nome}. ${respondidosSecao} de ${itensSecao.length} respondidos (${pctSecao}%). ${pendenteSecao ? 'Possui pendências' : 'Concluída'}. Toque para abrir subgrupos.`}
+                    aria-label={`Seção ${s.id}: ${s.nome}. ${respondidosSecao} de ${itensSecaoTecnicos.length} respondidos (${pctSecao}%). ${pendenteSecao ? 'Possui pendências' : 'Concluída'}. Toque para abrir subgrupos.`}
                     onKeyDown={e => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
@@ -183,7 +173,7 @@ export default function ListaItens() {
                       </div>
 
                       <p className={styles.progressoSecaoTxt}>
-                        {respondidosSecao} de {itensSecao.length} respondidos ({pctSecao}%)
+                        {respondidosSecao} de {itensSecaoTecnicos.length} respondidos ({pctSecao}%)
                       </p>
 
                       <div className="progresso-track" style={{ height: 4, marginTop: 10 }}>
@@ -246,7 +236,9 @@ export default function ListaItens() {
                   </span>
                 </div>
                 <p className={styles.proximoPergunta}>
-                  <strong>Item #{primeiroPendenteSecao.id}:</strong> {primeiroPendenteSecao.pergunta}
+                  <strong>
+                    {primeiroPendenteSecao.tipo === 'triagem' ? 'Triagem:' : `Item #${primeiroPendenteSecao.id}:`}
+                  </strong> {primeiroPendenteSecao.pergunta}
                 </p>
               </div>
 
@@ -385,8 +377,8 @@ export default function ListaItens() {
                               {item.pergunta}
                             </p>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginTop: 4 }}>
-                              <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                                #{item.id} · {item.tipo === 'triagem' ? 'Triagem' : 'Item técnico'}
+                              <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: item.tipo === 'triagem' ? 600 : 400 }}>
+                                {item.tipo === 'triagem' ? 'Triagem' : `Item #${item.id}`}
                               </span>
                               {respostas[item.id]?.automatico && (
                                 <span className={styles.badgeTriagemNA}>

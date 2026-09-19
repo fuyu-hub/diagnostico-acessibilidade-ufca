@@ -148,30 +148,58 @@ export default function Painel() {
           <span>{arrastando ? 'Solte o arquivo para importar' : 'Importar Vistoria'}</span>
         </button>
 
-        {/* Lista */}
+        {/* Lista de Vistorias Agrupadas */}
         {carregando ? (
           <div className={styles.vazio} style={{ marginTop: 24 }}>
             <p>Carregando diagnósticos salvos...</p>
           </div>
         ) : (
           <>
-            {vistorias.length > 0 && (
-              <>
-                <p className="label-secao" style={{ marginTop: 8 }}>
-                  Vistorias Registradas ({vistorias.length})
-                </p>
-                <div className={styles.gridVistorias}>
-                  {vistorias.map(v => (
-                    <CartaoVistoria key={v.id || v.vistoriaId} vistoria={v} />
-                  ))}
+            {vistorias.length > 0 ? (
+              <div style={{ marginTop: 32 }}>
+                {vistorias.filter(v => v.status === 'em_andamento').length > 0 && (
+                  <div style={{ marginBottom: 32 }}>
+                    <p className="label-secao">Em Andamento</p>
+                    <div className={styles.gridVistorias}>
+                      {vistorias.filter(v => v.status === 'em_andamento').map(v => (
+                        <CartaoVistoria key={v.id || v.vistoriaId} vistoria={v} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {vistorias.filter(v => v.status === 'concluida').length > 0 && (
+                  <div style={{ marginBottom: 32 }}>
+                    <p className="label-secao">Concluídas</p>
+                    <div className={styles.gridVistorias}>
+                      {vistorias.filter(v => v.status === 'concluida').map(v => (
+                        <CartaoVistoria key={v.id || v.vistoriaId} vistoria={v} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {vistorias.filter(v => v.status === 'rascunho').length > 0 && (
+                  <div style={{ marginBottom: 32 }}>
+                    <p className="label-secao">Novas (Não Iniciadas)</p>
+                    <div className={styles.gridVistorias}>
+                      {vistorias.filter(v => v.status === 'rascunho').map(v => (
+                        <CartaoVistoria key={v.id || v.vistoriaId} vistoria={v} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className={styles.vazio} style={{ marginTop: 40, textAlign: 'center' }}>
+                <div style={{ opacity: 0.2, marginBottom: 16 }}>
+                  <IconListCheck size={64} style={{ margin: '0 auto' }} />
                 </div>
-              </>
-            )}
-
-            {vistorias.length === 0 && (
-              <div className={styles.vazio}>
-                <p>Nenhuma vistoria registrada.</p>
-                <p>Crie uma nova ou importe uma vistoria para começar.</p>
+                <h3 style={{ fontSize: '1.2rem', marginBottom: 8, color: 'var(--text-strong)' }}>Nenhuma vistoria registrada</h3>
+                <p style={{ color: 'var(--text-muted)', marginBottom: 24 }}>Crie uma nova ou importe um arquivo .json para começar o diagnóstico.</p>
+                <button className="btn-nav primario" onClick={() => navigate('/nova')} style={{ margin: '0 auto' }}>
+                  <IconPlus size={18} /> Criar Nova
+                </button>
               </div>
             )}
           </>

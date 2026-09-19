@@ -2,21 +2,23 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconMapPin, IconArrowRight, IconListCheck, IconTrash } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { TODOS_ITENS } from '../dados/checklist';
+import { TODOS_ITENS, ITENS_TECNICOS } from '../dados/checklist';
 import ModalExcluirVistoria from './ModalExcluirVistoria';
 import styles from './CartaoVistoria.module.css';
 
 export default function CartaoVistoria({ vistoria }) {
   const navigate = useNavigate();
   const { removerVistoria, exportarVistoria } = useVistoria();
-  const total = TODOS_ITENS.length;
+  const total = ITENS_TECNICOS.length;
   const respostas = vistoria.respostas || {};
-  const respondidos = Object.keys(respostas).length;
+  const respostasTecnicas = ITENS_TECNICOS.filter(item => respostas[item.id]?.valor);
+  const respondidos = respostasTecnicas.length;
   const pct = total > 0 ? Math.round((respondidos / total) * 100) : 0;
-  const ativa = respondidos > 0;
+  const ativa = Object.keys(respostas).length > 0;
 
   // Encontra o item mais anterior que não foi preenchido
-  const primeiroPendenteIdx = TODOS_ITENS.findIndex(item => !respostas[item.id]?.valor);
+  const primeiroPendente = ITENS_TECNICOS.find(item => !respostas[item.id]?.valor);
+  const primeiroPendenteIdx = primeiroPendente ? TODOS_ITENS.findIndex(i => i.id === primeiroPendente.id) : -1;
   const temPendente = primeiroPendenteIdx !== -1;
 
   function handleAbrirDashboard(e) {

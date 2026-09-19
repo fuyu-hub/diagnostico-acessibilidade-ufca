@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   IconMapPin, IconCalendar, IconUserPlus, IconTrash,
@@ -7,7 +7,7 @@ import {
   IconClock, IconDownload, IconPhoto
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { TODOS_ITENS } from '../dados/checklist';
+import { TODOS_ITENS, ITENS_TECNICOS } from '../dados/checklist';
 import { calcularIndiceItens } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
 import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/SeletorNivel';
@@ -49,12 +49,36 @@ export default function DashboardVistoria() {
     numPavimentos: vistoria?.numPavimentos || '1',
     anoConstrucao: vistoria?.anoConstrucao || '',
     data: vistoria?.data || '',
+    dataTermino: vistoria?.dataTermino || '',
     horarioInicio: vistoria?.horarioInicio || '',
     horarioTermino: vistoria?.horarioTermino || '',
     avaliadores: vistoria?.avaliadores?.length ? vistoria.avaliadores : [''],
   });
 
   const [salvoFeedback, setSalvoFeedback] = useState(false);
+
+  const [avaliadorAtivo, setAvaliadorAtivo] = useState(() => {
+    return localStorage.getItem(`avaliadorAtivo_${id}`) || '';
+  });
+
+  useEffect(() => {
+    if (vistoria && !vistoria.horarioInicio) {
+      const now = new Date();
+      const hm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      atualizarVistoria(id, { horarioInicio: hm });
+      setForm(prev => ({ ...prev, horarioInicio: hm }));
+    }
+  }, [vistoria, id, atualizarVistoria]);
+
+  function handleSelecionarAvaliadorAtivo(av) {
+    if (avaliadorAtivo === av) {
+      setAvaliadorAtivo('');
+      localStorage.removeItem(`avaliadorAtivo_${id}`);
+    } else {
+      setAvaliadorAtivo(av);
+      localStorage.setItem(`avaliadorAtivo_${id}`, av);
+    }
+  }
 
   if (!vistoria) {
     if (carregando) {
@@ -81,17 +105,19 @@ export default function DashboardVistoria() {
   }
 
   // Estatísticas de preenchimento e contagens
-  const total = TODOS_ITENS.length;
+  const total = ITENS_TECNICOS.length;
   const respostas = vistoria.respostas || {};
-  const respondidos = Object.keys(respostas).length;
+  const respostasTecnicas = ITENS_TECNICOS.filter(item => respostas[item.id]?.valor);
+  const respondidos = respostasTecnicas.length;
   const pendentes = Math.max(0, total - respondidos);
   const pct = total > 0 ? Math.round((respondidos / total) * 100) : 0;
 
-  const indice = calcularIndiceItens(TODOS_ITENS, respostas);
+  const indice = calcularIndiceItens(ITENS_TECNICOS, respostas);
 
-  const primeiroPendenteIdx = TODOS_ITENS.findIndex(item => !respostas[item.id]?.valor);
+  const primeiroPendente = ITENS_TECNICOS.find(item => !respostas[item.id]?.valor);
+  const primeiroPendenteIdx = primeiroPendente ? TODOS_ITENS.findIndex(i => i.id === primeiroPendente.id) : -1;
   const temPendente = primeiroPendenteIdx !== -1;
-  const ativa = respondidos > 0;
+  const ativa = Object.keys(respostas).length > 0;
 
   function setCampo(campo, valor) {
     setForm(prev => ({ ...prev, [campo]: valor }));
@@ -178,6 +204,26 @@ export default function DashboardVistoria() {
               </div>
             </div>
           </div>
+
+          {/* Seletor rápido de Avaliador Ativo */}
+          {vistoria.avaliadores && vistoria.avaliadores.length > 1 && (
+            <div className={styles.seletorAvaliadorContainer}>
+              <p className={styles.seletorAvaliadorLabel}>Quem está vistoriando agora?</p>
+              <div className={styles.seletorAvaliadorChips}>
+                {vistoria.avaliadores.filter(a => a.trim()).map((av, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`${styles.chipAvaliador} ${avaliadorAtivo === av ? styles.chipAvaliadorAtivo : ''}`}
+                    onClick={() => handleSelecionarAvaliadorAtivo(av)}
+                  >
+                    {avaliadorAtivo === av && <IconCheck size={14} />}
+                    {av}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Card de Métricas do Dashboard */}
           <section className={styles.cardDashboard}>
@@ -369,32 +415,72 @@ export default function DashboardVistoria() {
                   Horários e Equipe da Vistoria
                 </h4>
 
-                <div className="form-grid-3" style={{ marginBottom: 16 }}>
-                  <div>
-                    <label className="label-secao">Data da vistoria</label>
-                    <input
-                      type="date"
-                      value={form.data}
-                      onChange={e => setCampo('data', e.target.value)}
-                    />
+                <div className={styles.gridHorarios}>
+                  {/* Card: Início */}
+                  <div className={styles.cardHorario}>
+                    <label className={styles.cardHorarioTitulo}>Início da Vistoria</label>
+                    <div className={styles.cardHorarioInputs}>
+                      <div>
+                        <label className="label-secao">Data</label>
+                        <input
+                          type="date"
+                          value={form.data}
+                          onChange={e => setCampo('data', e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label className="label-secao">Horário</label>
+                        <input
+                          type="time"
+                          value={form.horarioInicio}
+                          onChange={e => setCampo('horarioInicio', e.target.value)}
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="label-secao">Horário de início</label>
-                    <input
-                      type="time"
-                      value={form.horarioInicio}
-                      onChange={e => setCampo('horarioInicio', e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="label-secao">Horário de término</label>
-                    <input
-                      type="time"
-                      value={form.horarioTermino}
-                      onChange={e => setCampo('horarioTermino', e.target.value)}
-                    />
+                  {/* Card: Término */}
+                  <div className={styles.cardHorario}>
+                    <label className={styles.cardHorarioTitulo}>Término da Vistoria</label>
+                    <div className={styles.cardHorarioInputs}>
+                      <div>
+                        <label className="label-secao">Data</label>
+                        <input
+                          type="date"
+                          value={form.dataTermino}
+                          onChange={e => setCampo('dataTermino', e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label className="label-secao">Horário</label>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                          <input
+                            type="time"
+                            value={form.horarioTermino}
+                            onChange={e => setCampo('horarioTermino', e.target.value)}
+                            style={{ flex: 1 }}
+                          />
+                          {!temPendente && ativa && !form.horarioTermino && (
+                            <button
+                              type="button"
+                              className="btn-nav secudario"
+                              style={{ padding: '0 12px', height: '44px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+                              onClick={() => {
+                                const now = new Date();
+                                const yyyy = now.getFullYear();
+                                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                                const dd = String(now.getDate()).padStart(2, '0');
+                                const hm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                                setCampo('horarioTermino', hm);
+                                setCampo('dataTermino', `${yyyy}-${mm}-${dd}`);
+                              }}
+                            >
+                              Registrar
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

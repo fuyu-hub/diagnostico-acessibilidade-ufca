@@ -1,3 +1,87 @@
+.seletorAvaliadorContainer {
+  margin-bottom: 24px;
+}
+
+.seletorAvaliadorLabel {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.seletorAvaliadorChips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chipAvaliador {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-1);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chipAvaliador:hover {
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+
+.chipAvaliador.chipAvaliadorAtivo {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--accent, #3b82f6);
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.gridHorarios {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 640px) {
+  .gridHorarios {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.cardHorario {
+  background: var(--surface-1);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.cardHorarioTitulo {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.cardHorarioInputs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 480px) {
+  .cardHorarioInputs {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .container {
   max-width: 900px;
   margin: 0 auto;

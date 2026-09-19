@@ -5,7 +5,7 @@ import {
   IconDashboard, IconAlertTriangle
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { TODOS_ITENS, SECOES, ITENS_POR_SECAO } from '../dados/checklist';
+import { TODOS_ITENS, SECOES, ITENS_POR_SECAO, ITENS_TECNICOS } from '../dados/checklist';
 import { calcularIndiceItens, FAIXAS_INDICE } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
 import styles from './Resultado.module.css';
@@ -19,12 +19,12 @@ export default function Resultado() {
   const respostas = vistoria?.respostas || {};
 
   // Índice Geral consolidado
-  const indiceGeral = calcularIndiceItens(TODOS_ITENS, respostas);
+  const indiceGeral = calcularIndiceItens(ITENS_TECNICOS, respostas);
   const { classificacao: classGeral } = indiceGeral;
 
   // Índices por seção
   const indicesPorSecao = SECOES.map(s => {
-    const itensSecao = ITENS_POR_SECAO[s.id] || [];
+    const itensSecao = (ITENS_POR_SECAO[s.id] || []).filter(i => i.tipo === 'tecnico');
     const ind = calcularIndiceItens(itensSecao, respostas);
     return {
       ...s,
@@ -32,8 +32,8 @@ export default function Resultado() {
     };
   });
 
-  const totalContaveis = TODOS_ITENS.filter(i => i.tipo === 'tecnico').length;
-  const respondidosCount = Object.values(respostas).filter(r => r && r.valor).length;
+  const totalContaveis = ITENS_TECNICOS.length;
+  const respondidosCount = ITENS_TECNICOS.filter(i => respostas[i.id]?.valor).length;
   const ehParcial = respondidosCount < totalContaveis;
 
   // Persiste snapshot auditável para defensabilidade metodológica acadêmica (§2.2 e §7.3)

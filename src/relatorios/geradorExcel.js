@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs';
-import { TODOS_ITENS, SECOES } from '../dados/checklist.js';
+import { TODOS_ITENS, ITENS_TECNICOS, SECOES } from '../dados/checklist.js';
 import { calcularIndiceItens } from '../dados/classificacao.js';
 import { extrairDadosInstituicao } from './geradorPdf.js';
 
@@ -30,7 +30,7 @@ export async function gerarPlanilhaVistoria(vistoria) {
 
   const dados = extrairDadosInstituicao(vistoria);
   const respostas = vistoria.respostas || {};
-  const indice = calcularIndiceItens(TODOS_ITENS, respostas);
+  const indice = calcularIndiceItens(ITENS_TECNICOS, respostas);
 
   // Estilos padrão de borda preta
   const bordaPretaFina = {
@@ -145,8 +145,8 @@ export async function gerarPlanilhaVistoria(vistoria) {
   const mapaSecoes = Object.fromEntries(SECOES.map(s => [s.id, s.nome]));
 
   // Adiciona as linhas
-  for (let i = 0; i < TODOS_ITENS.length; i++) {
-    const item = TODOS_ITENS[i];
+  for (let i = 0; i < ITENS_TECNICOS.length; i++) {
+    const item = ITENS_TECNICOS[i];
     const resp = respostas[item.id] || {};
 
     let resultadoTexto = 'Pendente';

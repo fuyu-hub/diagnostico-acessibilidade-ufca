@@ -7,7 +7,7 @@ import {
   IconPhoto,
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { TODOS_ITENS } from '../dados/checklist';
+import { TODOS_ITENS, ITENS_TECNICOS } from '../dados/checklist';
 import Topbar from '../componentes/Topbar';
 import BarraProgresso from '../componentes/BarraProgresso';
 import { tocarSomResposta } from '../utilitarios/som';
@@ -48,10 +48,16 @@ export default function ItemChecklist() {
   const [modalFotoAberto, setModalFotoAberto] = useState(false);
   const [mensagemAria, setMensagemAria] = useState('');
 
-  const valorAtual = respostaAtual?.valor;
   const ehTriagem  = item?.tipo === 'triagem';
+  let valorAtual = respostaAtual?.valor;
+  if (ehTriagem) {
+    if (valorAtual === 'conforme') valorAtual = 'sim';
+    if (valorAtual === 'nao-conforme') valorAtual = 'nao';
+  }
   const opcoes     = ehTriagem ? OPCOES_TRIAGEM : OPCOES_TECNICO;
   const temAnterior = itemIdx > 0;
+  
+  const numItemTecnico = ehTriagem ? null : ITENS_TECNICOS.findIndex(i => i.id === item.id) + 1;
 
   useEffect(() => {
     const rawObs = respostaAtual?.obs || '';
@@ -188,7 +194,8 @@ export default function ItemChecklist() {
     return null;
   }
 
-  const respondidos = Object.keys(vistoria.respostas || {}).length;
+  const respostasTecnicas = ITENS_CONTAVEIS.filter(item => vistoria.respostas?.[item.id]?.valor);
+  const respondidos = respostasTecnicas.length;
   const pct = ITENS_CONTAVEIS.length > 0
     ? Math.round((respondidos / ITENS_CONTAVEIS.length) * 100)
     : 0;
@@ -256,6 +263,12 @@ export default function ItemChecklist() {
               </div>
             )}
 
+            {item.referencia && (
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: 16, lineHeight: 1.4 }}>
+                <strong>Ref.:</strong> {item.referencia}
+              </p>
+            )}
+
             {ehTriagem && item.acaoSeNao === 'gatilho_nc_dependentes_na' && (
               <div className={styles.alertaNC}>
                 <p>Se "Não": este item será marcado como <strong>Não Conforme</strong> (obrigatório por norma) e os itens dependentes como N/A.</p>
@@ -303,11 +316,6 @@ export default function ItemChecklist() {
                 {comoAberto && (
                   <div id="conteudo-como-averiguar" className={styles.accordionBody}>
                     <p>{item.comoAveriguar}</p>
-                    {item.referencia && (
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: 8 }}>
-                        Ref.: {item.referencia}
-                      </p>
-                    )}
                   </div>
                 )}
               </>
@@ -482,8 +490,14 @@ export default function ItemChecklist() {
         </button>
 
         <div className={styles.navInfo} aria-live="polite" aria-atomic="true">
-          <span className={styles.navNumero}>{itemIdx + 1}</span>
-          <span className={styles.navTotal}>/ {TODOS_ITENS.length}</span>
+          {ehTriagem ? (
+            <span className={styles.navNumero} style={{ fontSize: '1.3rem', fontWeight: 600 }}>Triagem</span>
+          ) : (
+            <>
+              <span className={styles.navNumero}>{numItemTecnico}</span>
+              <span className={styles.navTotal}>/ {ITENS_TECNICOS.length}</span>
+            </>
+          )}
         </div>
 
         <button

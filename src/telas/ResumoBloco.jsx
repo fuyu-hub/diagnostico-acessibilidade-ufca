@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { IconFlagCheck, IconCheck, IconX, IconMinus, IconArrowRight, IconListCheck } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { TODOS_ITENS } from '../dados/checklist';
+import { ITENS_TECNICOS } from '../dados/checklist';
 import Topbar from '../componentes/Topbar';
 import styles from './ResumoBloco.module.css';
 
@@ -14,9 +14,9 @@ export default function ResumoBloco() {
   if (!vistoria) return null;
 
   const respostas = vistoria.respostas || {};
-  const conformes = TODOS_ITENS.filter(i => respostas[i.id]?.valor === 'conforme').length;
-  const naoConformes = TODOS_ITENS.filter(i => respostas[i.id]?.valor === 'nao-conforme').length;
-  const naoAplica = TODOS_ITENS.filter(i => respostas[i.id]?.valor === 'nao-aplica').length;
+  const conformes = ITENS_TECNICOS.filter(i => respostas[i.id]?.valor === 'conforme').length;
+  const naoConformes = ITENS_TECNICOS.filter(i => respostas[i.id]?.valor === 'nao-conforme').length;
+  const naoAplica = ITENS_TECNICOS.filter(i => respostas[i.id]?.valor === 'nao-aplica').length;
   const total = conformes + naoConformes; // N/A excluido do calculo
   const pct = total > 0 ? Math.round((conformes / total) * 100) : 0;
   const corPct = pct >= 70 ? 'var(--text-success)' : pct >= 50 ? 'var(--text-warning)' : 'var(--text-danger)';

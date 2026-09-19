@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { TODOS_ITENS } from '../dados/checklist.js';
+import { TODOS_ITENS, ITENS_TECNICOS } from '../dados/checklist.js';
 import { calcularIndiceItens } from '../dados/classificacao.js';
 
 /**
@@ -137,7 +137,7 @@ export async function gerarPdfVistoria(vistoria) {
 
   // Card 2: Resumo do Índice de Avaliação de Acessibilidade (IAA)
   const respostas = vistoria.respostas || {};
-  const indice = calcularIndiceItens(TODOS_ITENS, respostas);
+  const indice = calcularIndiceItens(ITENS_TECNICOS, respostas);
   const classGeral = indice.classificacao;
 
   curY = 124;
@@ -220,7 +220,7 @@ export async function gerarPdfVistoria(vistoria) {
     { header: 'Foto', dataKey: 'foto' },
   ];
 
-  const linhas = TODOS_ITENS.map(i => {
+  const linhas = ITENS_TECNICOS.map(i => {
     const resp = respostas[i.id] || {};
     let resultadoTexto = 'Pendente';
     if (resp.valor === 'conforme' || resp.valor === 'sim') resultadoTexto = 'Conforme';

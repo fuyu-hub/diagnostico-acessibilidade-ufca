@@ -11,24 +11,15 @@ export default function ModalExcluirVistoria({
   onConfirmar,
   onCancelar,
 }) {
-  const [textoDigitado, setTextoDigitado] = useState('');
   const [exportadoComSucesso, setExportadoComSucesso] = useState(false);
-  const inputRef = useRef(null);
   const modalRef = useRef(null);
 
   useTravaScroll(aberto);
   useFocusTrap(aberto, modalRef);
 
-  const nomeEsperado = (nomeVistoria || '').trim();
-  const condicaoAtendida = nomeEsperado
-    ? textoDigitado.trim().toLowerCase() === nomeEsperado.toLowerCase()
-    : textoDigitado.trim().toUpperCase() === 'EXCLUIR';
-
   useEffect(() => {
     if (aberto) {
-      setTextoDigitado('');
       setExportadoComSucesso(false);
-      setTimeout(() => inputRef.current?.focus(), 80);
     }
   }, [aberto]);
 
@@ -96,23 +87,7 @@ export default function ModalExcluirVistoria({
             </div>
           )}
 
-          {/* Confirmação explícita com o nome do bloco */}
-          <div className={styles.blocoConfirmacao}>
-            <label className={styles.labelInput}>
-              Para confirmar, digite exatamente <strong>{nomeEsperado || 'EXCLUIR'}</strong> abaixo:
-            </label>
-            <input
-              ref={inputRef}
-              type="text"
-              className={styles.inputConfirmacao}
-              value={textoDigitado}
-              onChange={e => setTextoDigitado(e.target.value)}
-              placeholder={nomeEsperado || 'EXCLUIR'}
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck="false"
-            />
-          </div>
+
         </div>
 
         <div className={styles.acoes}>
@@ -120,8 +95,6 @@ export default function ModalExcluirVistoria({
             type="button"
             className={styles.btnSim}
             onClick={onConfirmar}
-            disabled={!condicaoAtendida}
-            style={{ opacity: condicaoAtendida ? 1 : 0.45, cursor: condicaoAtendida ? 'pointer' : 'not-allowed' }}
           >
             Excluir Definitivamente
           </button>
