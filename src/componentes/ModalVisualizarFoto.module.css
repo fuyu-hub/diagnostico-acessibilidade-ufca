@@ -262,6 +262,35 @@
   color: var(--accent, #3b82f6);
 }
 
+.tamanhoFoto {
+  font-size: 0.8rem;
+  color: var(--text-muted, #94a3b8);
+  font-weight: 600;
+  padding: 0 4px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.btnExcluir {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnExcluir:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

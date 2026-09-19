@@ -47,6 +47,12 @@ export function extrairDadosInstituicao(vistoria) {
   if (inst.anoConstrucao || vistoria.anoConstrucao) {
     opcionais.push({ label: 'Ano de Construção', valor: String(inst.anoConstrucao || vistoria.anoConstrucao) });
   }
+  if (inst.data || vistoria.data) {
+    opcionais.push({ label: 'Data de Início', valor: String(inst.data || vistoria.data) });
+  }
+  if (inst.dataTermino || vistoria.dataTermino) {
+    opcionais.push({ label: 'Data de Término', valor: String(inst.dataTermino || vistoria.dataTermino) });
+  }
   if (inst.horarioInicio || vistoria.horarioInicio) {
     opcionais.push({ label: 'Horário de Início', valor: String(inst.horarioInicio || vistoria.horarioInicio) });
   }

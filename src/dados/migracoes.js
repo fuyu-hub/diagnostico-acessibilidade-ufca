@@ -144,6 +144,7 @@ export function converterLegadoParaCanonica(legada) {
     numPavimentos: String(legada.numPavimentos || '1'),
     anoConstrucao: String(legada.anoConstrucao || ''),
     data: legada.data || '',
+    dataTermino: legada.dataTermino || '',
     horarioInicio: legada.horarioInicio || '',
     horarioTermino: legada.horarioTermino || '',
     avaliadores: Array.isArray(legada.avaliadores) ? legada.avaliadores : [],

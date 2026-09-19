@@ -20,6 +20,7 @@ export default function NovaVistoria() {
     numPavimentos: '',
     anoConstrucao: '',
     data: new Date().toISOString().split('T')[0],
+    dataTermino: '',
     horarioInicio: '',
     horarioTermino: '',
     avaliadores: [''],
@@ -183,13 +184,22 @@ export default function NovaVistoria() {
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 600, margin: 0 }}>Dados da Vistoria Técnica</h3>
               </div>
 
-              <div className="form-grid-3" style={{ marginBottom: 20 }}>
+              <div className="form-grid-2" style={{ marginBottom: 20 }}>
                 <div>
-                  <label className="label-secao">Data da vistoria</label>
+                  <label className="label-secao">Data da vistoria (Início)</label>
                   <input
                     type="date"
                     value={form.data}
                     onChange={e => set('data', e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="label-secao">Data de término</label>
+                  <input
+                    type="date"
+                    value={form.dataTermino}
+                    onChange={e => set('dataTermino', e.target.value)}
                   />
                 </div>
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { IconX, IconDownload, IconArrowRight, IconNotes } from '@tabler/icons-react';
+import { IconX, IconDownload, IconArrowRight, IconNotes, IconTrash } from '@tabler/icons-react';
 import { baixarImagemJpg } from '../utilitarios/imagem';
 import { useTravaScroll } from '../utilitarios/travaScroll';
 import { useFocusTrap } from '../utilitarios/focusTrap';
@@ -17,6 +17,7 @@ export default function ModalVisualizarFoto({
   observacao = '',
   nomeArquivo = 'foto_item',
   onIrParaItem = null,
+  onExcluir = null,
   onFechar,
 }) {
   const displayNumero = numero || (titulo.match(/#(\w+)/) ? titulo.match(/#(\w+)/)[1] : '');
@@ -57,6 +58,17 @@ export default function ModalVisualizarFoto({
 
   function handleDownload() {
     if (foto) baixarImagemJpg(foto, nomeArquivo);
+  }
+
+  function calcularTamanhoFoto(base64Str) {
+    if (!base64Str) return '';
+    const index = base64Str.indexOf(',');
+    if (index === -1) return '';
+    const len = base64Str.length - (index + 1);
+    const bytes = Math.ceil((len * 3) / 4);
+    const kb = bytes / 1024;
+    if (kb >= 1024) return (kb / 1024).toFixed(1) + ' MB';
+    return Math.round(kb) + ' KB';
   }
 
   return (
@@ -109,6 +121,23 @@ export default function ModalVisualizarFoto({
           </div>
 
           <div className={styles.acoesFooter}>
+            {foto && (
+              <span className={styles.tamanhoFoto} title="Tamanho estimado da imagem">
+                {calcularTamanhoFoto(foto)}
+              </span>
+            )}
+
+            {foto && onExcluir && (
+              <button
+                type="button"
+                className={styles.btnExcluir}
+                onClick={onExcluir}
+                title="Excluir esta foto"
+              >
+                <IconTrash size={18} />
+              </button>
+            )}
+
             {foto && (
               <button
                 type="button"

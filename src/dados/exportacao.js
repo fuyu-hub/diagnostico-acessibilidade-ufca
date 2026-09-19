@@ -1,4 +1,4 @@
-﻿import { EnvelopeExportacao, Vistoria } from './esquema.js';
+import { EnvelopeExportacao, Vistoria } from './esquema.js';
 import { converterLegadoParaCanonica } from './migracoes.js';
 
 const VERSAO_APP = '0.4.2';
@@ -29,18 +29,11 @@ export function gerarNomeArquivoExportacao(vistorias) {
   const lista = Array.isArray(vistorias) ? vistorias : [vistorias];
 
   if (lista.length === 1) {
-    const nomeBloco = (lista[0].blocoAvaliado || 'vistoria')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '_')
-      .replace(/^_+|_+$/g, '')
-      .substring(0, 30);
-    const idCurto = (lista[0].vistoriaId || '').substring(0, 8);
-    return `vistoria_${nomeBloco}_${dataStr}_${idCurto}.json`;
+    const nomeSanitizado = (lista[0].blocoAvaliado || 'Sem Nome').trim();
+    return `Vistoria - ${nomeSanitizado}.json`;
   }
 
-  return `vistorias_ufca_${dataStr}_qtd${lista.length}.json`;
+  return `Vistorias - Lote - ${dataStr} (Qtd ${lista.length}).json`;
 }
 
 /**

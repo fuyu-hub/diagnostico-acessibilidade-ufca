@@ -13,16 +13,31 @@ import Topbar from '../componentes/Topbar';
 import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/SeletorNivel';
 import ModalExcluirVistoria from '../componentes/ModalExcluirVistoria';
 import ModalGaleriaVistoria from '../componentes/ModalGaleriaVistoria';
+import { gerarPlanilhaVistoria } from '../relatorios/geradorExcel';
 import styles from './DashboardVistoria.module.css';
 
 export default function DashboardVistoria() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getVistoria, atualizarVistoria, removerVistoria, exportarVistoria, carregando } = useVistoria();
+  const { getVistoria, atualizarVistoria, removerVistoria, exportarVistoria, carregando, responderItem } = useVistoria();
+
+  if (carregando) {
+    return <div style={{ padding: 20, textAlign: 'center' }}>Carregando dados da vistoria...</div>;
+  }
 
   const vistoria = getVistoria(id);
   const [modalExcluirAberto, setModalExcluirAberto] = useState(false);
   const [modalGaleriaAberto, setModalGaleriaAberto] = useState(false);
+  const [gerandoPlanilha, setGerandoPlanilha] = useState(false);
+
+  function handleExcluirFotoGaleria(itemId) {
+    if (!window.confirm('Tem certeza que deseja remover a foto deste item? A ação não poderá ser desfeita.')) return;
+    
+    const respostaAtual = vistoria.respostas ? vistoria.respostas[itemId] : vistoria.dadosVistoria?.[itemId];
+    if (respostaAtual) {
+      responderItem(vistoria.id || id, itemId, { ...respostaAtual, foto: null });
+    }
+  }
 
   function handleConfirmarExclusao() {
     setModalExcluirAberto(false);
@@ -553,16 +568,35 @@ export default function DashboardVistoria() {
                 </p>
               </div>
 
-              <div className={styles.itemExportacaoDesativado}>
+              <div 
+                className={styles.itemExportacaoAtivo}
+                onClick={async () => {
+                  if (gerandoPlanilha) return;
+                  setGerandoPlanilha(true);
+                  try {
+                    await gerarPlanilhaVistoria(vistoria);
+                  } catch (err) {
+                    console.error('Erro ao gerar planilha:', err);
+                    alert('Não foi possível gerar a planilha.');
+                  } finally {
+                    setGerandoPlanilha(false);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                title="Clique para gerar a planilha executiva em Excel"
+              >
                 <div className={styles.itemExportacaoHeader}>
                   <span className={styles.itemExportacaoTitulo}>
-                    <IconTable size={22} color="var(--text-muted)" />
+                    <IconTable size={22} color="var(--text-success, #22c55e)" />
                     <span>Planilha (Excel)</span>
                   </span>
-                  <span className={styles.badgeEmBreve}>Em breve</span>
+                  <span className="tag ativa" style={{ fontSize: '0.75rem', fontWeight: 600, background: 'var(--bg-success)', color: 'var(--text-success)' }}>
+                    {gerandoPlanilha ? 'Gerando...' : 'Baixar'}
+                  </span>
                 </div>
                 <p className={styles.itemExportacaoDesc}>
-                  Exporta as notas e respostas em tabela para abrir no computador.
+                  Exporta o questionário, respostas, fotos e o resumo IAA.
                 </p>
               </div>
             </div>
@@ -604,6 +638,7 @@ export default function DashboardVistoria() {
         aberto={modalGaleriaAberto}
         vistoria={vistoria}
         onFechar={() => setModalGaleriaAberto(false)}
+        onExcluirFoto={handleExcluirFotoGaleria}
       />
     </div>
   );

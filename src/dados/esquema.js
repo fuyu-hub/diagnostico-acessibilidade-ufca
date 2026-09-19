@@ -1,4 +1,4 @@
-﻿import { z } from 'zod';
+import { z } from 'zod';
 
 export const RespostaCriterio = z.object({
   resposta: z.enum(['conforme', 'nao_conforme', 'nao_aplica']).nullable(),
@@ -23,6 +23,7 @@ export const FichaInstituicao = z.object({
   numPavimentos: z.string().default('1'),
   anoConstrucao: z.string().default(''),
   data: z.string().default(''),
+  dataTermino: z.string().default(''),
   horarioInicio: z.string().default(''),
   horarioTermino: z.string().default(''),
   avaliadores: z.array(z.string()).default([]),

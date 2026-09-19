@@ -13,6 +13,7 @@ export default function ModalGaleriaVistoria({
   aberto,
   vistoria,
   onFechar,
+  onExcluirFoto,
 }) {
   const navigate = useNavigate();
   const [filtro, setFiltro] = useState(null); // null | 'fotos' | 'obs' | 'nao-conforme' | 'conforme'
@@ -289,6 +290,10 @@ export default function ModalGaleriaVistoria({
           nomeArquivo={`foto_item_${itemSelecionado.item.id}`}
           onIrParaItem={() => handleIrParaItem(itemSelecionado.indiceGlobal)}
           onFechar={() => setItemSelecionado(null)}
+          onExcluir={onExcluirFoto ? () => {
+            onExcluirFoto(itemSelecionado.item.id);
+            setItemSelecionado(null);
+          } : null}
         />
       )}
     </>
