@@ -161,9 +161,6 @@
   color: var(--text-muted);
   font-size: 0.95rem;
   line-height: 1.6;
-  background: var(--surface-1);
-  border-radius: 16px;
-  border: 1px dashed var(--border-stronger);
 }
 
 .gridVistorias {

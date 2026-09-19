@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconSettings, IconPlus, IconUpload } from '@tabler/icons-react';
+import { IconSettings, IconPlus, IconUpload, IconListCheck, IconClipboardCheck } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import CartaoVistoria from '../componentes/CartaoVistoria';
 import ModalConflito from '../componentes/ModalConflito';
@@ -191,15 +191,14 @@ export default function Painel() {
                 )}
               </div>
             ) : (
-              <div className={styles.vazio} style={{ marginTop: 40, textAlign: 'center' }}>
-                <div style={{ opacity: 0.2, marginBottom: 16 }}>
-                  <IconListCheck size={64} style={{ margin: '0 auto' }} />
+              <div className={styles.vazio} style={{ marginTop: 60, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ marginBottom: 20 }}>
+                  <IconClipboardCheck size={48} color="var(--text-muted)" style={{ opacity: 0.5 }} />
                 </div>
-                <h3 style={{ fontSize: '1.2rem', marginBottom: 8, color: 'var(--text-strong)' }}>Nenhuma vistoria registrada</h3>
-                <p style={{ color: 'var(--text-muted)', marginBottom: 24 }}>Crie uma nova ou importe um arquivo .json para começar o diagnóstico.</p>
-                <button className="btn-nav primario" onClick={() => navigate('/nova')} style={{ margin: '0 auto' }}>
-                  <IconPlus size={18} /> Criar Nova
-                </button>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: 12, color: 'var(--text-strong)', fontWeight: 600 }}>Nenhuma vistoria ainda</h3>
+                <p style={{ color: 'var(--text-muted)', marginBottom: 32, maxWidth: 320, lineHeight: 1.5 }}>
+                  Crie a primeira vistoria para começar a registrar as condições de acessibilidade da instituição.
+                </p>
               </div>
             )}
           </>
