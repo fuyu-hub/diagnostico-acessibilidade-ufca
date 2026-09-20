@@ -62,7 +62,6 @@ npm run build
 
 - **Instituição Proponente**: Universidade Federal do Cariri (UFCA)
 - **Unidade Acadêmica**: Centro de Ciências e Tecnologia (CCT)
-- **Instituição Co-Executora**: Universidade Regional do Cariri (URCA)
 - **Edital**: Edital 03/2025/PROEX (Projetos Ampla Concorrência 2026)
 - **Área do Conhecimento (CNPq)**: Engenharias / Direitos Humanos e Justiça
 
