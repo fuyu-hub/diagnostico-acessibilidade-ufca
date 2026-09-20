@@ -14,6 +14,7 @@ import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/S
 import ModalExcluirVistoria from '../componentes/ModalExcluirVistoria';
 import ModalGaleriaVistoria from '../componentes/ModalGaleriaVistoria';
 import { gerarPlanilhaVistoria } from '../relatorios/geradorExcel';
+import { gerarPdfVistoria } from '../relatorios/geradorPdf';
 import styles from './DashboardVistoria.module.css';
 
 export default function DashboardVistoria() {
@@ -29,6 +30,7 @@ export default function DashboardVistoria() {
   const [modalExcluirAberto, setModalExcluirAberto] = useState(false);
   const [modalGaleriaAberto, setModalGaleriaAberto] = useState(false);
   const [gerandoPlanilha, setGerandoPlanilha] = useState(false);
+  const [gerandoPdf, setGerandoPdf] = useState(false);
 
   function handleExcluirFotoGaleria(itemId) {
     if (!window.confirm('Tem certeza que deseja remover a foto deste item? A ação não poderá ser desfeita.')) return;
@@ -548,20 +550,35 @@ export default function DashboardVistoria() {
                     <IconDownload size={22} color="var(--accent, #3b82f6)" />
                     <span>Fazer Backup</span>
                   </span>
-                  <span className="tag ativa" style={{ fontSize: '0.75rem', fontWeight: 600 }}>Baixar</span>
                 </div>
                 <p className={styles.itemExportacaoDesc}>
                   Baixa um arquivo com todas as respostas e dados preenchidos para não perder nada.
                 </p>
               </div>
 
-              <div className={styles.itemExportacaoDesativado}>
+              <div 
+                className={styles.itemExportacaoAtivo}
+                onClick={async () => {
+                  if (gerandoPdf) return;
+                  setGerandoPdf(true);
+                  try {
+                    await gerarPdfVistoria(vistoria);
+                  } catch (err) {
+                    console.error('Erro ao gerar PDF:', err);
+                    alert('Não foi possível gerar o relatório PDF.');
+                  } finally {
+                    setGerandoPdf(false);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+              >
                 <div className={styles.itemExportacaoHeader}>
                   <span className={styles.itemExportacaoTitulo}>
-                    <IconFileTypePdf size={22} color="var(--text-muted)" />
+                    <IconFileTypePdf size={22} color="#ef4444" />
                     <span>Relatório em PDF</span>
                   </span>
-                  <span className={styles.badgeEmBreve}>Em breve</span>
+                  {gerandoPdf && <span className={styles.badgeProcessando}>Gerando...</span>}
                 </div>
                 <p className={styles.itemExportacaoDesc}>
                   Gera o laudo completo formatado para impressão com fotos e justificativas.
@@ -591,9 +608,7 @@ export default function DashboardVistoria() {
                     <IconTable size={22} color="var(--text-success, #22c55e)" />
                     <span>Planilha (Excel)</span>
                   </span>
-                  <span className="tag ativa" style={{ fontSize: '0.75rem', fontWeight: 600, background: 'var(--bg-success)', color: 'var(--text-success)' }}>
-                    {gerandoPlanilha ? 'Gerando...' : 'Baixar'}
-                  </span>
+                  {gerandoPlanilha && <span className={styles.badgeProcessando}>Gerando...</span>}
                 </div>
                 <p className={styles.itemExportacaoDesc}>
                   Exporta o questionário, respostas, fotos e o resumo IAA.

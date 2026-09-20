@@ -1,7 +1,7 @@
 import ExcelJS from 'exceljs';
 import { ITENS_TECNICOS, SECOES } from '../dados/checklist.js';
 import { calcularIndiceItens } from '../dados/classificacao.js';
-import { extrairDadosInstituicao } from './geradorPdf.js';
+import { CATEGORIAS, CATEGORIA_POR_SECAO, campo, formatarData, classificarResposta, extrairDadosInstituicao } from './vistoriaComum.js';
 
 /* =========================================================================
  * Planilha de vistoria — reproduz o layout de "Modelo - Planilha Vistoria.xlsx"
@@ -30,26 +30,7 @@ const COR = {
   na: 'FFFBBC04',
 };
 
-// Categorias exatamente como aparecem na coluna B do modelo
-const CATEGORIAS = [
-  'Acesso Externo (Calçadas, Estacionamento e Portão/Portaria)',
-  'Circulação Horizontal Interna (Corredores e Pisos)',
-  'Circulação Vertical Interna (Escadas, Rampas e Elevadores)',
-  'Salas de Aula e Laboratórios',
-  'Auditórios e Áreas de Reunião',
-  'Refeitório',
-  'Áreas de Lazer e Esporte (Pátios e Quadras)',
-  'Sanitários e Vestiários',
-  'Áreas Administrativas (Secretaria, Sala de Professores e Atendimento)',
-  'Biblioteca',
-  'Demais Questões (Aparelhos e Saídas de Emergência)',
-];
-
-// secaoId do checklist.json -> índice em CATEGORIAS
-// (as seções 4 "Equipamentos de Uso Comum" e 12 "Rotas de Fuga" formam a última categoria do modelo)
-const CATEGORIA_POR_SECAO = { 1: 0, 2: 1, 3: 2, 5: 3, 7: 4, 8: 5, 11: 6, 10: 7, 9: 8, 6: 9, 4: 10, 12: 10 };
-
-// ---------- Estilos ----------
+// Constantes do layout do modelo
 const LINHA_FINA = { style: 'thin', color: { argb: COR.preto } };
 const BORDA = { top: LINHA_FINA, left: LINHA_FINA, bottom: LINHA_FINA, right: LINHA_FINA };
 const CENTRO = { horizontal: 'center', vertical: 'middle', wrapText: true };
@@ -69,28 +50,6 @@ function bloco(ws, l1, c1, l2, c2, valor, { font = fonte(), alignment = CENTRO, 
   }
   if (l1 !== l2 || c1 !== c2) ws.mergeCells(l1, c1, l2, c2);
   ws.getCell(l1, c1).value = valor ?? '';
-}
-
-// ---------- Leitura dos dados cadastrais ----------
-const norm = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-
-function campo(dados, ...opcoes) {
-  const lista = (dados && dados.todos) || [];
-  for (const opcao of opcoes) {
-    const palavras = [].concat(opcao).map(norm);
-    const achado = lista.find(c => palavras.every(p => norm(c.label).includes(p)));
-    if (achado && achado.valor !== undefined && achado.valor !== null && String(achado.valor).trim() !== '') {
-      return Array.isArray(achado.valor) ? achado.valor.join(', ') : String(achado.valor);
-    }
-  }
-  return 'Não informado';
-}
-
-function formatarData(dataStr) {
-  if (!dataStr || dataStr === 'Não informado') return '';
-  const partes = dataStr.split('-');
-  if (partes.length >= 3) return `${partes[2].substring(0, 2)}/${partes[1]}/${partes[0]}`; // DD/MM/YYYY
-  return dataStr;
 }
 
 // ---------- Fotos ----------
@@ -161,14 +120,6 @@ function ancorarFoto(ws, imageId, foto, numeroLinha) {
     ext: { width: w, height: h },
     editAs: 'oneCell',
   });
-}
-
-// ---------- Resultado de cada item ----------
-function classificarResposta(valor) {
-  if (valor === 'conforme' || valor === 'sim') return 'sim';
-  if (valor === 'nao-conforme' || valor === 'nao') return 'nao';
-  if (valor === 'nao-aplica') return 'na';
-  return null; // pendente
 }
 
 /* =========================================================================
@@ -411,7 +362,11 @@ export async function gerarPlanilhaVistoria(vistoria) {
   }
 
   // ====================== ABA 3 — OBSERVAÇÕES ======================
-  const comObs = itens.filter(({ item }) => (respostas[item.id] || {}).obs);
+  const comObs = itens.filter(({ item }) => {
+    const rawObs = (respostas[item.id] || {}).obs || '';
+    const isObsTriagem = typeof rawObs === 'string' && (rawObs.startsWith('Triagem #') || rawObs.startsWith('Triagem:'));
+    return rawObs && !isObsTriagem;
+  });
   if (comObs.length) {
     const wsObs = workbook.addWorksheet('Observações de Campo');
     wsObs.views = [{ showGridLines: false }];

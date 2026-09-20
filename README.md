@@ -22,13 +22,6 @@ A aplicação digital operacionaliza o levantamento de dados em vistorias *in lo
 - Cálculo do Índice de Avaliação de Acessibilidade (IAA), discriminado por seção e índice consolidado;
 - Interface responsiva orientada à utilização em campo por meio de dispositivos móveis, tablets ou computadores.
 
-## Tecnologias Empregadas
-
-- React
-- Vite
-- Tabler Icons
-- CSS Modules e Vanilla CSS
-
 ## Instruções de Instalação e Execução
 
 ### Pré-requisitos

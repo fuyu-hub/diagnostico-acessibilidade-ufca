@@ -179,9 +179,14 @@ export default function Resultado() {
                       <span className={styles.tabelaDot} style={{ background: faixa.cor }} />
                       <span>{faixa.faixaTexto}</span>
                     </div>
-                    <span className={styles.tabelaRotulo} role="cell" style={{ color: faixa.cor }}>
-                      {faixa.rotulo}
-                    </span>
+                    <div role="cell" className={styles.tabelaDescricaoWrapper}>
+                      <span className={styles.tabelaRotulo} style={{ color: faixa.cor }}>
+                        {faixa.rotulo}
+                      </span>
+                      <span className={styles.tabelaDescTexto}>
+                        {faixa.descricao}
+                      </span>
+                    </div>
                   </div>
                 );
               })}
