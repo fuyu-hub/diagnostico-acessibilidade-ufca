@@ -78,9 +78,6 @@ export default function CartaoVistoria({ vistoria }) {
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span className={`tag ${ativa ? (temPendente ? 'ativa' : 'salva') : 'salva'}`}>
-            {ativa ? (temPendente ? 'Em andamento' : 'Concluída') : 'Nova'}
-          </span>
           <button
             type="button"
             className={styles.btnExcluir}

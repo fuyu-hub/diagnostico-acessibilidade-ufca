@@ -191,7 +191,7 @@ export async function gerarPlanilhaVistoria(vistoria) {
   
   const dataVistoriaRaw = campo(dados, ['data', 'vistoria'], 'data');
   const dataVistoriaFmt = dataVistoriaRaw !== 'Não informado' ? formatarData(dataVistoriaRaw) : 'Não informado';
-  const dataTerminoRaw = campo(dados, ['termino', 'data'], 'termino');
+  const dataTerminoRaw = campo(dados, ['termino', 'data']);
   const dataTerminoFmt = dataTerminoRaw !== 'Não informado' ? formatarData(dataTerminoRaw) : (dataVistoriaFmt !== 'Não informado' ? dataVistoriaFmt : 'Não informado');
 
   const horaInicioRaw = campo(dados, ['horario', 'inicio']);
