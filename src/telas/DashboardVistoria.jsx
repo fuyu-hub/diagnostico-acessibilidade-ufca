@@ -186,7 +186,7 @@ export default function DashboardVistoria() {
               <div className={styles.tituloLinha}>
                 <h2 className={styles.titulo}>{vistoria.nome}</h2>
                 <span className={`tag ${ativa ? (temPendente ? 'ativa' : 'salva') : 'salva'}`}>
-                  {ativa ? (temPendente ? 'Em andamento' : 'Concluída') : 'Nova'}
+                  {ativa ? (temPendente ? 'Em andamento' : 'Concluída') : 'Não iniciada'}
                 </span>
               </div>
               <div className={styles.metaInfo}>

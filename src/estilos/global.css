@@ -20,8 +20,8 @@ body {
   background: var(--bg);
 }
 
-/* Textos justificados por padrão */
-p, .texto-justificado {
+/* Textos justificados específicos (usar apenas em leituras longas quando desejado) */
+.texto-justificado {
   text-align: justify;
   text-justify: inter-word;
   hyphens: auto;

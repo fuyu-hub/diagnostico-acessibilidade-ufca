@@ -165,10 +165,14 @@ export default function ListaItens() {
 
                         <span
                           className={styles.notaSecaoValor}
-                          style={{ color: classificacao.cor }}
+                          style={{
+                            color: indiceSecao.total > 0 ? classificacao.cor : 'var(--text-muted)',
+                            fontSize: indiceSecao.total > 0 ? undefined : '0.78rem',
+                            fontWeight: indiceSecao.total > 0 ? undefined : 500,
+                          }}
                           title={indiceSecao.total > 0 ? `Nota: ${classificacao.notaFormatada} (${classificacao.rotulo})` : 'Ainda sem itens avaliados'}
                         >
-                          {classificacao.notaFormatada}
+                          {indiceSecao.total > 0 ? classificacao.notaFormatada : 'Pendente'}
                         </span>
                       </div>
 

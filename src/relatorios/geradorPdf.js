@@ -341,11 +341,12 @@ function desenharIaa(doc, grupos, respostas) {
   doc.setFont(FONTE, 'bold');
   doc.setFontSize(7.5);
   doc.setTextColor(...CINZA_TEXTO);
-  doc.text('CLASSIFICAÇÃO', px, py, { charSpace: 1 });
+  doc.text(pendentes > 0 ? 'CLASSIFICAÇÃO (PARCIAL / PRELIMINAR)' : 'CLASSIFICAÇÃO', px, py, { charSpace: 1 });
   py += 7;
   doc.setFontSize(14);
   doc.setTextColor(...PRETO);
-  const rotulo = doc.splitTextToSize(classif.rotulo || 'Não avaliado', pw).slice(0, 2);
+  const textoRotulo = pendentes > 0 ? `${classif.rotulo || 'Não avaliado'} (PRÉVIA)` : (classif.rotulo || 'Não avaliado');
+  const rotulo = doc.splitTextToSize(textoRotulo, pw).slice(0, 2);
   doc.text(rotulo, px, py, { lineHeightFactor: 1.15 });
   py += rotulo.length * 6 + 1;
 
@@ -672,3 +673,4 @@ export async function gerarRelatorioPdf(vistoria, { observacoes = 'coluna' } = {
 }
 
 export { gerarRelatorioPdf as gerarPdfVistoria };
+export { extrairDadosInstituicao } from './vistoriaComum.js';

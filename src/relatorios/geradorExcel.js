@@ -296,9 +296,12 @@ export async function gerarPlanilhaVistoria(vistoria) {
     { width: 15 },  // K (IA)
   ];
 
+  const totalRespondidos = ITENS_TECNICOS.filter(it => respostas[it.id]?.valor).length;
+  const ehParcial = totalRespondidos < ITENS_TECNICOS.length;
+
   const lcab = 2; // Linha do RESULTADO POR AMBIENTE
   bloco(wsIaa, lcab, 2, lcab, 6, 'RESULTADO POR AMBIENTE', { font: fonte({ bold: true }), alignment: CENTRO });
-  bloco(wsIaa, lcab, 8, lcab, 11, 'RESULTADO GERAL', { font: fonte({ bold: true }), alignment: CENTRO });
+  bloco(wsIaa, lcab, 8, lcab, 11, ehParcial ? 'RESULTADO GERAL (PARCIAL)' : 'RESULTADO GERAL', { font: fonte({ bold: true }), alignment: CENTRO });
   
   const lsub = 3;
   ['AMBIENTE', 'SIM', 'NÃO', 'N/A', 'IA'].forEach((t, i) => bloco(wsIaa, lsub, i + 2, lsub, i + 2, t, { font: fonte({ bold: true }), alignment: CENTRO }));

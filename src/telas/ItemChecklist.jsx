@@ -4,7 +4,7 @@ import {
   IconCheck, IconX, IconMinus, IconBulb, IconRuler2,
   IconChevronDown, IconChevronUp, IconCamera, IconTrash,
   IconListCheck, IconFilter, IconChevronLeft, IconChevronRight,
-  IconPhoto,
+  IconPhoto, IconAlertCircle,
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS, ITENS_TECNICOS } from '../dados/checklist';
@@ -191,7 +191,30 @@ export default function ItemChecklist() {
         </div>
       );
     }
-    return null;
+    return (
+      <div className="app-shell">
+        <Topbar titulo="Não encontrado" voltar={vistoria ? `/checklist/${vistoria.id}/itens` : '/'} />
+        <div className="tela-body" style={{ padding: '48px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <IconAlertCircle size={56} color="var(--text-muted)" style={{ opacity: 0.6, marginBottom: 16 }} />
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 8, color: 'var(--text-strong, #ffffff)' }}>
+            {!vistoria ? 'Vistoria não encontrada' : 'Item não encontrado'}
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: 24, maxWidth: 360, lineHeight: 1.5 }}>
+            {!vistoria 
+              ? 'A vistoria solicitada não foi encontrada ou foi removida.' 
+              : 'O item especificado não faz parte deste checklist.'}
+          </p>
+          <button
+            type="button"
+            className="btn-nav primario"
+            style={{ maxWidth: 260 }}
+            onClick={() => navigate(vistoria ? `/checklist/${vistoria.id}/itens` : '/')}
+          >
+            {vistoria ? 'Voltar para a lista de itens' : 'Voltar ao Início'}
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const respostasTecnicas = ITENS_CONTAVEIS.filter(item => vistoria.respostas?.[item.id]?.valor);

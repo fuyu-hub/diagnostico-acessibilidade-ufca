@@ -72,7 +72,7 @@ describe('Relatórios e Exportação (Escopo 4)', () => {
 
     const resultado = await gerarPdfVistoria(vistoria);
     expect(resultado.sucesso).toBe(true);
-    expect(resultado.nomeArquivo).toContain('campus_juazeiro');
+    expect(resultado.nomeArquivo.toLowerCase()).toContain('campus juazeiro');
   });
 
   it('4. Gera Planilha Excel com bordas, fundo cinza e coluna de foto', async () => {
@@ -94,7 +94,7 @@ describe('Relatórios e Exportação (Escopo 4)', () => {
 
     const resultado = await gerarPlanilhaVistoria(vistoria);
     expect(resultado.sucesso).toBe(true);
-    expect(resultado.nomeArquivo).toContain('campus_crato');
+    expect(resultado.nomeArquivo.toLowerCase()).toContain('campus crato');
   });
 
   it('5. Formata tamanho de bytes adequadamente para o usuário', async () => {

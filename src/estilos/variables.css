@@ -9,9 +9,10 @@
   --border-strong: rgba(255, 255, 255, 0.24);
   --border-stronger: rgba(255, 255, 255, 0.40);
 
+  --text-strong: #ffffff;
   --text-primary: #ffffff;
   --text-secondary: #a8a8a8;
-  --text-muted: #6e6e6e;
+  --text-muted: #8e8e93;
 
   --accent: #3b82f6;
   --fill-accent: #3b82f6;

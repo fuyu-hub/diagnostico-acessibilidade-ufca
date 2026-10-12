@@ -9,6 +9,7 @@ import ResumoBloco from './telas/ResumoBloco';
 import Resultado from './telas/Resultado';
 import Ajustes from './telas/Ajustes';
 import DashboardVistoria from './telas/DashboardVistoria';
+import NaoEncontrada from './telas/NaoEncontrada';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/checklist/:id/triagem/:itemId" element={<Triagem />} />
           <Route path="/checklist/:id/resumo-bloco" element={<Resultado />} />
           <Route path="/checklist/:id/resultado" element={<Resultado />} />
+          <Route path="*" element={<NaoEncontrada />} />
         </Routes>
       </BrowserRouter>
     </VistoriaProvider>

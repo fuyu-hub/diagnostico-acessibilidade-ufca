@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   IconRefresh, IconArrowLeft,
-  IconDashboard, IconAlertTriangle
+  IconDashboard, IconAlertTriangle, IconAlertCircle
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS, SECOES, ITENS_POR_SECAO, ITENS_TECNICOS } from '../dados/checklist';
@@ -72,7 +72,28 @@ export default function Resultado() {
         </div>
       );
     }
-    return null;
+    return (
+      <div className="app-shell">
+        <Topbar titulo="Vistoria não encontrada" voltar="/" />
+        <div className="tela-body" style={{ padding: '48px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <IconAlertCircle size={56} color="var(--text-muted)" style={{ opacity: 0.6, marginBottom: 16 }} />
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 8, color: 'var(--text-strong, #ffffff)' }}>
+            Vistoria não encontrada
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: 24, maxWidth: 360, lineHeight: 1.5 }}>
+            A vistoria solicitada não foi encontrada ou foi removida deste dispositivo.
+          </p>
+          <button
+            type="button"
+            className="btn-nav primario"
+            style={{ maxWidth: 260 }}
+            onClick={() => navigate('/')}
+          >
+            Voltar ao Início
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -107,7 +128,7 @@ export default function Resultado() {
             >
               <IconAlertTriangle size={24} style={{ flexShrink: 0 }} />
               <div>
-                <strong>Resultado Parcial:</strong> Este índice reflete os {respondidosCount} itens respondidos até o momento (de {totalContaveis} exigências técnicas).
+                <strong>Prévia / Resultado Parcial:</strong> Este índice reflete os {respondidosCount} itens respondidos até o momento (de {totalContaveis} exigências técnicas). A classificação definitiva será consolidada após o preenchimento integral.
               </div>
             </div>
           )}
@@ -119,7 +140,7 @@ export default function Resultado() {
             aria-label={`Índice de Avaliação de Acessibilidade Geral: nota ${classGeral.notaFormatada}, classificação ${classGeral.rotulo}`}
           >
             <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: 0.8, fontWeight: 600 }}>
-              Índice de Avaliação de Acessibilidade (IAA) Geral
+              Índice de Avaliação de Acessibilidade (IAA) Geral {ehParcial ? '· Prévia' : ''}
             </span>
 
             <div className={styles.notaGeralValor} style={{ color: classGeral.cor }}>
@@ -134,7 +155,7 @@ export default function Resultado() {
                 borderColor: classGeral.borda,
               }}
             >
-              {classGeral.rotulo}
+              {ehParcial ? `${classGeral.rotulo} · PRÉVIA` : classGeral.rotulo}
             </span>
 
             {/* Cards de contagem */}
@@ -207,10 +228,12 @@ export default function Resultado() {
                   aria-label={`Seção ${s.nome}: nota ${s.classificacao.notaFormatada}, classificação ${s.classificacao.rotulo}`}
                 >
                   <span className={styles.nomeSecao}>{s.nome}</span>
-                  <div className={styles.badgeSecao} style={{ color: s.classificacao.cor }}>
-                    <span className={styles.notaSecaoValor}>{s.classificacao.notaFormatada}</span>
-                    {s.total > 0 && (
+                  <div className={styles.badgeSecao} style={{ color: s.total > 0 ? s.classificacao.cor : 'var(--text-muted)' }}>
+                    <span className={styles.notaSecaoValor}>{s.total > 0 ? s.classificacao.notaFormatada : 'Pendente'}</span>
+                    {s.total > 0 ? (
                       <span className={styles.notaSecaoRotulo}>{s.classificacao.rotulo}</span>
+                    ) : (
+                      <span className={styles.notaSecaoRotulo} style={{ color: 'var(--text-muted)' }}>Sem respostas</span>
                     )}
                   </div>
                 </div>
