@@ -1,4 +1,4 @@
-﻿import { get, set, del, createStore } from 'idb-keyval';
+import { get, set, del, createStore } from 'idb-keyval';
 import { Vistoria } from './esquema.js';
 import { converterLegadoParaCanonica } from './migracoes.js';
 
@@ -124,6 +124,54 @@ export async function estimarUsoArmazenamento() {
     }
   }
   return { usadoMB: 0, cotaMB: 0, percentualUso: 0 };
+}
+
+/**
+ * Solicita persistência de dados ao navegador (reduz risco de limpeza automática de cache)
+ */
+export async function solicitarPersistenciaStorage() {
+  if (typeof navigator !== 'undefined' && navigator.storage && navigator.storage.persist) {
+    try {
+      const jaPersistido = await navigator.storage.persisted();
+      if (jaPersistido) return true;
+      return await navigator.storage.persist();
+    } catch (err) {
+      console.warn('Falha ao solicitar persistência do armazenamento:', err);
+      return false;
+    }
+  }
+  return false;
+}
+
+export async function verificarPersistenciaStorage() {
+  if (typeof navigator !== 'undefined' && navigator.storage && navigator.storage.persisted) {
+    try {
+      return await navigator.storage.persisted();
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
+
+const CHAVE_ULTIMO_BACKUP = 'nbr9050_ultimo_backup';
+
+export function registrarDataUltimoBackup() {
+  const agora = new Date().toISOString();
+  try {
+    localStorage.setItem(CHAVE_ULTIMO_BACKUP, agora);
+  } catch (err) {
+    console.warn('Falha ao registrar timestamp de backup no localStorage:', err);
+  }
+  return agora;
+}
+
+export function obterDataUltimoBackup() {
+  try {
+    return localStorage.getItem(CHAVE_ULTIMO_BACKUP) || null;
+  } catch {
+    return null;
+  }
 }
 
 /**

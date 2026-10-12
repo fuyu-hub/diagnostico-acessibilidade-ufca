@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { NotificacaoProvider } from './contexto/NotificacaoContext';
 import { VistoriaProvider } from './contexto/VistoriaContext';
 import Painel from './telas/Painel';
 import NovaVistoria from './telas/NovaVistoria';
@@ -13,21 +14,23 @@ import NaoEncontrada from './telas/NaoEncontrada';
 
 export default function App() {
   return (
-    <VistoriaProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Painel />} />
-          <Route path="/nova" element={<NovaVistoria />} />
-          <Route path="/ajustes" element={<Ajustes />} />
-          <Route path="/vistoria/:id" element={<DashboardVistoria />} />
-          <Route path="/checklist/:id/itens" element={<ListaItens />} />
-          <Route path="/checklist/:id/item/:n" element={<ItemChecklist />} />
-          <Route path="/checklist/:id/triagem/:itemId" element={<Triagem />} />
-          <Route path="/checklist/:id/resumo-bloco" element={<Resultado />} />
-          <Route path="/checklist/:id/resultado" element={<Resultado />} />
-          <Route path="*" element={<NaoEncontrada />} />
-        </Routes>
-      </BrowserRouter>
-    </VistoriaProvider>
+    <NotificacaoProvider>
+      <VistoriaProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Painel />} />
+            <Route path="/nova" element={<NovaVistoria />} />
+            <Route path="/ajustes" element={<Ajustes />} />
+            <Route path="/vistoria/:id" element={<DashboardVistoria />} />
+            <Route path="/checklist/:id/itens" element={<ListaItens />} />
+            <Route path="/checklist/:id/item/:n" element={<ItemChecklist />} />
+            <Route path="/checklist/:id/triagem/:itemId" element={<Triagem />} />
+            <Route path="/checklist/:id/resumo-bloco" element={<Resultado />} />
+            <Route path="/checklist/:id/resultado" element={<Resultado />} />
+            <Route path="*" element={<NaoEncontrada />} />
+          </Routes>
+        </BrowserRouter>
+      </VistoriaProvider>
+    </NotificacaoProvider>
   );
 }

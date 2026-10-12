@@ -7,6 +7,7 @@ import {
   IconClock, IconDownload, IconPhoto
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
+import { useNotificacao } from '../contexto/NotificacaoContext';
 import { TODOS_ITENS, ITENS_TECNICOS } from '../dados/checklist';
 import { calcularIndiceItens } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
@@ -21,6 +22,7 @@ export default function DashboardVistoria() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getVistoria, atualizarVistoria, removerVistoria, exportarVistoria, carregando, responderItem } = useVistoria();
+  const { mostrarToast, mostrarConfirmacao } = useNotificacao();
 
   if (carregando) {
     return <div style={{ padding: 20, textAlign: 'center' }}>Carregando dados da vistoria...</div>;
@@ -32,12 +34,20 @@ export default function DashboardVistoria() {
   const [gerandoPlanilha, setGerandoPlanilha] = useState(false);
   const [gerandoPdf, setGerandoPdf] = useState(false);
 
-  function handleExcluirFotoGaleria(itemId) {
-    if (!window.confirm('Tem certeza que deseja remover a foto deste item? A ação não poderá ser desfeita.')) return;
+  async function handleExcluirFotoGaleria(itemId) {
+    const confirmado = await mostrarConfirmacao({
+      titulo: 'Remover Foto',
+      mensagem: 'Tem certeza que deseja remover a foto deste item? A ação não poderá ser desfeita.',
+      textoConfirmar: 'Remover foto',
+      textoCancelar: 'Cancelar',
+      perigo: true,
+    });
+    if (!confirmado) return;
     
     const respostaAtual = vistoria.respostas ? vistoria.respostas[itemId] : vistoria.dadosVistoria?.[itemId];
     if (respostaAtual) {
       responderItem(vistoria.id || id, itemId, { ...respostaAtual, foto: null });
+      mostrarToast('Foto removida com sucesso', 'sucesso');
     }
   }
 
@@ -563,9 +573,10 @@ export default function DashboardVistoria() {
                   setGerandoPdf(true);
                   try {
                     await gerarPdfVistoria(vistoria);
+                    mostrarToast('Relatório PDF baixado com sucesso!', 'sucesso');
                   } catch (err) {
                     console.error('Erro ao gerar PDF:', err);
-                    alert('Não foi possível gerar o relatório PDF.');
+                    mostrarToast('Não foi possível gerar o relatório PDF.', 'erro');
                   } finally {
                     setGerandoPdf(false);
                   }
@@ -592,9 +603,10 @@ export default function DashboardVistoria() {
                   setGerandoPlanilha(true);
                   try {
                     await gerarPlanilhaVistoria(vistoria);
+                    mostrarToast('Planilha Excel baixada com sucesso!', 'sucesso');
                   } catch (err) {
                     console.error('Erro ao gerar planilha:', err);
-                    alert('Não foi possível gerar a planilha.');
+                    mostrarToast('Não foi possível gerar a planilha.', 'erro');
                   } finally {
                     setGerandoPlanilha(false);
                   }

@@ -6,6 +6,10 @@ import {
   excluirVistoria as excluirVistoriaRepo,
   garantirMigracao,
   estimarUsoArmazenamento,
+  solicitarPersistenciaStorage,
+  verificarPersistenciaStorage,
+  registrarDataUltimoBackup,
+  obterDataUltimoBackup,
 } from '../dados/repositorio.js';
 import { Vistoria } from '../dados/esquema.js';
 import {
@@ -140,6 +144,34 @@ export function VistoriaProvider({ children }) {
   const [salvando, setSalvando] = useState(false);
   const [alertaCota, setAlertaCota] = useState(null); // { usadoMB, cotaMB, percentualUso } se >= 80%
   const [erroCota, setErroCota] = useState(null); // objeto com vistoria para escape emergencial
+  const [armazenamentoPersistido, setArmazenamentoPersistido] = useState(false);
+  const [ultimoBackup, setUltimoBackup] = useState(() => obterDataUltimoBackup());
+
+  /**
+   * Solicitação e verificação de persistência durável no navegador (§3.1/B5)
+   */
+  useEffect(() => {
+    async function inicializarPersistencia() {
+      try {
+        const jaPersistido = await verificarPersistenciaStorage();
+        if (jaPersistido) {
+          setArmazenamentoPersistido(true);
+        } else {
+          const concedido = await solicitarPersistenciaStorage();
+          setArmazenamentoPersistido(concedido);
+        }
+      } catch (err) {
+        console.warn('Erro ao verificar/solicitar persistência de dados:', err);
+      }
+    }
+    inicializarPersistencia();
+  }, []);
+
+  async function pedirPersistenciaManual() {
+    const concedido = await solicitarPersistenciaStorage();
+    setArmazenamentoPersistido(concedido);
+    return concedido;
+  }
 
   // Buffer de escritas pendentes para debounce e descarregamento imediato no pagehide
   const pendentesRef = useRef(new Map());
@@ -551,7 +583,10 @@ export function VistoriaProvider({ children }) {
     }
     const canonicas = vistorias.map(v => converterUIParaCanonica(v));
     const envelope = criarEnvelopeExportacao(canonicas);
-    return compartilharOuBaixarEnvelope(envelope);
+    const res = await compartilharOuBaixarEnvelope(envelope);
+    const dataBackup = registrarDataUltimoBackup();
+    setUltimoBackup(dataBackup);
+    return res;
   }
 
   /**
@@ -631,6 +666,14 @@ export function VistoriaProvider({ children }) {
         importarConteudoJson,
         aplicarResolucaoConflito,
         estimarArmazenamento: estimarUsoArmazenamento,
+        armazenamentoPersistido,
+        solicitarPersistenciaManual: pedirPersistenciaManual,
+        ultimoBackup,
+        registrarBackupManual: () => {
+          const d = registrarDataUltimoBackup();
+          setUltimoBackup(d);
+          return d;
+        },
       }}
     >
       {alertaCota && (
@@ -664,7 +707,7 @@ export function VistoriaProvider({ children }) {
               await exportarTodasVistorias();
             }
           } catch (e) {
-            alert('Falha ao exportar emergencialmente: ' + e.message);
+            console.error('Falha ao exportar emergencialmente:', e);
           }
         }}
         onFechar={() => setErroCota(null)}

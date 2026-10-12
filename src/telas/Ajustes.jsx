@@ -6,6 +6,7 @@ import {
 import Topbar from '../componentes/Topbar';
 import ModalConflito from '../componentes/ModalConflito';
 import { useVistoria } from '../contexto/VistoriaContext';
+import { useNotificacao } from '../contexto/NotificacaoContext';
 import {
   isSomHabilitado,
   setSomHabilitado,
@@ -17,10 +18,21 @@ import styles from './Ajustes.module.css';
 
 export default function Ajustes() {
   const [somAtivo, setSomAtivo] = useState(isSomHabilitado);
-  const [feedbackBackup, setFeedbackBackup] = useState('');
   const fileInputRef = useRef(null);
 
-  const { vistorias, exportarTodasVistorias, importarConteudoJson, aplicarResolucaoConflito, estimarArmazenamento } = useVistoria();
+  const {
+    vistorias,
+    exportarTodasVistorias,
+    importarConteudoJson,
+    aplicarResolucaoConflito,
+    estimarArmazenamento,
+    armazenamentoPersistido,
+    solicitarPersistenciaManual,
+    ultimoBackup,
+    registrarBackupManual,
+  } = useVistoria();
+  const { mostrarToast, mostrarAlerta } = useNotificacao();
+
   const [conflitosFila, setConflitosFila] = useState([]);
   const [indiceConflito, setIndiceConflito] = useState(0);
   const [infoArmazenamento, setInfoArmazenamento] = useState(null);
@@ -37,13 +49,12 @@ export default function Ajustes() {
     try {
       if (vistorias && vistorias.length > 0) {
         await exportarTodasVistorias();
-        setFeedbackBackup('Backup salvo com sucesso!');
-        setTimeout(() => setFeedbackBackup(''), 4000);
+        mostrarToast('Backup salvo com sucesso!', 'sucesso');
         return;
       }
       const raw = localStorage.getItem('nbr9050_vistorias');
       if (!raw || raw === '[]') {
-        alert('Nenhuma vistoria encontrada para backup.');
+        mostrarToast('Nenhuma vistoria encontrada para backup.', 'info');
         return;
       }
       const blob = new Blob([raw], { type: 'application/json' });
@@ -56,10 +67,10 @@ export default function Ajustes() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      setFeedbackBackup('Backup salvo com sucesso!');
-      setTimeout(() => setFeedbackBackup(''), 4000);
+      registrarBackupManual?.();
+      mostrarToast('Backup salvo com sucesso!', 'sucesso');
     } catch (err) {
-      alert('Erro ao gerar backup: ' + err.message);
+      mostrarAlerta('Erro no Backup', 'Erro ao gerar backup: ' + err.message);
     }
   }
 
@@ -75,11 +86,10 @@ export default function Ajustes() {
       });
 
       if (!conflitosFila.length) {
-        setFeedbackBackup(`Importação concluída com sucesso! (${res?.importadasDiretas || 1} vistoria(s) importada(s))`);
-        setTimeout(() => setFeedbackBackup(''), 5000);
+        mostrarToast(`Importação concluída com sucesso! (${res?.importadasDiretas || 1} vistoria(s) importada(s))`, 'sucesso');
       }
     } catch (err) {
-      alert('Falha ao importar: ' + err.message);
+      mostrarAlerta('Falha ao Importar', 'Não foi possível importar o arquivo: ' + err.message);
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
@@ -95,8 +105,7 @@ export default function Ajustes() {
           await aplicarResolucaoConflito(item.local, item.remota, estrategia);
         }
         setConflitosFila([]);
-        setFeedbackBackup('Todos os conflitos resolvidos e vistorias salvas!');
-        setTimeout(() => setFeedbackBackup(''), 5000);
+        mostrarToast('Todos os conflitos resolvidos e vistorias salvas!', 'sucesso');
       } else {
         const item = conflitosFila[indiceConflito];
         await aplicarResolucaoConflito(item.local, item.remota, estrategia);
@@ -105,12 +114,11 @@ export default function Ajustes() {
           setIndiceConflito(prev => prev + 1);
         } else {
           setConflitosFila([]);
-          setFeedbackBackup('Conflito resolvido com sucesso!');
-          setTimeout(() => setFeedbackBackup(''), 5000);
+          mostrarToast('Conflito resolvido com sucesso!', 'sucesso');
         }
       }
     } catch (err) {
-      alert('Erro ao resolver conflito: ' + err.message);
+      mostrarAlerta('Erro de Resolução', 'Erro ao resolver conflito: ' + err.message);
     }
   }
 
@@ -238,11 +246,41 @@ export default function Ajustes() {
                 onChange={handleImportarArquivo}
               />
 
-              {feedbackBackup && (
-                <p className={styles.feedbackSucesso}>{feedbackBackup}</p>
-              )}
-
-
+              <div style={{ marginTop: 8, padding: '12px 14px', background: 'var(--surface-2, #18181b)', border: '1px solid var(--border, #27272a)', borderRadius: 10, fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                <div style={{ marginBottom: 6 }}>
+                  <strong style={{ color: 'var(--text-strong, #fff)' }}>Último backup: </strong>
+                  {ultimoBackup 
+                    ? new Date(ultimoBackup).toLocaleString('pt-BR') 
+                    : 'Nenhum backup realizado ainda (recomendado)'}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                  <span>
+                    <strong style={{ color: 'var(--text-strong, #fff)' }}>Armazenamento: </strong>
+                    {armazenamentoPersistido ? '✓ Persistente (protegido)' : 'Padrão do navegador'}
+                  </span>
+                  {!armazenamentoPersistido && (
+                    <button
+                      type="button"
+                      style={{
+                        background: 'transparent',
+                        border: '1px solid var(--border, #3f3f46)',
+                        color: 'var(--accent, #3b82f6)',
+                        padding: '3px 8px',
+                        borderRadius: 6,
+                        fontSize: '0.76rem',
+                        cursor: 'pointer'
+                      }}
+                      onClick={async () => {
+                        const ok = await solicitarPersistenciaManual?.();
+                        if (ok) mostrarToast('Armazenamento protegido com sucesso!', 'sucesso');
+                        else mostrarToast('Navegador manteve política padrão de limpeza.', 'info');
+                      }}
+                    >
+                      Proteger dados
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </section>
 

@@ -1,17 +1,18 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconSettings, IconPlus, IconUpload, IconListCheck, IconClipboardCheck } from '@tabler/icons-react';
+import { IconSettings, IconPlus, IconUpload, IconListCheck, IconClipboardCheck, IconShieldCheck } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
+import { useNotificacao } from '../contexto/NotificacaoContext';
 import CartaoVistoria from '../componentes/CartaoVistoria';
 import ModalConflito from '../componentes/ModalConflito';
 import styles from './Painel.module.css';
 
 export default function Painel() {
-  const { vistorias, carregando, importarConteudoJson, aplicarResolucaoConflito } = useVistoria();
+  const { vistorias, carregando, importarConteudoJson, aplicarResolucaoConflito, ultimoBackup } = useVistoria();
+  const { mostrarToast, mostrarAlerta } = useNotificacao();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
-  const [feedback, setFeedback] = useState('');
   const [conflitosFila, setConflitosFila] = useState([]);
   const [indiceConflito, setIndiceConflito] = useState(0);
   const [arrastando, setArrastando] = useState(false);
@@ -50,11 +51,13 @@ export default function Painel() {
       });
 
       if (!conflitosFila.length && res?.importadasDiretas > 0) {
-        setFeedback(`${res.importadasDiretas === 1 ? 'Vistoria importada' : `${res.importadasDiretas} vistorias importadas`} com sucesso!`);
-        setTimeout(() => setFeedback(''), 5000);
+        mostrarToast(
+          `${res.importadasDiretas === 1 ? 'Vistoria importada' : `${res.importadasDiretas} vistorias importadas`} com sucesso!`,
+          'sucesso'
+        );
       }
     } catch (err) {
-      alert('Falha ao importar vistoria: ' + err.message);
+      mostrarAlerta('Falha na Importação', 'Não foi possível importar a vistoria: ' + err.message);
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
@@ -70,8 +73,7 @@ export default function Painel() {
           await aplicarResolucaoConflito(item.local, item.remota, estrategia);
         }
         setConflitosFila([]);
-        setFeedback('Vistorias importadas e conflitos resolvidos!');
-        setTimeout(() => setFeedback(''), 5000);
+        mostrarToast('Vistorias importadas e conflitos resolvidos!', 'sucesso');
       } else {
         const item = conflitosFila[indiceConflito];
         await aplicarResolucaoConflito(item.local, item.remota, estrategia);
@@ -80,12 +82,11 @@ export default function Painel() {
           setIndiceConflito(prev => prev + 1);
         } else {
           setConflitosFila([]);
-          setFeedback('Vistoria importada com sucesso!');
-          setTimeout(() => setFeedback(''), 5000);
+          mostrarToast('Vistoria importada com sucesso!', 'sucesso');
         }
       }
     } catch (err) {
-      alert('Erro ao resolver conflito: ' + err.message);
+      mostrarAlerta('Erro de Resolução', 'Erro ao resolver conflito: ' + err.message);
     }
   }
 
@@ -107,12 +108,6 @@ export default function Painel() {
             <IconSettings size={22} />
           </button>
         </div>
-
-        {feedback && (
-          <div className={styles.toastSucesso}>
-            {feedback}
-          </div>
-        )}
 
         {/* Input invisível para arquivo */}
         <input
@@ -147,6 +142,51 @@ export default function Painel() {
           <IconUpload size={20} />
           <span>{arrastando ? 'Solte o arquivo para importar' : 'Importar Vistoria'}</span>
         </button>
+
+        {/* Lembrete preventivo de backup (§3.1/B4) */}
+        {vistorias.length > 0 && (!ultimoBackup || (Date.now() - new Date(ultimoBackup).getTime()) > 7 * 24 * 60 * 60 * 1000) && (
+          <div
+            role="status"
+            style={{
+              marginTop: 14,
+              padding: '10px 14px',
+              borderRadius: 12,
+              background: 'rgba(59, 130, 246, 0.08)',
+              border: '1px solid rgba(59, 130, 246, 0.25)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 12,
+              fontSize: '0.82rem',
+              color: 'var(--text-secondary)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <IconShieldCheck size={18} color="var(--accent, #3b82f6)" style={{ flexShrink: 0 }} />
+              <span>
+                {ultimoBackup
+                  ? 'Mais de 7 dias sem backup. Proteja seus diagnósticos.'
+                  : 'Nenhum backup realizado ainda. Seus dados estão salvos apenas neste aparelho.'}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate('/ajustes')}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--accent, #3b82f6)',
+                fontWeight: 600,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                fontSize: '0.82rem',
+                textDecoration: 'underline',
+              }}
+            >
+              Fazer backup
+            </button>
+          </div>
+        )}
 
         {/* Lista de Vistorias Agrupadas */}
         {carregando ? (
