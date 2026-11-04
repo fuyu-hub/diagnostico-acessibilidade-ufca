@@ -10,6 +10,15 @@ const CHAVE_MAPA_LEGADO = 'ufca:mapa_ids_legados:v1';
 const CHAVE_FLAG_MIGRADO = 'ufca:migracao_concluida:v1';
 const PREFIXO_DOC = 'ufca:vistoria:';
 
+// O índice é lido e regravado a cada escrita: em paralelo, uma escrita apagaria a entrada da outra
+let filaEscrita = Promise.resolve();
+
+function emSerie(operacao) {
+  const resultado = filaEscrita.then(operacao, operacao);
+  filaEscrita = resultado.catch(() => {});
+  return resultado;
+}
+
 /**
  * Calcula um resumo leve para constar no índice
  */
@@ -71,41 +80,46 @@ export async function obterVistoria(idBuscado) {
 /**
  * Salva a vistoria no IndexedDB e atualiza o índice na mesma operação
  */
-export async function salvarVistoria(vistoriaEntrada) {
-  const vistoria = Vistoria.parse(vistoriaEntrada);
-  const entradaIndice = gerarEntradaIndice(vistoria);
+export function salvarVistoria(vistoriaEntrada) {
+  return emSerie(async () => {
+    const vistoria = Vistoria.parse(vistoriaEntrada);
+    const entradaIndice = gerarEntradaIndice(vistoria);
 
-  // Grava o documento completo
-  await set(`${PREFIXO_DOC}${vistoria.vistoriaId}`, vistoria, store);
+    // Grava o documento completo
+    await set(`${PREFIXO_DOC}${vistoria.vistoriaId}`, vistoria, store);
 
-  // Atualiza o índice leve
-  const indiceAtual = (await get(CHAVE_INDICE, store)) || [];
-  const novoIndice = [
-    entradaIndice,
-    ...indiceAtual.filter(item => item.vistoriaId !== vistoria.vistoriaId),
-  ];
-  await set(CHAVE_INDICE, novoIndice, store);
+    // Atualiza o índice leve
+    const indiceAtual = (await get(CHAVE_INDICE, store)) || [];
+    const novoIndice = [
+      entradaIndice,
+      ...indiceAtual.filter(item => item.vistoriaId !== vistoria.vistoriaId),
+    ];
+    await set(CHAVE_INDICE, novoIndice, store);
 
-  // Registra no mapa de ID legado se houver
-  if (vistoria.instituicao?.idLegado) {
-    const mapa = (await get(CHAVE_MAPA_LEGADO, store)) || {};
-    mapa[String(vistoria.instituicao.idLegado)] = vistoria.vistoriaId;
-    await set(CHAVE_MAPA_LEGADO, mapa, store);
-  }
+    // Registra no mapa de ID legado se houver
+    if (vistoria.instituicao?.idLegado) {
+      const mapa = (await get(CHAVE_MAPA_LEGADO, store)) || {};
+      mapa[String(vistoria.instituicao.idLegado)] = vistoria.vistoriaId;
+      await set(CHAVE_MAPA_LEGADO, mapa, store);
+    }
 
-  return vistoria;
+    return vistoria;
+  });
 }
 
 /**
  * Exclui a vistoria do IndexedDB e remove a entrada do índice
  */
-export async function excluirVistoria(vistoriaId) {
-  if (!vistoriaId) return;
-  await del(`${PREFIXO_DOC}${vistoriaId}`, store);
+export function excluirVistoria(vistoriaId) {
+  if (!vistoriaId) return Promise.resolve();
 
-  const indiceAtual = (await get(CHAVE_INDICE, store)) || [];
-  const novoIndice = indiceAtual.filter(item => item.vistoriaId !== vistoriaId);
-  await set(CHAVE_INDICE, novoIndice, store);
+  return emSerie(async () => {
+    await del(`${PREFIXO_DOC}${vistoriaId}`, store);
+
+    const indiceAtual = (await get(CHAVE_INDICE, store)) || [];
+    const novoIndice = indiceAtual.filter(item => item.vistoriaId !== vistoriaId);
+    await set(CHAVE_INDICE, novoIndice, store);
+  });
 }
 
 /**

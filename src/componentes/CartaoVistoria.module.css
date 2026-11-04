@@ -15,7 +15,7 @@
 }
 
 .info:focus-visible {
-  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline: 2.5px solid var(--accent) !important;
   outline-offset: 3px !important;
 }
 
@@ -44,7 +44,7 @@
 }
 
 .progresso:focus-visible {
-  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline: 2.5px solid var(--accent) !important;
   outline-offset: 3px !important;
 }
 

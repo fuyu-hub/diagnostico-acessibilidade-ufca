@@ -92,8 +92,8 @@
 }
 
 .btnBackupPreventivo {
-  background: var(--surface-2, rgba(255, 255, 255, 0.05));
-  border: 1px dashed var(--border-strong, rgba(255, 255, 255, 0.2));
+  background: var(--surface-2);
+  border: 1px dashed var(--border-strong);
   color: var(--text-primary);
   border-radius: 10px;
   padding: 10px 14px;
@@ -111,8 +111,8 @@
 
 .btnBackupPreventivo:hover {
   background: rgba(59, 130, 246, 0.12);
-  border-color: #3b82f6;
-  color: #60a5fa;
+  border-color: var(--accent);
+  color: var(--accent-text);
 }
 
 .blocoConfirmacao {
@@ -122,7 +122,7 @@
   width: 100%;
   text-align: left;
   margin-top: 6px;
-  background: var(--surface-2, rgba(0, 0, 0, 0.2));
+  background: var(--surface-2);
   padding: 12px;
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -135,13 +135,13 @@
 }
 
 .labelInput strong {
-  color: #ef4444;
+  color: var(--text-danger);
   word-break: break-word;
 }
 
 .inputConfirmacao {
-  background: var(--surface-1, #1e293b);
-  border: 1.5px solid var(--border-strong, rgba(255, 255, 255, 0.2));
+  background: var(--surface-1);
+  border: 1.5px solid var(--border-strong);
   color: var(--text-primary);
   border-radius: 8px;
   padding: 10px 12px;
@@ -153,7 +153,7 @@
 }
 
 .inputConfirmacao:focus {
-  border-color: #ef4444;
+  border-color: var(--text-danger);
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
 }
 

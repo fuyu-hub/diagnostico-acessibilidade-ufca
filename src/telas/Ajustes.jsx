@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   IconVolume, IconVolumeOff, IconCheck, IconX, IconMinus, IconInfoCircle,
-  IconShieldCheck, IconDownload, IconUpload
+  IconShieldCheck, IconDownload, IconUpload, IconPalette, IconChevronRight
 } from '@tabler/icons-react';
 import Topbar from '../componentes/Topbar';
 import ModalConflito from '../componentes/ModalConflito';
+import { lerArquivoImportacao } from '../dados/exportacao';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
 import {
@@ -14,18 +16,27 @@ import {
   tocarSomNaoConforme,
   tocarSomNaoAplica
 } from '../utilitarios/som';
+import {
+  PREFERENCIAS_TEMA,
+  obterPreferenciaTema,
+  definirPreferenciaTema,
+  obterAltoContraste,
+  definirAltoContraste,
+} from '../utilitarios/tema';
 import styles from './Ajustes.module.css';
 
 export default function Ajustes() {
   const [somAtivo, setSomAtivo] = useState(isSomHabilitado);
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
+  const [tema, setTema] = useState(obterPreferenciaTema);
+  const [altoContraste, setAltoContraste] = useState(obterAltoContraste);
 
   const {
     vistorias,
     exportarTodasVistorias,
     importarConteudoJson,
     aplicarResolucaoConflito,
-    estimarArmazenamento,
     armazenamentoPersistido,
     solicitarPersistenciaManual,
     ultimoBackup,
@@ -35,21 +46,12 @@ export default function Ajustes() {
 
   const [conflitosFila, setConflitosFila] = useState([]);
   const [indiceConflito, setIndiceConflito] = useState(0);
-  const [infoArmazenamento, setInfoArmazenamento] = useState(null);
-
-  useEffect(() => {
-    estimarArmazenamento?.().then(res => {
-      if (res && res.cotaMB > 0) {
-        setInfoArmazenamento(res);
-      }
-    });
-  }, [estimarArmazenamento]);
 
   async function baixarBackup() {
     try {
       if (vistorias && vistorias.length > 0) {
-        await exportarTodasVistorias();
-        mostrarToast('Backup salvo com sucesso!', 'sucesso');
+        const res = await exportarTodasVistorias();
+        if (!res?.cancelado) mostrarToast('Backup salvo com sucesso!', 'sucesso');
         return;
       }
       const raw = localStorage.getItem('nbr9050_vistorias');
@@ -79,7 +81,7 @@ export default function Ajustes() {
     if (!file) return;
 
     try {
-      const texto = await file.text();
+      const texto = await lerArquivoImportacao(file);
       const res = await importarConteudoJson(texto, (conflitos) => {
         setConflitosFila(conflitos);
         setIndiceConflito(0);
@@ -137,13 +139,63 @@ export default function Ajustes() {
 
       <div className="tela-body" style={{ padding: '24px 20px 48px' }}>
         <div className={styles.container}>
+          {/* Card de Aparência */}
+          <section className={styles.secaoCard}>
+            <div className={styles.secaoInfo}>
+              <h3 className={styles.secaoTitulo}>
+                <IconPalette size={20} color="var(--accent)" aria-hidden="true" />
+                <span>Aparência</span>
+              </h3>
+              <p className={styles.secaoDesc}>No modo automático, o app acompanha o tema do sistema.</p>
+            </div>
+
+            <div className={styles.opcoesTema} role="radiogroup" aria-label="Tema do aplicativo">
+              {PREFERENCIAS_TEMA.map(opcao => (
+                <label key={opcao.valor} className={`chip ${styles.opcaoTema} ${tema === opcao.valor ? 'ativo' : ''}`}>
+                  <input
+                    type="radio"
+                    name="tema"
+                    className="sr-only"
+                    value={opcao.valor}
+                    checked={tema === opcao.valor}
+                    onChange={() => {
+                      setTema(opcao.valor);
+                      definirPreferenciaTema(opcao.valor);
+                    }}
+                  />
+                  {opcao.rotulo}
+                </label>
+              ))}
+            </div>
+
+            <div className={styles.secaoHeader}>
+              <div className={styles.secaoInfo}>
+                <span className={styles.rotuloOpcao}>Alto contraste</span>
+                <p className={styles.secaoDesc}>Reforça bordas e textos, útil sob luz forte.</p>
+              </div>
+              <label className={styles.switchLabel}>
+                <input
+                  type="checkbox"
+                  className={styles.switchInput}
+                  checked={altoContraste}
+                  onChange={e => {
+                    setAltoContraste(e.target.checked);
+                    definirAltoContraste(e.target.checked);
+                  }}
+                  aria-label="Ativar ou desativar alto contraste"
+                />
+                <span className={styles.slider} />
+              </label>
+            </div>
+          </section>
+
           {/* Card de Efeitos Sonoros */}
           <section className={styles.secaoCard}>
             <div className={styles.secaoHeader}>
               <div className={styles.secaoInfo}>
                 <h3 className={styles.secaoTitulo}>
                   {somAtivo ? (
-                    <IconVolume size={20} color="var(--accent, #3b82f6)" />
+                    <IconVolume size={20} color="var(--accent)" />
                   ) : (
                     <IconVolumeOff size={20} color="var(--text-muted)" />
                   )}
@@ -211,7 +263,7 @@ export default function Ajustes() {
             <div className={styles.secaoHeader}>
               <div className={styles.secaoInfo}>
                 <h3 className={styles.secaoTitulo}>
-                  <IconShieldCheck size={20} color="var(--accent, #3b82f6)" />
+                  <IconShieldCheck size={20} color="var(--accent)" />
                   <span>Backup das Vistorias</span>
                 </h3>
                 <p className={styles.secaoDesc}>
@@ -246,16 +298,16 @@ export default function Ajustes() {
                 onChange={handleImportarArquivo}
               />
 
-              <div style={{ marginTop: 8, padding: '12px 14px', background: 'var(--surface-2, #18181b)', border: '1px solid var(--border, #27272a)', borderRadius: 10, fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+              <div style={{ marginTop: 8, padding: '12px 14px', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 10, fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                 <div style={{ marginBottom: 6 }}>
-                  <strong style={{ color: 'var(--text-strong, #fff)' }}>Último backup: </strong>
+                  <strong style={{ color: 'var(--text-strong)' }}>Último backup: </strong>
                   {ultimoBackup 
                     ? new Date(ultimoBackup).toLocaleString('pt-BR') 
                     : 'Nenhum backup realizado ainda (recomendado)'}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                   <span>
-                    <strong style={{ color: 'var(--text-strong, #fff)' }}>Armazenamento: </strong>
+                    <strong style={{ color: 'var(--text-strong)' }}>Armazenamento: </strong>
                     {armazenamentoPersistido ? '✓ Persistente (protegido)' : 'Padrão do navegador'}
                   </span>
                   {!armazenamentoPersistido && (
@@ -263,8 +315,8 @@ export default function Ajustes() {
                       type="button"
                       style={{
                         background: 'transparent',
-                        border: '1px solid var(--border, #3f3f46)',
-                        color: 'var(--accent, #3b82f6)',
+                        border: '1px solid var(--border)',
+                        color: 'var(--accent)',
                         padding: '3px 8px',
                         borderRadius: 6,
                         fontSize: '0.76rem',
@@ -284,20 +336,11 @@ export default function Ajustes() {
             </div>
           </section>
 
-          {/* Card informativo sobre o aplicativo */}
-          <section className={styles.secaoCard}>
-            <div className={styles.secaoHeader}>
-              <div className={styles.secaoInfo}>
-                <h3 className={styles.secaoTitulo}>
-                  <IconInfoCircle size={20} color="var(--text-muted)" />
-                  <span>Sobre o Diagnóstico NBR 9050</span>
-                </h3>
-                <p className={styles.secaoDesc}>
-                  Aplicação web para levantamento técnico de acessibilidade espacial em edificações públicas de ensino, desenvolvida no âmbito do projeto de extensão da Universidade Federal do Cariri (UFCA).
-                </p>
-              </div>
-            </div>
-          </section>
+          <button type="button" className={styles.linhaSobre} onClick={() => navigate('/sobre')}>
+            <IconInfoCircle size={20} aria-hidden="true" />
+            <span>Sobre o projeto e a equipe</span>
+            <IconChevronRight size={18} aria-hidden="true" />
+          </button>
         </div>
       </div>
 

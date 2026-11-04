@@ -21,14 +21,19 @@ import {
   criarEnvelopeExportacao,
   compartilharOuBaixarEnvelope,
   analisarArquivoImportacao,
+  dividirEmLotes,
+  gerarNomeArquivoExportacao,
 } from '../dados/exportacao.js';
+import { gravarLote } from '../dados/gravacao.js';
 import { resolverConflito } from '../dados/conflito.js';
 import { calcularStatusVistoria } from '../dados/checklist.js';
+import { useNotificacao } from './NotificacaoContext.jsx';
 import ModalErroCota from '../componentes/ModalErroCota.jsx';
 
 const VistoriaContext = createContext(null);
 
 const CHAVE_STORAGE_BACKUP = 'nbr9050_vistorias';
+const INTERVALO_NOVA_TENTATIVA = 15000;
 
 /**
  * Enriquece uma Vistoria canônica com getters e propriedades compatíveis com
@@ -142,6 +147,7 @@ function converterUIParaCanonica(vistoriaUI) {
 }
 
 export function VistoriaProvider({ children }) {
+  const { mostrarToast } = useNotificacao();
   const [vistorias, setVistorias] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
@@ -179,6 +185,8 @@ export function VistoriaProvider({ children }) {
   // Buffer de escritas pendentes para debounce e descarregamento imediato no pagehide
   const pendentesRef = useRef(new Map());
   const debounceTimerRef = useRef(null);
+  const novaTentativaRef = useRef(null);
+  const avisoFalhaRef = useRef(false);
 
   /**
    * Monitoramento preventivo de cota de armazenamento (aviso a 80% - §3.4)
@@ -210,41 +218,50 @@ export function VistoriaProvider({ children }) {
 
     const listaParaGravar = Array.from(pendentesRef.current.values());
     pendentesRef.current.clear();
+    clearTimeout(novaTentativaRef.current);
     setSalvando(true);
 
     try {
       const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('ufca_vistorias_sync') : null;
 
-      for (const itemUI of listaParaGravar) {
+      const { gravados, falhas } = await gravarLote(listaParaGravar, async (itemUI) => {
         const canonica = converterUIParaCanonica(itemUI);
-        try {
-          await salvarVistoria(canonica);
-          channel?.postMessage({ tipo: 'vistoria_salva', vistoriaId: canonica.vistoriaId });
-        } catch (saveErr) {
-          const isQuota = saveErr?.name === 'QuotaExceededError' ||
-                          saveErr?.name === 'NS_ERROR_DOM_QUOTA_REACHED' ||
-                          (saveErr?.message && /quota/i.test(saveErr.message));
+        await salvarVistoria(canonica);
+        channel?.postMessage({ tipo: 'vistoria_salva', vistoriaId: canonica.vistoriaId });
+        return itemUI;
+      });
 
-          if (isQuota) {
-            console.error('Estouro de cota detectado no IndexedDB (§3.4):', saveErr);
-            setErroCota({
-              vistoria: canonica,
-              mensagem: 'O armazenamento do navegador está esgotado.',
-            });
-            // Re-insere para manter em memória e permitir exportação de emergência
-            pendentesRef.current.set(itemUI.id || itemUI.vistoriaId, itemUI);
-            break;
-          }
-          throw saveErr;
+      channel?.close();
+
+      for (const { item, erro, cota } of falhas) {
+        console.error('Falha ao gravar vistoria:', erro);
+        const chave = item.id || item.vistoriaId;
+        // Uma edição mais recente, feita durante a gravação, tem prioridade sobre a que falhou
+        if (!pendentesRef.current.has(chave)) pendentesRef.current.set(chave, item);
+
+        if (cota) {
+          setErroCota({
+            vistoria: converterUIParaCanonica(item),
+            mensagem: 'O armazenamento do navegador está esgotado.',
+          });
         }
       }
 
-      channel?.close();
+      if (falhas.length > 0) {
+        if (!falhas.every(f => f.cota) && !avisoFalhaRef.current) {
+          avisoFalhaRef.current = true;
+          mostrarToast('Não foi possível salvar agora. Suas respostas continuam abertas e o app tentará de novo. Não feche esta página.', 'erro', 8000);
+        }
+        novaTentativaRef.current = setTimeout(() => flushPendentes(), INTERVALO_NOVA_TENTATIVA);
+      } else if (avisoFalhaRef.current) {
+        avisoFalhaRef.current = false;
+        mostrarToast('Respostas salvas com sucesso.', 'sucesso');
+      }
 
       // Sincroniza cópia de segurança no localStorage durante o período de transição
       try {
         const listaAtualizada = await Promise.all(
-          listaParaGravar.map(async (v) => {
+          gravados.map(async (v) => {
             const doc = await obterVistoria(v.id || v.vistoriaId);
             return doc;
           })
@@ -275,9 +292,9 @@ export function VistoriaProvider({ children }) {
     } catch (err) {
       console.error('Erro ao descarregar vistorias no IndexedDB:', err);
     } finally {
-      setSalvando(false);
+      setSalvando(pendentesRef.current.size > 0);
     }
-  }, []);
+  }, [mostrarToast]);
 
   /**
    * Agenda salvamento com debounce (500ms)
@@ -442,7 +459,10 @@ export function VistoriaProvider({ children }) {
     setVistorias(prev => [novaUI, ...prev]);
 
     // Persiste no repositório
-    salvarVistoria(novaCanonica).catch(e => console.error('Erro ao salvar nova vistoria:', e));
+    salvarVistoria(novaCanonica).catch(e => {
+      console.error('Erro ao salvar nova vistoria:', e);
+      agendarGravacao(novaUI);
+    });
 
     return novoId;
   }
@@ -586,8 +606,18 @@ export function VistoriaProvider({ children }) {
       throw new Error('Nenhuma vistoria para exportar.');
     }
     const canonicas = vistorias.map(v => converterUIParaCanonica(v));
-    const envelope = criarEnvelopeExportacao(canonicas);
-    const res = await compartilharOuBaixarEnvelope(envelope);
+    const lotes = dividirEmLotes(canonicas);
+    let res;
+
+    for (const [i, lote] of lotes.entries()) {
+      const envelope = criarEnvelopeExportacao(lote);
+      const nome = lotes.length > 1
+        ? gerarNomeArquivoExportacao(lote).replace(/\.json$/, ` - Parte ${i + 1} de ${lotes.length}.json`)
+        : undefined;
+      res = await compartilharOuBaixarEnvelope(envelope, nome);
+      if (res.cancelado) return res;
+    }
+
     const dataBackup = registrarDataUltimoBackup();
     setUltimoBackup(dataBackup);
     return res;
@@ -686,7 +716,7 @@ export function VistoriaProvider({ children }) {
           style={{
             background: 'rgba(234, 179, 8, 0.15)',
             borderBottom: '1px solid rgba(234, 179, 8, 0.35)',
-            color: '#ca8a04',
+            color: 'var(--text-warning)',
             padding: '10px 16px',
             fontSize: '0.84rem',
             textAlign: 'center',

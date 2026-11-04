@@ -1,0 +1,31 @@
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.titulo {
+  color: var(--text-strong);
+  font-size: 0.98rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.detalhe {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.conteudo p + p {
+  margin-top: 6px;
+}
+
+.lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

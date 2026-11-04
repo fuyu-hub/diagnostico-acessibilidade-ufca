@@ -5,7 +5,7 @@ import {
   IconDashboard, IconAlertTriangle, IconAlertCircle
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { TODOS_ITENS, SECOES, ITENS_POR_SECAO, ITENS_TECNICOS } from '../dados/checklist';
+import { SECOES, ITENS_POR_SECAO, ITENS_TECNICOS } from '../dados/checklist';
 import { calcularIndiceItens, FAIXAS_INDICE } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
 import styles from './Resultado.module.css';
@@ -77,7 +77,7 @@ export default function Resultado() {
         <Topbar titulo="Vistoria não encontrada" voltar="/" />
         <div className="tela-body" style={{ padding: '48px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <IconAlertCircle size={56} color="var(--text-muted)" style={{ opacity: 0.6, marginBottom: 16 }} />
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 8, color: 'var(--text-strong, #ffffff)' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 8, color: 'var(--text-strong)' }}>
             Vistoria não encontrada
           </h2>
           <p style={{ color: 'var(--text-secondary)', marginBottom: 24, maxWidth: 360, lineHeight: 1.5 }}>
@@ -121,7 +121,7 @@ export default function Resultado() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 12,
-                color: '#eab308',
+                color: 'var(--text-warning)',
                 fontSize: '0.86rem',
                 lineHeight: 1.5,
               }}

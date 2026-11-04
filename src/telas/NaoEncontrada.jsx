@@ -12,7 +12,7 @@ export default function NaoEncontrada() {
         <div style={{ marginBottom: 20 }}>
           <IconAlertCircle size={56} color="var(--text-muted)" style={{ opacity: 0.6 }} />
         </div>
-        <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: 12, color: 'var(--text-strong, #ffffff)' }}>
+        <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: 12, color: 'var(--text-strong)' }}>
           Página não encontrada
         </h2>
         <p style={{ color: 'var(--text-secondary)', marginBottom: 32, maxWidth: 360, lineHeight: 1.5 }}>

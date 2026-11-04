@@ -6,6 +6,9 @@ import '@fontsource/inter/600.css';
 import '@fontsource/inter/700.css';
 import './estilos/global.css';
 import App from './App.jsx';
+import { iniciarTema } from './utilitarios/tema.js';
+
+iniciarTema();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

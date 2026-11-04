@@ -9,11 +9,11 @@ export default function ModalErroCota({ aberto, erro: _erro, onExportarEmergenci
 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true" aria-labelledby="titulo-cota">
-      <div className={styles.modal} style={{ maxWidth: 480, borderTop: '4px solid #ef4444' }}>
+      <div className={styles.modal} style={{ maxWidth: 480, borderTop: '4px solid var(--text-danger)' }}>
         <div className={styles.cabecalho}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <IconAlertTriangle size={24} color="#ef4444" />
-            <h2 id="titulo-cota" className={styles.titulo} style={{ color: '#ef4444' }}>
+            <IconAlertTriangle size={24} color="var(--text-danger)" />
+            <h2 id="titulo-cota" className={styles.titulo} style={{ color: 'var(--text-danger)' }}>
               Espaço de Armazenamento Esgotado
             </h2>
           </div>
@@ -34,7 +34,7 @@ export default function ModalErroCota({ aberto, erro: _erro, onExportarEmergenci
             <button
               type="button"
               className={styles.btnEstrategia}
-              style={{ background: 'var(--accent, #3b82f6)', color: '#fff', justifyContent: 'center' }}
+              style={{ background: 'var(--accent)', color: '#fff', justifyContent: 'center' }}
               onClick={onExportarEmergencia}
             >
               <IconDownload size={20} />

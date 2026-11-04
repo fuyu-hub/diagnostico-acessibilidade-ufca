@@ -37,8 +37,8 @@
 
 .chipAvaliador.chipAvaliadorAtivo {
   background: rgba(59, 130, 246, 0.1);
-  border-color: var(--accent, #3b82f6);
-  color: #3b82f6;
+  border-color: var(--accent);
+  color: var(--accent-text);
   font-weight: 600;
 }
 

@@ -1,7 +1,46 @@
 import { EnvelopeExportacao, Vistoria } from './esquema.js';
 import { converterLegadoParaCanonica } from './migracoes.js';
 
-const VERSAO_APP = '0.4.2';
+export const VERSAO_APP = '0.4.2';
+
+// Backups com fotos podem ser grandes. O limite fica abaixo do tamanho máximo de texto dos navegadores
+// e cada arquivo exportado é menor que o limite de importação, para todo backup poder voltar.
+const MB = 1024 * 1024;
+export const LIMITE_IMPORTACAO = 500 * MB;
+export const LIMITE_LOTE_EXPORTACAO = 300 * MB;
+
+/**
+ * Divide vistorias em lotes menores que o limite, sem separar uma vistoria
+ */
+export function dividirEmLotes(vistorias, limite = LIMITE_LOTE_EXPORTACAO) {
+  const lotes = [];
+  let atual = [];
+  let tamanhoAtual = 0;
+
+  for (const vistoria of vistorias) {
+    const tamanho = JSON.stringify(vistoria).length;
+    if (atual.length > 0 && tamanhoAtual + tamanho > limite) {
+      lotes.push(atual);
+      atual = [];
+      tamanhoAtual = 0;
+    }
+    atual.push(vistoria);
+    tamanhoAtual += tamanho;
+  }
+
+  if (atual.length > 0) lotes.push(atual);
+  return lotes;
+}
+
+/**
+ * Lê um arquivo de importação, recusando antes de carregar o que não caberia em memória
+ */
+export async function lerArquivoImportacao(arquivo) {
+  if (arquivo.size > LIMITE_IMPORTACAO) {
+    throw new Error(`O arquivo selecionado excede o limite máximo permitido (${LIMITE_IMPORTACAO / MB} MB).`);
+  }
+  return arquivo.text();
+}
 
 /**
  * Monta um EnvelopeExportacao canônico a partir de uma ou várias vistorias
@@ -85,14 +124,13 @@ export async function compartilharOuBaixarEnvelope(envelope, nomeArquivoCustomiz
  * Analisa e valida com barreira rigorosa um texto JSON recebido por upload
  * Suporta EnvelopeExportacao v1 e formato legado retrocompatível
  */
-export function analisarArquivoImportacao(conteudoTexto) {
+export function analisarArquivoImportacao(conteudoTexto, limite = LIMITE_IMPORTACAO) {
   if (!conteudoTexto || typeof conteudoTexto !== 'string') {
     throw new Error('O arquivo está vazio.');
   }
 
-  // Barreira de tamanho (máximo 15MB para evitar travar a aba)
-  if (conteudoTexto.length > 15 * 1024 * 1024) {
-    throw new Error('O arquivo selecionado excede o limite máximo permitido (15MB).');
+  if (conteudoTexto.length > limite) {
+    throw new Error(`O arquivo selecionado excede o limite máximo permitido (${Math.round(limite / MB)} MB).`);
   }
 
   let jsonBruto;

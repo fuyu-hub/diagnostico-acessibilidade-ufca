@@ -53,11 +53,11 @@ describe('Suíte de Testes — Requisitos Mínimos do Escopo 1 (§10)', () => {
     expect(canonica.status).toBe('em_andamento');
   });
 
-  // Fixture 4: Arquivo excedendo o limite de tamanho aceito (15MB)
-  it('4. Bloqueia arquivo que excede o limite máximo permitido de 15MB', () => {
-    // Simula string com mais de 15MB
-    const conteudoGigante = ' '.repeat(15 * 1024 * 1024 + 50);
-    expect(() => analisarArquivoImportacao(conteudoGigante)).toThrow(/excede o limite máximo permitido/i);
+  // Fixture 4: Arquivo excedendo o limite de tamanho aceito
+  it('4. Bloqueia arquivo que excede o limite máximo permitido', () => {
+    const limite = 1024 * 1024;
+    const conteudoGigante = ' '.repeat(limite + 50);
+    expect(() => analisarArquivoImportacao(conteudoGigante, limite)).toThrow(/excede o limite máximo permitido/i);
   });
 
   // Fixture 5: Envelope com lote misto de vistorias

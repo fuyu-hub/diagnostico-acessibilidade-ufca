@@ -7,7 +7,8 @@ import {
   IconPhoto, IconAlertCircle,
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { TODOS_ITENS, ITENS_TECNICOS, dependentesEmCascata, dependentesParaLimpar } from '../dados/checklist';
+import { useNotificacao } from '../contexto/NotificacaoContext';
+import { TODOS_ITENS, ITENS_TECNICOS, dependentesComDados, dependentesEmCascata, dependentesParaLimpar } from '../dados/checklist';
 import Topbar from '../componentes/Topbar';
 import BarraProgresso from '../componentes/BarraProgresso';
 import { tocarSomResposta } from '../utilitarios/som';
@@ -34,6 +35,7 @@ export default function ItemChecklist() {
   const { id, n } = useParams();
   const navigate = useNavigate();
   const { getVistoria, responderItem, salvando, carregando } = useVistoria();
+  const { mostrarConfirmacao } = useNotificacao();
 
   const vistoria = getVistoria(id);
   const itemIdx = parseInt(n, 10) - 1;
@@ -92,8 +94,23 @@ export default function ItemChecklist() {
     return null;
   }
 
-  function selecionar(valor) {
+  async function selecionar(valor) {
     if (!item) return;
+
+    if (ehTriagem && (valor === 'nao' || valor === 'nao-aplica')) {
+      const afetados = dependentesComDados(item, vistoria?.respostas).length;
+      if (afetados > 0) {
+        const confirmado = await mostrarConfirmacao({
+          titulo: 'Apagar respostas registradas?',
+          mensagem: `${afetados === 1 ? '1 item abaixo desta pergunta já tem' : `${afetados} itens abaixo desta pergunta já têm`} resposta, observação ou foto. Ao continuar, eles passam a "Não se aplica" e esses registros são apagados. Isso não pode ser desfeito.`,
+          textoConfirmar: 'Apagar e continuar',
+          textoCancelar: 'Manter registros',
+          perigo: true,
+        });
+        if (!confirmado) return;
+      }
+    }
+
     tocarSomResposta(valor);
     vibrarResposta(valor);
     const opcao = opcoes.find(o => o.valor === valor);
@@ -195,7 +212,7 @@ export default function ItemChecklist() {
         <Topbar titulo="Não encontrado" voltar={vistoria ? `/checklist/${vistoria.id}/itens` : '/'} />
         <div className="tela-body" style={{ padding: '48px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <IconAlertCircle size={56} color="var(--text-muted)" style={{ opacity: 0.6, marginBottom: 16 }} />
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 8, color: 'var(--text-strong, #ffffff)' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 8, color: 'var(--text-strong)' }}>
             {!vistoria ? 'Vistoria não encontrada' : 'Item não encontrado'}
           </h2>
           <p style={{ color: 'var(--text-secondary)', marginBottom: 24, maxWidth: 360, lineHeight: 1.5 }}>
@@ -418,13 +435,13 @@ export default function ItemChecklist() {
                       {typeof foto === 'string' && foto.startsWith('data:image') ? (
                         <img src={foto} alt={`Foto comprobatória do item #${item.id}`} className={styles.miniaturaFoto} />
                       ) : (
-                        <IconPhoto size={24} color="var(--accent, #3b82f6)" />
+                        <IconPhoto size={24} color="var(--accent)" />
                       )}
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <span className={styles.fotoNome}>
                           {typeof foto === 'string' && foto.startsWith('data:image') ? 'Foto anexada' : foto}
                         </span>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--accent, #3b82f6)' }}>Toque para ampliar</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--accent)' }}>Toque para ampliar</span>
                       </div>
                     </div>
                     <button
@@ -453,7 +470,7 @@ export default function ItemChecklist() {
                         }
                       }}
                     >
-                      <IconCamera size={20} color="var(--accent, #3b82f6)" />
+                      <IconCamera size={20} color="var(--accent)" />
                       <span>Câmera</span>
                       <input
                         type="file"
@@ -476,7 +493,7 @@ export default function ItemChecklist() {
                         }
                       }}
                     >
-                      <IconPhoto size={20} color="var(--accent, #3b82f6)" />
+                      <IconPhoto size={20} color="var(--accent)" />
                       <span>Galeria</span>
                       <input
                         type="file"

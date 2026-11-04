@@ -20,8 +20,8 @@
 }
 
 .modal {
-  background: var(--surface-1, #1e293b);
-  border: 1.5px solid var(--border-warning, rgba(234, 179, 8, 0.4));
+  background: var(--surface-1);
+  border: 1.5px solid var(--border-warning);
   border-radius: 24px;
   padding: 24px;
   max-width: 520px;
@@ -54,7 +54,7 @@
   border-radius: 16px;
   background: rgba(234, 179, 8, 0.15);
   border: 1.5px solid rgba(234, 179, 8, 0.35);
-  color: #eab308;
+  color: var(--text-warning);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,7 +69,7 @@
 
 .tagProgresso {
   align-self: center;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--tinta-suave);
   border: 1px solid var(--border);
   padding: 4px 12px;
   border-radius: 999px;
@@ -103,7 +103,7 @@
 }
 
 .colunaVersao {
-  background: var(--surface-2, rgba(255, 255, 255, 0.04));
+  background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px;
@@ -168,7 +168,7 @@
 }
 
 .btnAcao {
-  background: var(--surface-2, rgba(255, 255, 255, 0.05));
+  background: var(--surface-2);
   border: 1.5px solid var(--border);
   border-radius: 14px;
   padding: 12px 14px;
@@ -183,8 +183,8 @@
 }
 
 .btnAcao:hover {
-  background: var(--surface-3, rgba(255, 255, 255, 0.1));
-  border-color: var(--accent, #3b82f6);
+  background: var(--surface-3);
+  border-color: var(--accent);
   transform: translateY(-1px);
 }
 
@@ -206,5 +206,5 @@
 }
 
 .btnCancelar:hover {
-  border-color: #ef4444;
+  border-color: var(--text-danger);
 }

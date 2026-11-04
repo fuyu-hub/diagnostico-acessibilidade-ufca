@@ -7,6 +7,16 @@
     <meta name="theme-color" content="#0a0a0a" />
     <meta name="description" content="Diagnóstico de Acessibilidade Escolar conforme a NBR 9050:2020 — Offline First" />
     <title>Diagnóstico de Acessibilidade — NBR 9050</title>
+    <script>
+      // Antes do primeiro desenho, para o app não abrir com o tema errado por um instante
+      (function () {
+        var preferencia = null;
+        try { preferencia = localStorage.getItem('nbr9050_tema'); } catch (e) {}
+        var escuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.tema =
+          preferencia === 'claro' || preferencia === 'escuro' ? preferencia : (escuro ? 'escuro' : 'claro');
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

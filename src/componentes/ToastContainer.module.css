@@ -18,13 +18,13 @@
   align-items: center;
   gap: 12px;
   padding: 12px 18px;
-  background: rgba(24, 24, 27, 0.95);
+  background: var(--vidro);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--border, #333333);
+  border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  color: var(--text-primary, #ffffff);
+  color: var(--text-primary);
   font-size: 0.88rem;
   line-height: 1.4;
   animation: toastEntrada 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -47,7 +47,7 @@
 }
 
 .toastSucesso .icone {
-  color: #22c55e;
+  color: var(--text-success);
 }
 
 .toastErro {
@@ -55,7 +55,7 @@
 }
 
 .toastErro .icone {
-  color: #ef4444;
+  color: var(--text-danger);
 }
 
 .toastInfo {
@@ -63,7 +63,7 @@
 }
 
 .toastInfo .icone {
-  color: #3b82f6;
+  color: var(--accent-text);
 }
 
 .icone {
@@ -81,7 +81,7 @@
 .btnFechar {
   background: transparent;
   border: none;
-  color: var(--text-muted, #8e8e93);
+  color: var(--text-muted);
   cursor: pointer;
   padding: 4px;
   display: flex;
@@ -92,5 +92,5 @@
 }
 
 .btnFechar:hover {
-  color: #ffffff;
+  color: var(--text-strong);
 }
