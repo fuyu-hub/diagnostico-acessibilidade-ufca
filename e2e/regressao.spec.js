@@ -191,7 +191,7 @@ test('tema: padrão segue o sistema, a escolha manual prevalece e persiste', asy
   await page.reload();
   expect(await tema()).toBe('claro');
   const fundo = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  expect(fundo).toBe('rgb(244, 245, 247)');
+  expect(fundo).toBe('rgb(248, 250, 252)');
 
   await page.getByRole('radio', { name: 'Automático' }).check({ force: true });
   await expect.poll(tema).toBe('escuro');
