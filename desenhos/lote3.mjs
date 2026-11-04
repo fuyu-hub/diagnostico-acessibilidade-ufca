@@ -399,7 +399,8 @@ function elevadorBotoeira() {
   const bx = 1200, by = y(1.35);
   s += `<circle cx="${bx}" cy="${by}" r="66" fill="#fff" stroke="${C.linha}" stroke-width="3"/>`;
   s += `<text x="${bx}" y="${by + 16}" font-size="48" font-weight="800" text-anchor="middle" fill="${C.cota}">2</text>`;
-  for (const [dx, dy] of [[-8, -46], [8, -46], [8, -32]]) s += `<circle cx="${bx + dx}" cy="${by + dy}" r="4.5" fill="${C.cota}"/>`;
+  // Braille do número 2: sinal de número (pontos 3, 4, 5 e 6) seguido de b (pontos 1 e 2)
+  for (const [dx, dy] of [[-24, -30], [-13, -52], [-13, -41], [-13, -30], [8, -52], [8, -41]]) s += `<circle cx="${bx + dx}" cy="${by + dy}" r="4" fill="${C.cota}"/>`;
   s += texto(bx, by + 104, 'Relevo e Braille,', { tam: 22, peso: 600 });
   s += texto(bx, by + 134, 'com contraste', { tam: 22, peso: 600 });
 
