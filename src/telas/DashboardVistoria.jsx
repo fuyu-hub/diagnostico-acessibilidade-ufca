@@ -21,14 +21,37 @@ import styles from './DashboardVistoria.module.css';
 export default function DashboardVistoria() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getVistoria, atualizarVistoria, removerVistoria, exportarVistoria, carregando, responderItem } = useVistoria();
-  const { mostrarToast, mostrarConfirmacao } = useNotificacao();
+  const { getVistoria, carregando } = useVistoria();
 
   if (carregando) {
     return <div style={{ padding: 20, textAlign: 'center' }}>Carregando dados da vistoria...</div>;
   }
 
   const vistoria = getVistoria(id);
+
+  if (!vistoria) {
+    return (
+      <div className="app-shell">
+        <Topbar titulo="Vistoria não encontrada" voltar="/" />
+        <div className="tela-body" style={{ padding: '32px 20px', textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-secondary)' }}>A vistoria solicitada não existe ou foi removida.</p>
+          <button className="btn-nav primario" onClick={() => navigate('/')} style={{ marginTop: 20 }}>
+            Voltar ao Painel
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Montado só com a vistoria já carregada: a ficha inicializa com os dados dela
+  return <ConteudoVistoria key={id} id={id} vistoria={vistoria} />;
+}
+
+function ConteudoVistoria({ id, vistoria }) {
+  const navigate = useNavigate();
+  const { atualizarVistoria, removerVistoria, exportarVistoria, responderItem } = useVistoria();
+  const { mostrarToast, mostrarConfirmacao } = useNotificacao();
+
   const [modalExcluirAberto, setModalExcluirAberto] = useState(false);
   const [modalGaleriaAberto, setModalGaleriaAberto] = useState(false);
   const [gerandoPlanilha, setGerandoPlanilha] = useState(false);
@@ -92,30 +115,6 @@ export default function DashboardVistoria() {
       setForm(prev => ({ ...prev, horarioInicio: hm }));
     }
   }, [vistoria, id, atualizarVistoria]);
-
-  if (!vistoria) {
-    if (carregando) {
-      return (
-        <div className="app-shell">
-          <Topbar titulo="Carregando..." voltar="/" />
-          <div className="tela-body" style={{ padding: '32px 20px', textAlign: 'center' }}>
-            <p style={{ color: 'var(--text-secondary)' }}>Carregando dados da vistoria...</p>
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div className="app-shell">
-        <Topbar titulo="Vistoria não encontrada" voltar="/" />
-        <div className="tela-body" style={{ padding: '32px 20px', textAlign: 'center' }}>
-          <p style={{ color: 'var(--text-secondary)' }}>A vistoria solicitada não existe ou foi removida.</p>
-          <button className="btn-nav primario" onClick={() => navigate('/')} style={{ marginTop: 20 }}>
-            Voltar ao Painel
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   // Estatísticas de preenchimento e contagens
   const total = ITENS_TECNICOS.length;
