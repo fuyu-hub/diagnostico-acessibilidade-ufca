@@ -1,6 +1,6 @@
 import ExcelJS from 'exceljs';
 import { ITENS_TECNICOS, SECOES } from '../dados/checklist.js';
-import { calcularIndiceItens } from '../dados/classificacao.js';
+
 import { CATEGORIAS, CATEGORIA_POR_SECAO, campo, formatarData, classificarResposta, extrairDadosInstituicao } from './vistoriaComum.js';
 
 /* =========================================================================

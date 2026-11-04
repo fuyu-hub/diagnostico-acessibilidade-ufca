@@ -3,6 +3,20 @@
  * Converte imagens brutas para WebP compacto mantendo alta nitidez técnica
  */
 
+// Mantém leitura de detalhes no relatório com arquivos bem menores que os da câmera
+export const LADO_MAXIMO_FOTO = 1920;
+
+/**
+ * Reduz as dimensões para caber no lado máximo, sem ampliar nem distorcer
+ */
+export function calcularDimensoesFoto(largura, altura, ladoMaximo = LADO_MAXIMO_FOTO) {
+  const escala = Math.min(1, ladoMaximo / Math.max(largura, altura));
+  return {
+    largura: Math.round(largura * escala),
+    altura: Math.round(altura * escala),
+  };
+}
+
 export async function comprimirImagem(arquivo, opcoes = {}) {
   const { qualidade = 0.75 } = opcoes;
 
@@ -19,9 +33,10 @@ export async function comprimirImagem(arquivo, opcoes = {}) {
       img.onerror = () => reject(new Error('Formato de imagem inválido ou corrompido.'));
 
       img.onload = () => {
-        // Mantém as dimensões 100% originais da imagem (sem redução de escala/proporção)
-        const largura = img.naturalWidth || img.width;
-        const altura = img.naturalHeight || img.height;
+        const { largura, altura } = calcularDimensoesFoto(
+          img.naturalWidth || img.width,
+          img.naturalHeight || img.height,
+        );
 
         const canvas = document.createElement('canvas');
         canvas.width = largura;

@@ -204,7 +204,7 @@
 }
 
 .cardSecao:focus-visible {
-  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline: 2.5px solid var(--accent) !important;
   outline-offset: 3px !important;
 }
 
@@ -331,7 +331,7 @@
 }
 
 .subgrupoHeader:focus-visible {
-  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline: 2.5px solid var(--accent) !important;
   outline-offset: 2px !important;
 }
 
@@ -383,7 +383,7 @@
 }
 
 .listaLinhaResponsiva:focus-visible {
-  outline: 2.5px solid var(--accent, #3b82f6) !important;
+  outline: 2.5px solid var(--accent) !important;
   outline-offset: 2px !important;
   background: var(--surface-1);
 }
@@ -394,7 +394,7 @@
   padding: 1px 6px;
   border-radius: 4px;
   background: rgba(234, 179, 8, 0.15);
-  color: #facc15;
+  color: var(--text-warning);
   border: 1px solid rgba(234, 179, 8, 0.35);
   letter-spacing: 0.2px;
 }

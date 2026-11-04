@@ -123,7 +123,7 @@ export default function ModalConflito({
               className={styles.btnAcao}
               onClick={() => handleEscolha('mesclar')}
             >
-              <IconGitMerge size={20} color="#3b82f6" />
+              <IconGitMerge size={20} color="var(--accent)" />
               <div className={styles.textoAcao}>
                 <strong>Mesclar Respostas (Recomendado)</strong>
                 <span>Une as respostas de ambos. Em caso de conflito, a revisão maior vence.</span>
@@ -135,7 +135,7 @@ export default function ModalConflito({
               className={styles.btnAcao}
               onClick={() => handleEscolha('copia')}
             >
-              <IconCopy size={20} color="#22c55e" />
+              <IconCopy size={20} color="var(--text-success)" />
               <div className={styles.textoAcao}>
                 <strong>Criar Nova Cópia</strong>
                 <span>Importa como uma cópia independente com sufixo " - Cópia", mantendo a local intacta.</span>
@@ -147,7 +147,7 @@ export default function ModalConflito({
               className={styles.btnAcao}
               onClick={() => handleEscolha('sobrescrever')}
             >
-              <IconReplace size={20} color="#eab308" />
+              <IconReplace size={20} color="var(--text-warning)" />
               <div className={styles.textoAcao}>
                 <strong>Substituir Versão Local</strong>
                 <span>Descarta a versão local e adota integralmente os dados do arquivo.</span>
@@ -159,7 +159,7 @@ export default function ModalConflito({
               className={`${styles.btnAcao} ${styles.btnCancelar}`}
               onClick={() => handleEscolha('cancelar')}
             >
-              <IconX size={20} color="#ef4444" />
+              <IconX size={20} color="var(--text-danger)" />
               <div className={styles.textoAcao}>
                 <strong>Ignorar Este Item</strong>
                 <span>Não importa esta vistoria e preserva a versão local inalterada.</span>

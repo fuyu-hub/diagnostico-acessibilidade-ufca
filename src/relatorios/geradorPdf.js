@@ -302,7 +302,6 @@ function desenharIaa(doc, grupos, respostas) {
   const geral = calcularIndiceItens(ITENS_TECNICOS, respostas);
   const classif = geral.classificacao || {};
   const total = ITENS_TECNICOS.length;
-  const avaliados = geral.conf + geral.nc;
   const pendentes = Math.max(0, total - (geral.conf + geral.nc + geral.na));
 
   // Painel de destaque

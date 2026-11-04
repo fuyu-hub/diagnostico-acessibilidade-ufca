@@ -44,7 +44,7 @@
     height: 60px;
     border-radius: 999px;
     border: 1px solid var(--border-strong);
-    background: rgba(22, 24, 30, 0.85);
+    background: var(--vidro);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
@@ -63,7 +63,7 @@
 
   .aba:hover {
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--tinta-suave);
   }
 
   .ativo {

@@ -34,6 +34,22 @@ export const ITENS_TECNICOS = TODOS_ITENS.filter(i => i.tipo === 'tecnico');
 export const totalItens = TODOS_ITENS.length;
 
 /**
+ * Progresso de uma vistoria e posição, na lista completa, do primeiro item técnico sem resposta (-1 se não houver)
+ */
+export function resumoProgresso(respostas = {}) {
+  const total = ITENS_TECNICOS.length;
+  const respondidos = ITENS_TECNICOS.filter(item => respostas[item.id]?.valor).length;
+  const pendente = ITENS_TECNICOS.find(item => !respostas[item.id]?.valor);
+
+  return {
+    total,
+    respondidos,
+    pct: total > 0 ? Math.round((respondidos / total) * 100) : 0,
+    proximoIndice: pendente ? TODOS_ITENS.findIndex(i => i.id === pendente.id) : -1,
+  };
+}
+
+/**
  * Todos os itens abaixo de uma triagem, incluindo os de triagens aninhadas,
  * cada um com a triagem que o controla diretamente.
  */
@@ -42,6 +58,17 @@ export function dependentesEmCascata(triagem) {
     { id: depId, origemTriagem: triagem.id },
     ...dependentesEmCascata(ITENS_POR_ID[depId]),
   ]);
+}
+
+/**
+ * Itens abaixo da triagem com registros que uma resposta negativa apagaria.
+ * Um N/A sem observação nem foto não conta: o resultado da cascata seria o mesmo.
+ */
+export function dependentesComDados(triagem, respostas = {}) {
+  return dependentesEmCascata(triagem).map(dep => dep.id).filter(id => {
+    const resp = respostas[id];
+    return resp && ((resp.valor && resp.valor !== 'nao-aplica') || resp.obs || resp.foto);
+  });
 }
 
 /**

@@ -110,7 +110,7 @@ export default function ModalGaleriaVistoria({
             <div className={styles.headerInfo}>
               <div className={styles.tituloLinha}>
                 <div className={styles.iconeTitulo}>
-                  <IconPhoto size={22} color="var(--accent, #3b82f6)" />
+                  <IconPhoto size={22} color="var(--accent)" />
                 </div>
                 <div>
                   <h2 className={styles.titulo}>Galeria da Vistoria</h2>
@@ -175,7 +175,7 @@ export default function ModalGaleriaVistoria({
             {itensGaleria.length === 0 ? (
               <div className={styles.estadoVazio}>
                 <div className={styles.vazioIconeWrap}>
-                  <IconPhoto size={44} color="var(--text-muted, #64748b)" />
+                  <IconPhoto size={44} color="var(--text-muted)" />
                 </div>
                 <h3 className={styles.vazioTitulo}>Nenhuma foto ou observação ainda</h3>
                 <p className={styles.vazioDesc}>

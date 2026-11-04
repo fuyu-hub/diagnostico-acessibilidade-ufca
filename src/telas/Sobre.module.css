@@ -1,0 +1,62 @@
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.nomeProjeto {
+  color: var(--text-strong);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.edital {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin: 8px 0 20px;
+}
+
+.titulo {
+  color: var(--text-strong);
+  font-size: 0.98rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.texto,
+.lista {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.lista {
+  padding-left: 18px;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+}
+
+.tabela th {
+  color: var(--text-muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 0 8px 8px 0;
+}
+
+.tabela td {
+  border-top: 1px solid var(--border);
+  padding: 9px 8px 9px 0;
+  vertical-align: top;
+}
+
+.versao {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-align: center;
+}

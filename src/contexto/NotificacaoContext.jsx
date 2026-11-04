@@ -63,7 +63,8 @@ export function NotificacaoProvider({ children }) {
           },
         });
       });
-    }
+    },
+    []
   );
 
   return (

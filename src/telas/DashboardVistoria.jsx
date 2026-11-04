@@ -14,8 +14,6 @@ import Topbar from '../componentes/Topbar';
 import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/SeletorNivel';
 import ModalExcluirVistoria from '../componentes/ModalExcluirVistoria';
 import ModalGaleriaVistoria from '../componentes/ModalGaleriaVistoria';
-import { gerarPlanilhaVistoria } from '../relatorios/geradorExcel';
-import { gerarPdfVistoria } from '../relatorios/geradorPdf';
 import styles from './DashboardVistoria.module.css';
 
 export default function DashboardVistoria() {
@@ -556,7 +554,7 @@ function ConteudoVistoria({ id, vistoria }) {
               >
                 <div className={styles.itemExportacaoHeader}>
                   <span className={styles.itemExportacaoTitulo}>
-                    <IconDownload size={22} color="var(--accent, #3b82f6)" />
+                    <IconDownload size={22} color="var(--accent)" />
                     <span>Fazer Backup</span>
                   </span>
                 </div>
@@ -571,6 +569,7 @@ function ConteudoVistoria({ id, vistoria }) {
                   if (gerandoPdf) return;
                   setGerandoPdf(true);
                   try {
+                    const { gerarPdfVistoria } = await import('../relatorios/geradorPdf');
                     await gerarPdfVistoria(vistoria);
                     mostrarToast('Relatório PDF baixado com sucesso!', 'sucesso');
                   } catch (err) {
@@ -585,7 +584,7 @@ function ConteudoVistoria({ id, vistoria }) {
               >
                 <div className={styles.itemExportacaoHeader}>
                   <span className={styles.itemExportacaoTitulo}>
-                    <IconFileTypePdf size={22} color="#ef4444" />
+                    <IconFileTypePdf size={22} color="var(--text-danger)" />
                     <span>Relatório em PDF</span>
                   </span>
                   {gerandoPdf && <span className={styles.badgeProcessando}>Gerando...</span>}
@@ -601,6 +600,7 @@ function ConteudoVistoria({ id, vistoria }) {
                   if (gerandoPlanilha) return;
                   setGerandoPlanilha(true);
                   try {
+                    const { gerarPlanilhaVistoria } = await import('../relatorios/geradorExcel');
                     await gerarPlanilhaVistoria(vistoria);
                     mostrarToast('Planilha Excel baixada com sucesso!', 'sucesso');
                   } catch (err) {
@@ -616,7 +616,7 @@ function ConteudoVistoria({ id, vistoria }) {
               >
                 <div className={styles.itemExportacaoHeader}>
                   <span className={styles.itemExportacaoTitulo}>
-                    <IconTable size={22} color="var(--text-success, #22c55e)" />
+                    <IconTable size={22} color="var(--text-success)" />
                     <span>Planilha (Excel)</span>
                   </span>
                   {gerandoPlanilha && <span className={styles.badgeProcessando}>Gerando...</span>}

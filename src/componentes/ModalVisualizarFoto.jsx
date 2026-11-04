@@ -105,7 +105,7 @@ export default function ModalVisualizarFoto({
         ) : (
           <div className={styles.corpoSemFoto}>
             <div className={styles.iconeNotaWrap}>
-              <IconNotes size={36} color="var(--accent, #3b82f6)" />
+              <IconNotes size={36} color="var(--accent)" />
             </div>
             <span className={styles.semFotoAviso}>Registro de anotação de campo</span>
           </div>

@@ -1,11 +1,22 @@
-import { useState, useRef } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconSettings, IconPlus, IconUpload, IconListCheck, IconClipboardCheck, IconShieldCheck } from '@tabler/icons-react';
+import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconShieldCheck, IconArrowRight, IconSearch } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
 import CartaoVistoria from '../componentes/CartaoVistoria';
 import ModalConflito from '../componentes/ModalConflito';
+import { lerArquivoImportacao } from '../dados/exportacao';
+import { resumoProgresso } from '../dados/checklist';
 import styles from './Painel.module.css';
+
+const LIMITE_PARA_BUSCA = 6;
+const GRUPOS = [
+  { status: 'em_andamento', rotulo: 'Em andamento' },
+  { status: 'concluida', rotulo: 'Concluídas' },
+  { status: 'rascunho', rotulo: 'Não iniciadas' },
+];
+
+const normalizar = texto => String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
 export default function Painel() {
   const { vistorias, carregando, importarConteudoJson, aplicarResolucaoConflito, ultimoBackup } = useVistoria();
@@ -16,6 +27,24 @@ export default function Painel() {
   const [conflitosFila, setConflitosFila] = useState([]);
   const [indiceConflito, setIndiceConflito] = useState(0);
   const [arrastando, setArrastando] = useState(false);
+  const [busca, setBusca] = useState('');
+  const [filtro, setFiltro] = useState('todas');
+
+  const ultimaEmAndamento = useMemo(() => (
+    vistorias
+      .filter(v => v.status === 'em_andamento')
+      .sort((a, b) => String(b.dataUltimaEdicao).localeCompare(String(a.dataUltimaEdicao)))[0]
+  ), [vistorias]);
+
+  const visiveis = useMemo(() => {
+    const termo = normalizar(busca.trim());
+    return vistorias.filter(v => (
+      (filtro === 'todas' || v.status === filtro) &&
+      (!termo || normalizar(`${v.nome} ${v.cidade}`).includes(termo))
+    ));
+  }, [vistorias, busca, filtro]);
+
+  const progressoUltima = ultimaEmAndamento ? resumoProgresso(ultimaEmAndamento.respostas) : null;
 
   function handleDragOver(e) {
     e.preventDefault();
@@ -44,7 +73,7 @@ export default function Painel() {
     if (!file) return;
 
     try {
-      const texto = await file.text();
+      const texto = await lerArquivoImportacao(file);
       const res = await importarConteudoJson(texto, (conflitos) => {
         setConflitosFila(conflitos);
         setIndiceConflito(0);
@@ -92,24 +121,29 @@ export default function Painel() {
 
   return (
     <div className="app-shell">
-      <div className="tela-body" style={{ padding: '24px 20px' }}>
-        {/* Cabeçalho */}
-        <div className={styles.header}>
+      <main className="tela-body" style={{ padding: '24px 20px' }}>
+        <header className={styles.header}>
           <div>
-            <span className={styles.eyebrow}>Diagnóstico NBR 9050</span>
+            <span className={styles.eyebrow}>Diagnóstico NBR 9050 · UFCA</span>
             <h1 className={styles.titulo}>Vistorias</h1>
           </div>
-          <button
-            className={styles.btnSettings}
-            aria-label="Ajustes"
-            title="Ajustes"
-            onClick={() => navigate('/ajustes')}
-          >
-            <IconSettings size={22} />
-          </button>
-        </div>
+          <div className={styles.headerAcoes}>
+            <button type="button" className={styles.btnSobre} onClick={() => navigate('/sobre')}>
+              <IconInfoCircle size={20} aria-hidden="true" />
+              <span>Sobre</span>
+            </button>
+            <button
+              type="button"
+              className={styles.btnSettings}
+              aria-label="Ajustes"
+              title="Ajustes"
+              onClick={() => navigate('/ajustes')}
+            >
+              <IconSettings size={22} aria-hidden="true" />
+            </button>
+          </div>
+        </header>
 
-        {/* Input invisível para arquivo */}
         <input
           ref={fileInputRef}
           type="file"
@@ -118,132 +152,132 @@ export default function Painel() {
           onChange={handleImportarArquivo}
         />
 
-        {/* Criar nova */}
-        <button className={`cartao ${styles.btnNova}`} onClick={() => navigate('/nova')}>
-          <div className={styles.iconePlus}>
-            <IconPlus size={28} />
-          </div>
-          <div>
-            <p className={styles.novaLabel}>Criar Nova Vistoria</p>
-            <p className={styles.novaDesc}>Cadastrar instituição e iniciar diagnóstico</p>
-          </div>
-        </button>
-
-        {/* Importar Vistoria na tela principal com suporte a drag-and-drop (§6.1) */}
-        <button
-          type="button"
-          className={`${styles.btnImportarPrincipal} ${arrastando ? styles.arrastando : ''}`}
-          onClick={() => fileInputRef.current?.click()}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          title="Clique para selecionar ou arraste um arquivo de vistoria (.json) até aqui"
-        >
-          <IconUpload size={20} />
-          <span>{arrastando ? 'Solte o arquivo para importar' : 'Importar Vistoria'}</span>
-        </button>
-
-        {/* Lembrete preventivo de backup (§3.1/B4) */}
-        {vistorias.length > 0 && (!ultimoBackup || (Date.now() - new Date(ultimoBackup).getTime()) > 7 * 24 * 60 * 60 * 1000) && (
-          <div
-            role="status"
-            style={{
-              marginTop: 14,
-              padding: '10px 14px',
-              borderRadius: 12,
-              background: 'rgba(59, 130, 246, 0.08)',
-              border: '1px solid rgba(59, 130, 246, 0.25)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 12,
-              fontSize: '0.82rem',
-              color: 'var(--text-secondary)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <IconShieldCheck size={18} color="var(--accent, #3b82f6)" style={{ flexShrink: 0 }} />
-              <span>
-                {ultimoBackup
-                  ? 'Mais de 7 dias sem backup. Proteja seus diagnósticos.'
-                  : 'Nenhum backup realizado ainda. Seus dados estão salvos apenas neste aparelho.'}
-              </span>
+        {ultimaEmAndamento && (
+          <section className={styles.continuar} aria-labelledby="continuar-titulo">
+            <p id="continuar-titulo" className="label-secao">Continuar de onde parou</p>
+            <h2 className={styles.continuarNome}>{ultimaEmAndamento.nome}</h2>
+            <div className={styles.continuarProgresso}>
+              <div className="progresso-track" style={{ flex: 1 }}>
+                <div className="progresso-fill" style={{ width: `${progressoUltima.pct}%` }} />
+              </div>
+              <span>{progressoUltima.respondidos} de {progressoUltima.total}</span>
             </div>
             <button
               type="button"
-              onClick={() => navigate('/ajustes')}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--accent, #3b82f6)',
-                fontWeight: 600,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                fontSize: '0.82rem',
-                textDecoration: 'underline',
-              }}
+              className={`btn-nav primario ${styles.btnContinuar}`}
+              onClick={() => navigate(
+                progressoUltima.proximoIndice >= 0
+                  ? `/checklist/${ultimaEmAndamento.id}/item/${progressoUltima.proximoIndice + 1}`
+                  : `/checklist/${ultimaEmAndamento.id}/resultado`
+              )}
             >
-              Fazer backup
+              Continuar <IconArrowRight size={18} aria-hidden="true" />
             </button>
+          </section>
+        )}
+
+        <div className={styles.acoes}>
+          <button className={`cartao ${styles.btnNova}`} onClick={() => navigate('/nova')}>
+            <div className={styles.iconePlus}>
+              <IconPlus size={28} aria-hidden="true" />
+            </div>
+            <div>
+              <p className={styles.novaLabel}>Nova vistoria</p>
+              <p className={styles.novaDesc}>Cadastrar a instituição e iniciar o diagnóstico</p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            className={`${styles.btnImportarPrincipal} ${arrastando ? styles.arrastando : ''}`}
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            title="Clique para selecionar ou arraste um arquivo de vistoria (.json) até aqui"
+          >
+            <IconUpload size={18} aria-hidden="true" />
+            <span>{arrastando ? 'Solte o arquivo para importar' : 'Importar arquivo'}</span>
+          </button>
+        </div>
+
+        {/* Lembrete preventivo de backup (§3.1/B4) */}
+        {vistorias.length > 0 && (!ultimoBackup || (Date.now() - new Date(ultimoBackup).getTime()) > 7 * 24 * 60 * 60 * 1000) && (
+          <div role="status" className={styles.avisoBackup}>
+            <IconShieldCheck size={18} color="var(--accent)" aria-hidden="true" />
+            <span>
+              {ultimoBackup
+                ? 'Mais de 7 dias sem backup.'
+                : 'Sem backup: os dados estão só neste aparelho.'}
+            </span>
+            <button type="button" onClick={() => navigate('/ajustes')}>Fazer backup</button>
           </div>
         )}
 
-        {/* Lista de Vistorias Agrupadas */}
         {carregando ? (
           <div className={styles.vazio} style={{ marginTop: 24 }}>
             <p>Carregando diagnósticos salvos...</p>
           </div>
+        ) : vistorias.length === 0 ? (
+          <section className={styles.boasVindasVazio} aria-labelledby="vazio-titulo">
+            <h2 id="vazio-titulo">Comece a primeira vistoria</h2>
+            <ol className={styles.passos}>
+              <li><strong>Cadastre</strong> a instituição e a equipe</li>
+              <li><strong>Responda</strong> o checklist, mesmo sem internet</li>
+              <li><strong>Gere</strong> o resultado e os relatórios</li>
+            </ol>
+          </section>
         ) : (
-          <>
-            {vistorias.length > 0 ? (
-              <div style={{ marginTop: 32 }}>
-                {vistorias.filter(v => v.status === 'em_andamento').length > 0 && (
-                  <div style={{ marginBottom: 32 }}>
-                    <p className="label-secao">Em Andamento</p>
-                    <div className={styles.gridVistorias}>
-                      {vistorias.filter(v => v.status === 'em_andamento').map(v => (
-                        <CartaoVistoria key={v.id || v.vistoriaId} vistoria={v} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {vistorias.filter(v => v.status === 'concluida').length > 0 && (
-                  <div style={{ marginBottom: 32 }}>
-                    <p className="label-secao">Concluídas</p>
-                    <div className={styles.gridVistorias}>
-                      {vistorias.filter(v => v.status === 'concluida').map(v => (
-                        <CartaoVistoria key={v.id || v.vistoriaId} vistoria={v} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {vistorias.filter(v => v.status === 'rascunho').length > 0 && (
-                  <div style={{ marginBottom: 32 }}>
-                    <p className="label-secao">Novas (Não Iniciadas)</p>
-                    <div className={styles.gridVistorias}>
-                      {vistorias.filter(v => v.status === 'rascunho').map(v => (
-                        <CartaoVistoria key={v.id || v.vistoriaId} vistoria={v} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className={styles.vazio} style={{ marginTop: 60, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ marginBottom: 20 }}>
-                  <IconClipboardCheck size={48} color="var(--text-muted)" style={{ opacity: 0.5 }} />
+          <div className={styles.lista}>
+            {vistorias.length > LIMITE_PARA_BUSCA && (
+              <div className={styles.filtros}>
+                <label className={styles.busca}>
+                  <IconSearch size={18} aria-hidden="true" />
+                  <span className="sr-only">Buscar por nome ou cidade</span>
+                  <input
+                    type="text"
+                    placeholder="Buscar por nome ou cidade"
+                    value={busca}
+                    onChange={e => setBusca(e.target.value)}
+                  />
+                </label>
+                <div className={styles.chips} role="group" aria-label="Filtrar por estado">
+                  {[{ status: 'todas', rotulo: 'Todas' }, ...GRUPOS].map(g => (
+                    <button
+                      key={g.status}
+                      type="button"
+                      className={`chip ${filtro === g.status ? 'ativo' : ''}`}
+                      aria-pressed={filtro === g.status}
+                      onClick={() => setFiltro(g.status)}
+                    >
+                      {g.rotulo}
+                    </button>
+                  ))}
                 </div>
-                <h3 style={{ fontSize: '1.25rem', marginBottom: 12, color: 'var(--text-strong)', fontWeight: 600 }}>Nenhuma vistoria ainda</h3>
-                <p style={{ color: 'var(--text-muted)', marginBottom: 32, maxWidth: 320, lineHeight: 1.5 }}>
-                  Crie a primeira vistoria para começar a registrar as condições de acessibilidade da instituição.
-                </p>
               </div>
             )}
-          </>
+
+            {visiveis.length === 0 && (
+              <p className={styles.vazio} role="status">Nenhuma vistoria encontrada.</p>
+            )}
+
+            {GRUPOS.map(({ status, rotulo }) => {
+              const doGrupo = visiveis.filter(v => v.status === status);
+              if (doGrupo.length === 0) return null;
+              return (
+                <section key={status} style={{ marginBottom: 32 }}>
+                  <h2 className="label-secao">{rotulo}</h2>
+                  <div className={styles.gridVistorias}>
+                    {doGrupo.map(v => (
+                      <CartaoVistoria key={v.id || v.vistoriaId} vistoria={v} />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
         )}
-      </div>
+      </main>
 
       <ModalConflito
         aberto={conflitosFila.length > 0 && indiceConflito < conflitosFila.length}

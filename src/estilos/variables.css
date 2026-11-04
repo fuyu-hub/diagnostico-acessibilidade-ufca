@@ -1,9 +1,13 @@
-/* Tokens de design — espelho do protótipo */
+/* Tokens de design — o tema escuro é o padrão; o claro é aplicado por data-tema em <html> */
 :root {
+  color-scheme: dark;
+
   --bg: #000000;
   --surface-1: #121212;
   --surface-2: #0a0a0a;
   --surface-3: #1e1e1e;
+  --vidro: rgba(22, 24, 30, 0.85);
+  --tinta-suave: rgba(255, 255, 255, 0.05);
 
   --border: rgba(255, 255, 255, 0.14);
   --border-strong: rgba(255, 255, 255, 0.24);
@@ -15,6 +19,7 @@
   --text-muted: #8e8e93;
 
   --accent: #3b82f6;
+  --accent-text: #60a5fa;
   --fill-accent: #3b82f6;
   --btn-primary-bg: #ffffff;
   --btn-primary-fg: #000000;
@@ -31,8 +36,57 @@
   --border-warning: rgba(234, 179, 8, 0.48);
   --text-warning: #facc15;
 
+  /* Faixas do Índice de Avaliação de Acessibilidade */
+  --iaa-critico: #ef4444;
+  --iaa-insuficiente: #f97316;
+  --iaa-parcial: #eab308;
+  --iaa-adequado: #22c55e;
+
   --radius-sm: 12px;
   --radius-md: 20px;
   --radius-lg: 28px;
   --radius-xl: 36px;
+}
+
+:root[data-tema="claro"] {
+  color-scheme: light;
+
+  --bg: #f4f5f7;
+  --surface-1: #ffffff;
+  --surface-2: #f0f1f4;
+  --surface-3: #e4e6ea;
+  --vidro: rgba(255, 255, 255, 0.92);
+  --tinta-suave: rgba(0, 0, 0, 0.04);
+
+  --border: rgba(0, 0, 0, 0.14);
+  --border-strong: rgba(0, 0, 0, 0.26);
+  --border-stronger: rgba(0, 0, 0, 0.45);
+
+  --text-strong: #0b0d10;
+  --text-primary: #14171c;
+  --text-secondary: #474d57;
+  --text-muted: #5b626d;
+
+  --accent: #1d5fd8;
+  --accent-text: #1a56c4;
+  --fill-accent: #1d5fd8;
+  --btn-primary-bg: #14171c;
+  --btn-primary-fg: #ffffff;
+
+  --bg-success: rgba(21, 128, 61, 0.10);
+  --border-success: rgba(21, 128, 61, 0.45);
+  --text-success: #116530;
+
+  --bg-danger: rgba(185, 28, 28, 0.08);
+  --border-danger: rgba(185, 28, 28, 0.42);
+  --text-danger: #a81b1b;
+
+  --bg-warning: rgba(161, 98, 7, 0.10);
+  --border-warning: rgba(161, 98, 7, 0.50);
+  --text-warning: #7a4a05;
+
+  --iaa-critico: #b91c1c;
+  --iaa-insuficiente: #b84607;
+  --iaa-parcial: #805206;
+  --iaa-adequado: #15703a;
 }
