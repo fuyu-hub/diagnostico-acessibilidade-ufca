@@ -102,6 +102,11 @@ const IMAGENS = [
   ['area_resgate', 'tecnico', 2, [180], 'Área de resgate e intercomunicador', ''],
   ['luminaria_rota', 'cena', 3, [178], 'Luminárias na rota de fuga', ''],
   ['mapa_tatil', 'cena', 3, [182], 'Mapa visual e tátil', ''],
+  ['rota_acessivel', 'tecnico', 2, [1, 12, 54, 91, 106, 117, 129, 138, 149, 150, 170, 173], 'Percurso sem barreiras até o ambiente', 'Uma imagem para 12 itens'],
+  ['inclinacao_longitudinal', 'tecnico', 3, [49], 'Inclinação no sentido da caminhada', 'Par da inclinação transversal'],
+  ['plateia_corrimao', 'tecnico', 3, [124], 'Corredor da plateia com corrimão', ''],
+  ['sinalizacao_luminosa_piso', 'tecnico', 3, [128], 'Sinalização luminosa no piso', ''],
+  ['iluminacao_balcao', 'cena', 3, [145], 'Rosto iluminado no balcão de atendimento', 'Cena; leitura labial'],
 ].map(([nome, tipo, prioridade, itens, mostra, nota]) => ({ nome, tipo, prioridade, itens, mostra, nota }));
 
 // ---------- Animações de método: aparecem em "Como averiguar" ----------
@@ -115,10 +120,8 @@ const ANIMACOES = [
 
 // Itens em que uma imagem acrescenta pouco, com o motivo
 const SEM_IMAGEM = {
-  'Rota e localização: percorrer resolve': [1, 12, 54, 91, 106, 117, 129, 138, 149, 150, 170, 173],
   'Contagem ou recurso, sem geometria': [104, 105, 116, 126, 127, 131, 143, 144, 151],
   'Funcionamento ou comunicação': [79, 82, 84],
-  'Coberto pelo texto ou pela animação': [49, 124, 128, 145],
 };
 
 // ---------- Conferência ----------
@@ -181,7 +184,8 @@ for (const i of TECNICOS) {
   const manter = s === 'ok';
   linhas.push([i.id, nomeSecao[i.secaoId], i.subgrupo, i.pergunta, s, i.dica, i.comoAveriguar, metodo.get(i.id), manter ? '(manter)' : t.dica, manter ? '(manter)' : t.como, imagemDe.get(i.id) || `— ${semImagem.get(i.id)}`, animacaoDe(i.id), '', ''].map(celula).join(';'));
 }
-writeFileSync(new URL('../../planejamento/em_andamento/revisao_itens.csv', import.meta.url), '﻿' + linhas.join('\r\n'));
+// A planilha guarda os textos anteriores à revisão: só é regravada com --planilha
+if (process.argv.includes('--planilha')) writeFileSync(new URL('../../planejamento/em_andamento/revisao_itens.csv', import.meta.url), '﻿' + linhas.join('\r\n'));
 
 // Textos a aplicar no checklist: tudo que não estava adequado
 writeFileSync(new URL('./saida/textos_revisados.json', import.meta.url), JSON.stringify(
