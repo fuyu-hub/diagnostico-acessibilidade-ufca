@@ -10,7 +10,8 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // A versão nova espera o momento seguro: quem a aplica é o componente AtualizacaoApp
+      registerType: 'prompt',
       includeAssets: ['favicon.svg', 'icons.svg', 'imagens/*.{png,svg}', 'modelo_planilha.xlsx'],
       manifest: {
         name: 'Diagnóstico de Acessibilidade — NBR 9050',
@@ -32,6 +33,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2,xlsx}'],
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === 'image',

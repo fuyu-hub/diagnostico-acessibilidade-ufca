@@ -1,7 +1,8 @@
 import { EnvelopeExportacao, Vistoria } from './esquema.js';
 import { converterLegadoParaCanonica } from './migracoes.js';
+import { VERSAO_APP } from '../utilitarios/versaoApp.js';
 
-export const VERSAO_APP = '0.4.2';
+export { VERSAO_APP };
 
 // Backups com fotos podem ser grandes. O limite fica abaixo do tamanho máximo de texto dos navegadores
 // e cada arquivo exportado é menor que o limite de importação, para todo backup poder voltar.

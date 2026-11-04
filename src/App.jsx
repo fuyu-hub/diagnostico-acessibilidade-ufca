@@ -13,6 +13,7 @@ import DashboardVistoria from './telas/DashboardVistoria';
 import Sobre from './telas/Sobre';
 import NaoEncontrada from './telas/NaoEncontrada';
 import ModalBoasVindas from './componentes/ModalBoasVindas';
+import AtualizacaoApp from './componentes/AtualizacaoApp';
 
 // Cada tela abre do topo, em vez de herdar a rolagem da tela anterior
 function RolarAoTopo() {
@@ -33,6 +34,7 @@ export default function App() {
           <ModalBoasVindas />
           <BrowserRouter>
             <RolarAoTopo />
+            <AtualizacaoApp />
             <Routes>
               <Route path="/" element={<Painel />} />
               <Route path="/nova" element={<NovaVistoria />} />

@@ -187,6 +187,7 @@ export function VistoriaProvider({ children }) {
   const debounceTimerRef = useRef(null);
   const novaTentativaRef = useRef(null);
   const avisoFalhaRef = useRef(false);
+  const gravacoesEmCursoRef = useRef(new Set());
 
   /**
    * Monitoramento preventivo de cota de armazenamento (aviso a 80% - §3.4)
@@ -220,6 +221,10 @@ export function VistoriaProvider({ children }) {
     pendentesRef.current.clear();
     clearTimeout(novaTentativaRef.current);
     setSalvando(true);
+
+    let concluirGravacao;
+    const gravacaoEmCurso = new Promise(resolve => { concluirGravacao = resolve; });
+    gravacoesEmCursoRef.current.add(gravacaoEmCurso);
 
     try {
       const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('ufca_vistorias_sync') : null;
@@ -292,9 +297,21 @@ export function VistoriaProvider({ children }) {
     } catch (err) {
       console.error('Erro ao descarregar vistorias no IndexedDB:', err);
     } finally {
+      gravacoesEmCursoRef.current.delete(gravacaoEmCurso);
+      concluirGravacao();
       setSalvando(pendentesRef.current.size > 0);
     }
   }, [mostrarToast]);
+
+  /**
+   * Grava o que está pendente e espera o término. Devolve falso se algo não pôde ser salvo.
+   */
+  const descarregarGravacoes = useCallback(async () => {
+    clearTimeout(debounceTimerRef.current);
+    await flushPendentes();
+    await Promise.all(gravacoesEmCursoRef.current);
+    return pendentesRef.current.size === 0;
+  }, [flushPendentes]);
 
   /**
    * Agenda salvamento com debounce (500ms)
@@ -688,6 +705,7 @@ export function VistoriaProvider({ children }) {
         vistorias,
         carregando,
         salvando,
+        descarregarGravacoes,
         alertaCota,
         erroCota,
         criarVistoria,

@@ -51,6 +51,16 @@ npm run dev
 npm run build
 ```
 
+## Versões e atualização do app
+
+A versão fica só no campo `version` do `package.json` e aparece na tela Sobre e nos backups. Para lançar uma versão:
+
+```bash
+npm version patch --no-git-tag-version
+```
+
+Use `patch` para correções e conteúdo, `minor` para funções novas e `major` para mudanças grandes. Quem está com o app instalado recebe a versão assim: o app baixa os arquivos novos em segundo plano e, na próxima troca de tela, grava o que está pendente e recarrega. Vistorias, fotos e preferências não são apagadas, porque ficam no IndexedDB e no `localStorage`, fora do cache de arquivos. Mudanças no formato dos dados continuam passando por `src/dados/migracoes.js`.
+
 ## Dados Institucionais e Equipe
 
 - **Instituição Proponente**: Universidade Federal do Cariri (UFCA)
