@@ -72,7 +72,7 @@
       "referencia": "NBR 9050:2020 - 6.12 (Circulação Externa), 6.12.3",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Trena/Fita métrica] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": "calcada_faixa_livre.png"
+      "imagem": "calcada_faixa_livre.svg"
     },
     {
       "id": 3,
@@ -84,7 +84,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.2",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": "calcada_faixa_livre.png"
+      "imagem": null
     },
     {
       "id": 8,
@@ -96,7 +96,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.6; Mota e Sonza (2024, p.25)",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": "piso_tatil_externo.png"
+      "imagem": "piso_tatil_externo.svg"
     },
     {
       "id": 4,
@@ -108,7 +108,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.3; 6.12 (Circulação Externa), 6.12.1, 6.12.3",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 3% equivale a no máximo 1,7 graus no celular.\nMétodo alternativo: apoie um nível de bolha sobre uma régua escolar de 30 cm e coloque um calço de 1 cm (ex: uma borracha escolar) em uma das pontas. Se a bolha centralizar, a superfície tem exatamente ~3% de caimento (1 cm de queda em 30 cm).",
       "comoAveriguar": "Coloque o seu celular deitado diretamente sobre o piso da calçada, atravessado no sentido do muro para a rua (inclinação transversal). Meça em 3 pontos diferentes da faixa livre e anote o maior valor. Se o celular marcar 1,7° ou menos, o trecho está Conforme.",
-      "imagem": "calcada_inclinacao_transversal.png"
+      "imagem": "calcada_inclinacao_transversal.svg"
     },
     {
       "id": 5,
@@ -132,7 +132,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.4",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. A inclinação máxima de 1:2 (50%) para desníveis chanfrados equivale a no máximo 26,6 graus na tela do seu celular.",
       "comoAveriguar": "[Trena/Régua e Celular] Meça a altura vertical do desnível. Se estiver entre 5 mm e 20 mm, apoie o celular na face chanfrada: se marcar 26,6° ou menos (1:2 / 50%), está Conforme. Se acima de 20 mm, deve haver rampa associada.",
-      "imagem": null
+      "imagem": "desniveis_piso.svg"
     },
     {
       "id": 7,
@@ -144,7 +144,7 @@
       "referencia": "NBR 9050:2020 - 4.3 (Área de Circulação e de Manobra), 4.3.3",
       "dica": "Objetos salientes nessa faixa de altura podem não ser percebidos pela bengala e causar colisão.",
       "comoAveriguar": "[Trena] Meça quanto o objeto avança da parede e a que altura está. Se passar do limite, confira se há sinalização no piso.",
-      "imagem": null
+      "imagem": "objetos_salientes.svg"
     },
     {
       "id": 1001,
@@ -198,7 +198,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.6; 6.12 (Circulação Externa), 6.12.8",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual/Trena] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": null
+      "imagem": "piso_tatil_externo.svg"
     },
     {
       "id": 1004,
@@ -303,7 +303,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.4.2",
       "dica": "A faixa precisa contrastar com o degrau inteiro para quem tem baixa visão.",
       "comoAveriguar": "[Trena] Meça a largura e o comprimento da faixa em alguns degraus, nos pisos e nos espelhos, e observe o contraste.",
-      "imagem": null
+      "imagem": "escada_sinal_visual.svg"
     },
     {
       "id": 17,
@@ -395,7 +395,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.4",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 3% equivale a no máximo 1,7 graus no celular.\nMétodo alternativo: apoie um nível de bolha sobre uma régua escolar de 30 cm e coloque um calço de 1 cm (ex: uma borracha escolar) em uma das pontas. Se a bolha centralizar, a superfície tem exatamente ~3% de caimento (1 cm de queda em 30 cm).",
       "comoAveriguar": "Coloque o seu celular deitado sobre o piso da rampa, atravessado perpendicularmente ao sentido da rampa (de um corrimão ao outro). Meça em 3 pontos e anote o maior valor. Se marcar 1,7° ou menos, o trecho está Conforme.",
-      "imagem": "calcada_inclinacao_transversal.png"
+      "imagem": "calcada_inclinacao_transversal.svg"
     },
     {
       "id": 1026,
@@ -519,7 +519,7 @@
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.6.1",
       "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
       "comoAveriguar": "[Visual/Trena] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
-      "imagem": null
+      "imagem": "macaneta_alavanca.svg"
     },
     {
       "id": 1005,
@@ -620,7 +620,7 @@
       "referencia": "NBR 9050:2020 - 6.14 (Vagas Reservadas para Veículos), 6.14.1.2 e 5.3 (Símbolos), 5.3.2; Lei 13146/2015 (EPD); Lei 5296/2004",
       "dica": "Confirme a sinalização dupla (piso + placa vertical) e o percurso acessível contínuo até a edificação.",
       "comoAveriguar": "[Visual] Conte o total de vagas, calcule o percentual exigido e meça a vaga reservada e o espaço adicional com trena.",
-      "imagem": null
+      "imagem": "vaga_pcd.svg"
     },
     {
       "id": 36,
@@ -656,7 +656,7 @@
       "referencia": "NBR 9050:2020 - 6.14 (Vagas Reservadas para Veículos), 6.14.1.2",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "vaga_pcd.svg"
     },
     {
       "id": 39,
@@ -680,7 +680,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.6; Mota e Sonza (2024, p.25)",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": "piso_tatil_externo.png"
+      "imagem": "piso_tatil_externo.svg"
     },
     {
       "id": 41,
@@ -692,7 +692,7 @@
       "referencia": "NBR 9050:2020 - 5.2 (Sinalização), 5.2.9.1.1; Mota e Sonza (2024, p. 30)",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": "piso_tatil_externo.png"
+      "imagem": "piso_tatil_externo.svg"
     },
     {
       "id": 42,
@@ -764,7 +764,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.4",
       "dica": "Pequenos desníveis travam rodas e causam tropeço. Verifique as emendas de piso, soleiras e saídas de rebaixo.",
       "comoAveriguar": "[Trena] Meça a altura do desnível. Nos intermediários, confira também a inclinação do chanfro.",
-      "imagem": null
+      "imagem": "desniveis_piso.svg"
     },
     {
       "id": 48,
@@ -776,7 +776,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.3",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 2% equivale a no máximo 1,1 graus na tela do seu celular.",
       "comoAveriguar": "Coloque o seu celular deitado diretamente sobre o piso do corredor, atravessado no sentido de uma parede à outra (inclinação transversal). Meça em 3 pontos diferentes e anote o maior valor. Se o celular marcar 1,1° ou menos, o trecho está Conforme.",
-      "imagem": null
+      "imagem": "calcada_inclinacao_transversal.svg"
     },
     {
       "id": 49,
@@ -800,7 +800,7 @@
       "referencia": "NBR 9050:2020 - 4.3 (Área de Circulação e Manobra), 4.3.3",
       "dica": "Objetos salientes nessa faixa de altura podem não ser percebidos pela bengala e causar colisão.",
       "comoAveriguar": "[Trena] Meça quanto o objeto avança da parede e a que altura está. Se passar do limite, confira se há sinalização no piso.",
-      "imagem": null
+      "imagem": "objetos_salientes.svg"
     },
     {
       "id": 51,
@@ -997,7 +997,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.4.2",
       "dica": "A faixa precisa contrastar com o degrau inteiro para quem tem baixa visão.",
       "comoAveriguar": "[Trena] Meça a largura e o comprimento da faixa em alguns degraus, nos pisos e nos espelhos, e observe o contraste.",
-      "imagem": null
+      "imagem": "escada_sinal_visual.svg"
     },
     {
       "id": 62,
@@ -1089,7 +1089,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.4",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 2% equivale a no máximo 1,1 graus na tela do seu celular.",
       "comoAveriguar": "Coloque o celular deitado sobre o piso da rampa interna, atravessado perpendicularmente de um corrimão ao outro (inclinação transversal). Meça em 3 pontos distintos e anote o maior valor. Se marcar 1,1° ou menos, o trecho está Conforme.",
-      "imagem": null
+      "imagem": "calcada_inclinacao_transversal.svg"
     },
     {
       "id": 1028,
@@ -1424,7 +1424,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.1",
       "dica": "Confirme pelo tato, não só pela aparência. Se possível, peça a validação de uma pessoa que leia Braille.",
       "comoAveriguar": "[Tato/Trena] Toque o relevo e o Braille, confira se a informação corresponde ao local e meça a altura, quando a pergunta indicar.",
-      "imagem": null
+      "imagem": "sinalizacao_porta.svg"
     },
     {
       "id": 94,
@@ -1436,7 +1436,7 @@
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.6.1",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "macaneta_alavanca.svg"
     },
     {
       "id": 95,
@@ -1496,7 +1496,7 @@
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.1.2; 4.3 (Área de Circulação e Manobra), 4.3.4",
       "dica": "Avalie com a porta fechada e sem contar lixeiras, carrinhos e móveis no espaço de manobra.",
       "comoAveriguar": "[Trena] Marque a área indicada na pergunta e confira se ela fica livre de obstáculos.",
-      "imagem": null
+      "imagem": "giro_360.svg"
     },
     {
       "id": 100,
@@ -2306,7 +2306,7 @@
       "referencia": "NBR 9050:2020 - 7.4 (Quantificação e Características), 7.4.2; 7.5 (Dimensões do Sanitário Acessível), 7.5 f) e g)",
       "dica": "O vão útil é o espaço realmente livre: a própria folha da porta aberta e o batente reduzem a medida.",
       "comoAveriguar": "[Trena] Abra a porta totalmente, em 90°, e meça da face da folha até o batente oposto. Meça também a altura livre, quando a pergunta pedir.",
-      "imagem": null
+      "imagem": "sanitario_porta_puxador.svg"
     },
     {
       "id": 153,
@@ -2318,7 +2318,7 @@
       "referencia": "NBR 9050:2020 - 6.11 (Circulação Interna), 6.11.2.7; 4.6 (Alcance Manual), 4.6.6.3",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "sanitario_porta_puxador.svg"
     },
     {
       "id": 154,
@@ -2354,7 +2354,7 @@
       "referencia": "NBR 9050:2020 - 7.7 (Bacia Sanitária), 7.7.2.1; Figura 104",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "bacia_altura_assento.svg"
     },
     {
       "id": 157,
@@ -2366,7 +2366,7 @@
       "referencia": "NBR 9050:2020 - 7.7 (Bacia Sanitária), 7.7.1 (introdução)",
       "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
       "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
-      "imagem": null
+      "imagem": "bacia_altura_assento.svg"
     },
     {
       "id": 158,
@@ -2426,7 +2426,7 @@
       "referencia": "NBR 9050:2020 - 7.5 (Dimensões do Sanitário Acessível), 7.5 d) e e); 7.8 (Instalação de Lavatório e Barras de Apoio), 7.8; Figura 99",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "lavatorio.svg"
     },
     {
       "id": 163,
@@ -2438,7 +2438,7 @@
       "referencia": "NBR 9050:2020 - 7.8 (Instalação de Lavatório e Barras de Apoio), 7.8.2",
       "dica": "Teste o equipamento quando possível: existir não significa funcionar no dia a dia.",
       "comoAveriguar": "[Teste] Acione o item, observe o resultado e registre se está funcionando no dia da vistoria.",
-      "imagem": null
+      "imagem": "lavatorio.svg"
     },
     {
       "id": 164,
@@ -2486,7 +2486,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.1; 5.3 (Símbolos), 5.3.5.3",
       "dica": "Confirme pelo tato, não só pela aparência. Se possível, peça a validação de uma pessoa que leia Braille.",
       "comoAveriguar": "[Tato/Trena] Toque o relevo e o Braille, confira se a informação corresponde ao local e meça a altura, quando a pergunta indicar.",
-      "imagem": null
+      "imagem": "sinalizacao_porta.svg"
     },
     {
       "id": 1021,
