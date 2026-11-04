@@ -32,13 +32,26 @@ const APROVADAS = {
   calcada_faixa_livre: [2],
   calcada_inclinacao_transversal: [4, 22, 48, 67],
   piso_tatil_externo: [8, 11, 40, 41],
+  // Lote 3
+  rota_acessivel: [1, 12, 54, 91, 106, 117, 129, 138, 149, 150, 170, 173],
+  piso_firme_regular: [3, 20, 34, 44, 55, 65, 96, 108, 136, 148, 154, 171],
+  corrimao_intermediario: [25, 26, 74, 75],
+  sanitario_acessorios: [164, 165, 166],
+  escada_largura_patamar: [13, 56, 58],
+  altura_livre: [5, 176],
+  rampa_guarda_corpo: [23, 72],
+  elevador_botoeira: [80, 83],
+  lousa_tela_altura: [100, 102],
+  alcance_manual: [115, 135],
+  box_chuveiro: [168, 169],
+  estantes_corredor: [110],
 };
 
 // Imagens antigas que já têm substituta aprovada
 const REMOVER = ['calcada_faixa_livre.png', 'calcada_inclinacao_transversal.png', 'piso_tatil_externo.png'];
 
 // Itens que usavam imagem antiga e aguardam a substituta do plano
-const SEM_IMAGEM_POR_ENQUANTO = [3];
+const SEM_IMAGEM_POR_ENQUANTO = [];
 
 const raiz = new URL('../', import.meta.url);
 const de = nome => new URL(`desenhos/saida/${nome}`, raiz);

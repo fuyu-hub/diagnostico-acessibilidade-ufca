@@ -60,7 +60,7 @@
       "referencia": "NBR 9050:2020 - 10.15 (Escolas), 10.15.1",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 2,
@@ -84,7 +84,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.2",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 8,
@@ -120,7 +120,7 @@
       "referencia": "NBR 9050:2020 - 6.12 (Circulação Externa), 6.12.3",
       "dica": "Observe galhos, placas, toldos e equipamentos no caminho inteiro, não apenas no início do trecho.",
       "comoAveriguar": "[Trena] Percorra o trajeto olhando para cima. Onde houver algo baixo, meça do piso até o ponto mais baixo do elemento.",
-      "imagem": null
+      "imagem": "altura_livre.svg"
     },
     {
       "id": 6,
@@ -255,7 +255,7 @@
       "referencia": "NBR 9050:2020 - 6.7 (Degraus e Escadas Fixas em Rotas Acessíveis); 6.10 (Equipamentos Eletromecânicos de Circulação), 6.10.1",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 13,
@@ -267,7 +267,7 @@
       "referencia": "NBR 9050:2020 - 6.8 (Escadas), 6.8.3; 6.6 (Rampas), 6.6.3",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "escada_largura_patamar.svg"
     },
     {
       "id": 14,
@@ -371,7 +371,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.2",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 21,
@@ -423,7 +423,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.8 e 6.6.3; 4.3 (Área de circulação e manobra), 4.3.7.3",
       "dica": "Some a altura do guarda-corpo à guia de balizamento apenas se não houver vedação lateral (parede) com altura suficiente.",
       "comoAveriguar": "[Visual/Trena] Meça a altura do elemento de proteção lateral com trena, do piso até a face superior.",
-      "imagem": null
+      "imagem": "rampa_guarda_corpo.svg"
     },
     {
       "id": 24,
@@ -447,7 +447,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.6; 6.9 (Corrimãos e Guarda-Corpos), 6.9.3.2, 6.9.3.5",
       "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
       "comoAveriguar": "[Visual/Trena] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
-      "imagem": null
+      "imagem": "corrimao_intermediario.svg"
     },
     {
       "id": 26,
@@ -459,7 +459,7 @@
       "referencia": "NBR 9050:2020 - 6.9 (Corrimãos e Guarda-Corpos), 6.9.3.6",
       "dica": "Meça dos dois lados e verifique a firmeza: corrimão solto também é uma barreira.",
       "comoAveriguar": "[Trena] Meça o que a pergunta pede (altura, prolongamento, espaçamento ou diâmetro) em pelo menos 2 pontos, sempre da face superior até o piso.",
-      "imagem": null
+      "imagem": "corrimao_intermediario.svg"
     },
     {
       "id": 27,
@@ -608,7 +608,7 @@
       "referencia": "NBR 9050:2020 - 6.14 (Vagas Reservadas para Veículos), 6.14.1.2",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 35,
@@ -728,7 +728,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 45,
@@ -866,7 +866,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3 (introdução); 6.10 (Equipamentos Eletromecânicos de Circulação), 6.10.1",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 1027,
@@ -925,7 +925,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.2",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 56,
@@ -937,7 +937,7 @@
       "referencia": "NBR 9050:2020 - 6.8 (Escadas), 6.8.3; 6.6 (Rampas), 6.6.3",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "escada_largura_patamar.svg"
     },
     {
       "id": 57,
@@ -961,7 +961,7 @@
       "referencia": "NBR 9050:2020 - 6.8 (Escadas), 6.8.8",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "escada_largura_patamar.svg"
     },
     {
       "id": 59,
@@ -1065,7 +1065,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.2",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 66,
@@ -1117,7 +1117,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.8 e 6.6.3; 4.3 (Área de circulação e manobra), 4.3.7.3; NBR 14718:2019 - 3 (Termos e definições), 3.1",
       "dica": "Some a altura do guarda-corpo à guia de balizamento apenas se não houver vedação lateral (parede) com altura suficiente.",
       "comoAveriguar": "[Visual/Trena] Meça a altura do elemento de proteção lateral com trena, do piso até a face superior.",
-      "imagem": null
+      "imagem": "rampa_guarda_corpo.svg"
     },
     {
       "id": 73,
@@ -1141,7 +1141,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.6; 6.9 (Corrimãos e Guarda-Corpos), 6.9.3.2, 6.9.3.5",
       "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
       "comoAveriguar": "[Visual/Trena] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
-      "imagem": null
+      "imagem": "corrimao_intermediario.svg"
     },
     {
       "id": 75,
@@ -1153,7 +1153,7 @@
       "referencia": "NBR 9050:2020 - 6.9 (Corrimãos e Guarda-Corpos), 6.9.3.6",
       "dica": "Meça dos dois lados e verifique a firmeza: corrimão solto também é uma barreira.",
       "comoAveriguar": "[Trena] Meça o que a pergunta pede (altura, prolongamento, espaçamento ou diâmetro) em pelo menos 2 pontos, sempre da face superior até o piso.",
-      "imagem": null
+      "imagem": "corrimao_intermediario.svg"
     },
     {
       "id": 76,
@@ -1236,7 +1236,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.5.1 e 5.4.5.2; 6.10 (Equipamentos Eletromecânicos de Circulação), 6.10.2.2; NBR NM 313:2007 - Tabela 2",
       "dica": "Confirme com a leitura tátil real (não apenas visual) e, se possível, com pessoa cega ou tabela Braille oficial.",
       "comoAveriguar": "[Visual/Tato/Trena] Toque os caracteres em relevo/Braille e compare com a numeração/informação esperada no ponto avaliado.",
-      "imagem": null
+      "imagem": "elevador_botoeira.svg"
     },
     {
       "id": 81,
@@ -1272,7 +1272,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.5.1; 6.10 (Equipamentos Eletromecânicos de Circulação), 6.10.2.2; NBR NM 313:2007 - Tabela 2",
       "dica": "Confirme com a leitura tátil real (não apenas visual) e, se possível, com pessoa cega ou tabela Braille oficial.",
       "comoAveriguar": "[Visual/Tato/Trena] Toque os caracteres em relevo/Braille e compare com a numeração/informação esperada no ponto avaliado.",
-      "imagem": null
+      "imagem": "elevador_botoeira.svg"
     },
     {
       "id": 84,
@@ -1400,7 +1400,7 @@
       "referencia": "NBR 9050:2020 - 10.15 (Escolas), 10.15.2; 6.1 (Rota Acessível), 6.1.1",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 92,
@@ -1460,7 +1460,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 97,
@@ -1508,7 +1508,7 @@
       "referencia": "NBR 9050:2020 - 10.15 (Escolas), 10.15.7",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "lousa_tela_altura.svg"
     },
     {
       "id": 101,
@@ -1532,7 +1532,7 @@
       "referencia": "NBR 9050:2020 - 4.8 (Parâmetros Visuais), 4.8.2; 10.15 (Escolas), 10.15.7",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "lousa_tela_altura.svg"
     },
     {
       "id": 1014,
@@ -1622,7 +1622,7 @@
       "referencia": "NBR 9050:2020 - 10.16 (Bibliotecas e Centros de Leitura), 10.16.1; 6.1 (Rota Acessível), 6.1.1",
       "dica": "Um único degrau ou porta estreita interrompe a rota até a biblioteca.",
       "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 107,
@@ -1646,7 +1646,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2 e 6.3.7",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 109,
@@ -1670,7 +1670,7 @@
       "referencia": "NBR 9050:2020 - 4.3 (Área de Circulação e Manobra), 4.3.4; 10.16 (Bibliotecas e Centros de Leitura), 10.15.3, 10.16.3; Figura 153",
       "dica": "Meça onde o espaço fica mais estreito, contando obstáculos como extintor, vaso, poste ou mobiliário.",
       "comoAveriguar": "[Trena] Estique a trena de um lado ao outro, na perpendicular ao caminho, no ponto mais estreito. Anote o menor valor e compare com a pergunta.",
-      "imagem": null
+      "imagem": "estantes_corredor.svg"
     },
     {
       "id": 111,
@@ -1730,7 +1730,7 @@
       "referencia": "NBR 9050:2020 - 10.16 (Bibliotecas e Centros de Leitura), 10.16.4; 7.14 (Vestiários), 7.14.3; 4.6 (Alcance Manual), 4.6.1",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "alcance_manual.svg"
     },
     {
       "id": 116,
@@ -1779,7 +1779,7 @@
       "referencia": "NBR 9050:2020 - 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.1 a)",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Visual] Percorra o caminho até o auditório e dele até a rota de fuga. Anote degraus, portas estreitas e outras barreiras.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 183,
@@ -1965,7 +1965,7 @@
       "referencia": "NBR 9050:2020 - 10.8 (Restaurantes, Refeitórios, Bares e Similares), 10.8.1",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Visual] Percorra o caminho até o refeitório e dele até o sanitário acessível. Anote o que interrompa a rota.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 130,
@@ -2037,7 +2037,7 @@
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.3.1 e 9.3.3.2; 4.6 (Alcance Manual), 4.6.1",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "alcance_manual.svg"
     },
     {
       "id": 136,
@@ -2049,7 +2049,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 137,
@@ -2073,7 +2073,7 @@
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.1; 10.19 (Atendimento ao Público), 10.19.1",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 139,
@@ -2225,7 +2225,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2 e 6.3.7",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 1020,
@@ -2270,7 +2270,7 @@
       "referencia": "NBR 9050:2020 - 7.3 (Localização), 7.3.1",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 150,
@@ -2282,7 +2282,7 @@
       "referencia": "NBR 9050:2020 - 7.3 (Localização), 7.3.2",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Trena/Passos] Estime o percurso do ponto mais distante até o sanitário acessível. Em caso de dúvida, meça com trena longa ou pela planta.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 151,
@@ -2330,7 +2330,7 @@
       "referencia": "NBR 9050:2020 - 7.5 (Dimensões do Sanitário Acessível), 7.5 (final)",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 155,
@@ -2450,7 +2450,7 @@
       "referencia": "NBR 9050:2020 - 5.6 (Alarmes), 5.6.4.1; Figura 67; Mota e Sonza (2024, p. 45 e 46)",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "sanitario_acessorios.svg"
     },
     {
       "id": 165,
@@ -2462,7 +2462,7 @@
       "referencia": "NBR 9050:2020 - 7.11 (Acessórios para Sanitários Acessíveis e Coletivos), 7.11.1; Figura 123",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "sanitario_acessorios.svg"
     },
     {
       "id": 166,
@@ -2474,7 +2474,7 @@
       "referencia": "NBR 9050:2020 - 7.11 (Acessórios para Sanitários Acessíveis e Coletivos), 7.11.1 a 7.11.4; Figura 122",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "sanitario_acessorios.svg"
     },
     {
       "id": 167,
@@ -2515,7 +2515,7 @@
       "referencia": "NBR 9050:2020 - 7.12 (Banheiros Acessíveis e Vestiários com Banheiros Conjugados), 7.12.1 e 7.12.3; Figura 127",
       "dica": "Confirme que o banco funciona e fica firme quando aberto.",
       "comoAveriguar": "[Trena] Meça altura, profundidade e comprimento do banco e a posição das barras.",
-      "imagem": null
+      "imagem": "box_chuveiro.svg"
     },
     {
       "id": 169,
@@ -2527,7 +2527,7 @@
       "referencia": "NBR 9050:2020 - 7.12 (Banheiros Acessíveis e Vestiários com Banheiros Conjugados), 7.12.1.2, 7.12.4",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de até 2% de caimento equivale a no máximo 1,1 graus na tela do seu celular.",
       "comoAveriguar": "[Trena e Celular/Inclinômetro] Meça com a trena as dimensões do box (mín. 0,90 m x 0,95 m) e verifique se o piso está em nível (sem soleira). Para o escoamento, coloque o celular deitado no piso em direção ao ralo. Se marcar 1,1° ou menos, a inclinação está Conforme.",
-      "imagem": null
+      "imagem": "box_chuveiro.svg"
     },
     {
       "id": 1022,
@@ -2561,7 +2561,7 @@
       "referencia": "NBR 9050:2020 - 10.11 (Locais de Esporte, Lazer e Turismo), 10.11.3",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 171,
@@ -2573,7 +2573,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2",
       "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
       "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
-      "imagem": null
+      "imagem": "piso_firme_regular.svg"
     },
     {
       "id": 172,
@@ -2614,7 +2614,7 @@
       "referencia": "NBR 9050:2020 - 10.11 (Locais de Esporte, Lazer e Turismo), 10.11.4",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
-      "imagem": null
+      "imagem": "rota_acessivel.svg"
     },
     {
       "id": 174,
@@ -2666,7 +2666,7 @@
       "referencia": "NBR 9050:2020 - 8.8 (Ornamentação da Paisagem e Ambientação Urbana – Vegetação), 8.8.1 e 8.8.2",
       "dica": "Observe galhos, placas, toldos e equipamentos no caminho inteiro, não apenas no início do trecho.",
       "comoAveriguar": "[Trena] Percorra o trajeto olhando para cima. Onde houver algo baixo, meça do piso até o ponto mais baixo do elemento.",
-      "imagem": null
+      "imagem": "altura_livre.svg"
     },
     {
       "id": 177,

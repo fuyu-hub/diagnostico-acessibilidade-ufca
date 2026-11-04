@@ -57,7 +57,7 @@ describe('Orientação dos itens', () => {
     }
   });
 
-  it('7. Item de altura livre não exibe a imagem de piso tátil', () => {
-    expect(ITENS_POR_ID[5].imagem).toBeNull();
+  it('7. Item de altura livre exibe a imagem de altura livre, não a de piso tátil', () => {
+    expect(ITENS_POR_ID[5].imagem).toBe('altura_livre.svg');
   });
 });
