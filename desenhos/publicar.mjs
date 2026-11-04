@@ -45,6 +45,19 @@ const APROVADAS = {
   alcance_manual: [115, 135],
   box_chuveiro: [168, 169],
   estantes_corredor: [110],
+  // Lote 4
+  escada_piso_tatil: [62],
+  porta_espaco_lateral: [95],
+  balcao_autosservico: [134],
+  saida_antipanico: [179],
+  area_resgate: [180],
+  iluminacao_uniforme: [45, 97, 109, 130, 140, 172],
+  escada_inclinacao: [17, 57],
+  corrimao_braille: [29, 78],
+  estacionamento_percurso: [37, 39],
+  elevador_entrada: [81, 85],
+  bebedouro_bica: [87, 184],
+  inclinacao_longitudinal: [49],
 };
 
 // Imagens antigas que já têm substituta aprovada

@@ -315,7 +315,7 @@
       "referencia": "NBR 9050:2020 - 6.8 (Escadas), 6.8.5; 6.8.9",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 2% equivale a no máximo 1,1 graus na tela do seu celular.",
       "comoAveriguar": "Coloque o celular deitado diretamente sobre o piso do degrau ou patamar da escada externa, atravessado no sentido da largura para escoamento. Meça em 3 degraus/pontos diferentes e anote o maior valor. Se o celular marcar 1,1° ou menos, o trecho está Conforme.",
-      "imagem": null
+      "imagem": "escada_inclinacao.svg"
     },
     {
       "id": 1003,
@@ -495,7 +495,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.3",
       "dica": "Confirme pelo tato, não só pela aparência. Se possível, peça a validação de uma pessoa que leia Braille.",
       "comoAveriguar": "[Tato/Trena] Toque o relevo e o Braille, confira se a informação corresponde ao local e meça a altura, quando a pergunta indicar.",
-      "imagem": null
+      "imagem": "corrimao_braille.svg"
     },
     {
       "id": 30,
@@ -644,7 +644,7 @@
       "referencia": "NBR 9050:2020 - 6.14 (Vagas Reservadas para Veículos), 6.14.2",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "estacionamento_percurso.svg"
     },
     {
       "id": 38,
@@ -668,7 +668,7 @@
       "referencia": "NBR 9050:2020 - 6.14 (Vagas Reservadas para Veículos), 6.14.1.2",
       "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
       "comoAveriguar": "[Trena/Passos] Meça ou estime o percurso da vaga até o acesso da edificação e compare com o limite da pergunta.",
-      "imagem": null
+      "imagem": "estacionamento_percurso.svg"
     },
     {
       "id": 40,
@@ -740,7 +740,7 @@
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2",
       "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
       "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
-      "imagem": null
+      "imagem": "iluminacao_uniforme.svg"
     },
     {
       "id": 46,
@@ -788,7 +788,7 @@
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.3",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 5% equivale a no máximo 2,9 graus na tela do seu celular.",
       "comoAveriguar": "Coloque o seu celular deitado diretamente sobre o piso do corredor, alinhado no sentido em que as pessoas caminham (longitudinal). Meça em 3 pontos ao longo do percurso. Se marcar menos de 2,9°, o piso está Conforme (se atingir 5% ou mais, deve atender aos parâmetros de rampa).",
-      "imagem": null
+      "imagem": "inclinacao_longitudinal.svg"
     },
     {
       "id": 50,
@@ -949,7 +949,7 @@
       "referencia": "NBR 9050:2020 - 6.8 (Escadas), 6.8.5 e 6.8.9",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 1% equivale a no máximo 0,6 graus na tela do seu celular.",
       "comoAveriguar": "Coloque o celular deitado diretamente sobre o piso do degrau ou patamar da escada interna, no sentido transversal. Meça em pelo menos 3 degraus/pontos. Se marcar 0,6° ou menos, o trecho está Conforme.",
-      "imagem": null
+      "imagem": "escada_inclinacao.svg"
     },
     {
       "id": 58,
@@ -1009,7 +1009,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.6",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": null
+      "imagem": "escada_piso_tatil.svg"
     },
     {
       "id": 1010,
@@ -1189,7 +1189,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.3",
       "dica": "Confirme pelo tato, não só pela aparência. Se possível, peça a validação de uma pessoa que leia Braille.",
       "comoAveriguar": "[Tato/Trena] Toque o relevo e o Braille, confira se a informação corresponde ao local e meça a altura, quando a pergunta indicar.",
-      "imagem": null
+      "imagem": "corrimao_braille.svg"
     },
     {
       "id": 1012,
@@ -1248,7 +1248,7 @@
       "referencia": "NBR 9050:2020 - 5.2 (Sinalização), 5.2.9.1.1; Mota e Sonza (2024, p. 40)",
       "dica": "Observe a uma certa distância: quem tem baixa visão localiza a porta pelo contraste com a parede.",
       "comoAveriguar": "[Visual] Com a porta fechada, compare a cor da porta e a da parede ao redor.",
-      "imagem": null
+      "imagem": "elevador_entrada.svg"
     },
     {
       "id": 82,
@@ -1296,7 +1296,7 @@
       "referencia": "Mota e Sonza (2024, p. 41)",
       "dica": "Desconsidere a soleira: compare o piso da cabina com o do pavimento.",
       "comoAveriguar": "[Visual/Tato] Observe o revestimento da cabina, confira se é duro e antiderrapante e compare com o piso do pavimento.",
-      "imagem": null
+      "imagem": "elevador_entrada.svg"
     },
     {
       "id": 86,
@@ -1340,7 +1340,7 @@
       "referencia": "NBR 9050:2020 - 8.5 (Bebedouros), 8.5.1 (Bebedouros de bica), 8.5.1.1",
       "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
       "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
-      "imagem": null
+      "imagem": "bebedouro_bica.svg"
     },
     {
       "id": 88,
@@ -1376,7 +1376,7 @@
       "referencia": "NBR 9050:2020 - 8.5 (Bebedouros), 8.5.1.1",
       "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
       "comoAveriguar": "[Visual] Observe o tipo e a posição da bica: deve ser de jato inclinado, no lado frontal do bebedouro, permitindo encher um copo com facilidade.",
-      "imagem": null
+      "imagem": "bebedouro_bica.svg"
     },
     {
       "id": 90,
@@ -1448,7 +1448,7 @@
       "referencia": "NBR 9050:2020 - 6.11 (Circulação Interna), 6.11.2.1, 6.11.2.2 e 6.11.2.3",
       "dica": "Avalie com a porta fechada e sem contar lixeiras, carrinhos e móveis no espaço de manobra.",
       "comoAveriguar": "[Trena] Marque a área indicada na pergunta e confira se ela fica livre de obstáculos.",
-      "imagem": null
+      "imagem": "porta_espaco_lateral.svg"
     },
     {
       "id": 96,
@@ -1472,7 +1472,7 @@
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2; Anexo B, B.1",
       "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
       "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
-      "imagem": null
+      "imagem": "iluminacao_uniforme.svg"
     },
     {
       "id": 98,
@@ -1658,7 +1658,7 @@
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2; Anexo B, B.1",
       "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
       "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
-      "imagem": null
+      "imagem": "iluminacao_uniforme.svg"
     },
     {
       "id": 110,
@@ -1977,7 +1977,7 @@
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2; Anexo B, B.1",
       "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
       "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
-      "imagem": null
+      "imagem": "iluminacao_uniforme.svg"
     },
     {
       "id": 131,
@@ -2025,7 +2025,7 @@
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.3.3",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "balcao_autosservico.svg"
     },
     {
       "id": 135,
@@ -2097,7 +2097,7 @@
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2; Anexo B, B.1",
       "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
       "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
-      "imagem": null
+      "imagem": "iluminacao_uniforme.svg"
     },
     {
       "id": 141,
@@ -2585,7 +2585,7 @@
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2; Anexo B, B.1",
       "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
       "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
-      "imagem": null
+      "imagem": "iluminacao_uniforme.svg"
     },
     {
       "id": 1023,
@@ -2702,7 +2702,7 @@
       "referencia": "NBR 9050:2020 - 6.4 (Rota de Fuga e Área de Resgate – Condições Gerais), 6.4.1.1; Mota e Sonza (2024, p. 53)",
       "dica": "O vão útil é o espaço realmente livre: a própria folha da porta aberta e o batente reduzem a medida.",
       "comoAveriguar": "[Trena] Abra a porta totalmente, em 90°, e meça da face da folha até o batente oposto. Meça também a altura livre, quando a pergunta pedir.",
-      "imagem": null
+      "imagem": "saida_antipanico.svg"
     },
     {
       "id": 180,
@@ -2714,7 +2714,7 @@
       "referencia": "NBR 9050:2020 - 6.4 (Rota de Fuga e Área de Resgate – Condições Gerais), 6.4.2.1 e 6.4.2.2",
       "dica": "Procure a área em cada pavimento e confirme que ela não fica no caminho principal de circulação.",
       "comoAveriguar": "[Visual/Trena] Localize a área de resgate, confira o espaço reservado, teste o intercomunicador e meça a altura dele.",
-      "imagem": null
+      "imagem": "area_resgate.svg"
     },
     {
       "id": 181,

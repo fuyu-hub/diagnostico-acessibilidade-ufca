@@ -5,6 +5,7 @@ import { FIGURAS } from './figuras.mjs';
 import { LOTE1 } from './lote1.mjs';
 import { LOTE2 } from './lote2.mjs';
 import { LOTE3 } from './lote3.mjs';
+import { LOTE4 } from './lote4.mjs';
 
 const checklist = JSON.parse(readFileSync(new URL('../src/dados/checklist.json', import.meta.url)));
 const saida = new URL('./saida/', import.meta.url);
@@ -15,7 +16,7 @@ const normalizar = t => t.replace(/&#\d+;/g, '').replace(/\s+/g, ' ').replace(/(
 const MEDIDA = /\d+(?:,\d+)?\s?(?:cm|mm|m\b|%)/g;
 
 let erros = 0;
-for (const criar of [...FIGURAS, ...LOTE1, ...LOTE2, ...LOTE3]) {
+for (const criar of [...FIGURAS, ...LOTE1, ...LOTE2, ...LOTE3, ...LOTE4]) {
   const figura = criar();
   writeFileSync(new URL(`${figura.nome}.svg`, saida), figura.svg);
 

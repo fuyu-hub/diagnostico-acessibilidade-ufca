@@ -6,7 +6,7 @@ const VERDE = '#15703a', VERMELHO = '#b91c1c', LARANJA = '#d97706';
 const ZONA_L = 'rgba(217,119,6,.18)';
 
 /** Símbolo Internacional de Acesso simplificado. */
-function simboloAcesso(x, y, l) {
+export function simboloAcesso(x, y, l) {
   const e = l / 36;
   return `<g transform="translate(${x} ${y}) scale(${e})"><rect width="36" height="36" rx="4" fill="${AZUL}"/><circle cx="18" cy="9" r="4" fill="#fff"/><path d="M 18 14 v 9 h 7 l 3 6 M 12 18 a 8 8 0 1 0 9 11" fill="none" stroke="#fff" stroke-width="2.6"/></g>`;
 }
