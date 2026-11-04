@@ -34,6 +34,38 @@ export const ITENS_TECNICOS = TODOS_ITENS.filter(i => i.tipo === 'tecnico');
 export const totalItens = TODOS_ITENS.length;
 
 /**
+ * Todos os itens abaixo de uma triagem, incluindo os de triagens aninhadas,
+ * cada um com a triagem que o controla diretamente.
+ */
+export function dependentesEmCascata(triagem) {
+  return (triagem?.dependentes || []).flatMap(depId => [
+    { id: depId, origemTriagem: triagem.id },
+    ...dependentesEmCascata(ITENS_POR_ID[depId]),
+  ]);
+}
+
+/**
+ * Itens a limpar quando uma triagem deixa de ser negativa, incluindo os de triagens aninhadas.
+ * Vistorias salvas antes de a marca `automatico` ser persistida não a têm: nelas, um N/A sem
+ * observação nem foto sob uma triagem negativa é tratado como automático.
+ */
+export function dependentesParaLimpar(triagem, respostas = {}) {
+  const valorTriagem = respostas[triagem?.id]?.valor;
+  const triagemNegativa = ['nao', 'nao-conforme', 'nao-aplica'].includes(valorTriagem);
+  const limpar = [];
+
+  for (const depId of triagem?.dependentes || []) {
+    const resp = respostas[depId];
+    const automatica = resp?.automatico ||
+      (triagemNegativa && resp?.valor === 'nao-aplica' && !resp.obs && !resp.foto);
+    if (automatica) {
+      limpar.push(depId, ...dependentesParaLimpar(ITENS_POR_ID[depId], respostas));
+    }
+  }
+  return limpar;
+}
+
+/**
  * Retorna a lista de critérios técnicos aplicáveis a uma vistoria com base na triagem
  */
 export function criteriosAplicaveis(triagem = {}, respostas = {}) {

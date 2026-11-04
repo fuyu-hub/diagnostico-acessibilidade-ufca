@@ -7,7 +7,7 @@ import {
   IconPhoto, IconAlertCircle,
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { TODOS_ITENS, ITENS_TECNICOS } from '../dados/checklist';
+import { TODOS_ITENS, ITENS_TECNICOS, dependentesEmCascata, dependentesParaLimpar } from '../dados/checklist';
 import Topbar from '../componentes/Topbar';
 import BarraProgresso from '../componentes/BarraProgresso';
 import { tocarSomResposta } from '../utilitarios/som';
@@ -72,22 +72,21 @@ export default function ItemChecklist() {
   function aplicarDependencias(valor) {
     if (!item?.dependentes?.length) return null;
     if (valor === 'nao' || valor === 'nao-aplica') {
-      item.dependentes.forEach(depId => {
+      dependentesEmCascata(item).forEach(({ id: depId, origemTriagem }) => {
         responderItem(id, depId, {
           valor: 'nao-aplica',
           obs: '', // Não coloca mais observação nos itens
           foto: null,
           automatico: true,
-          origemTriagem: item.id,
+          origemTriagem,
         });
       });
       if (valor === 'nao' && item.acaoSeNao === 'gatilho_nc_dependentes_na') {
         return { valor: 'nao-conforme', obs, foto };
       }
     } else {
-      item.dependentes.forEach(depId => {
-        const respDep = vistoria?.respostas?.[depId];
-        if (respDep?.automatico) responderItem(id, depId, null);
+      dependentesParaLimpar(item, vistoria?.respostas).forEach(depId => {
+        responderItem(id, depId, null);
       });
     }
     return null;
@@ -300,7 +299,7 @@ export default function ItemChecklist() {
 
             {ehTriagem && item.acaoSeNao === 'dependentes_na' && item.dependentes?.length > 0 && (
               <div className={styles.alertaInfo}>
-                <p>Se "Não" ou "Não se aplica": itens {item.dependentes.join(', ')} serão marcados automaticamente como N/A.</p>
+                <p>Se "Não" ou "Não se aplica": itens {dependentesEmCascata(item).map(dep => dep.id).join(', ')} serão marcados automaticamente como N/A.</p>
               </div>
             )}
 

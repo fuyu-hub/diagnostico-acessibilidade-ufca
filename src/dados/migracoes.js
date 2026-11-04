@@ -27,6 +27,16 @@ export function normalizarValorResposta(val) {
 }
 
 /**
+ * Marca de N/A automático por triagem; vazia em respostas dadas pelo avaliador
+ */
+export function extrairMarcaTriagem(resposta) {
+  if (!resposta?.automatico) return {};
+  return resposta.origemTriagem
+    ? { automatico: true, origemTriagem: resposta.origemTriagem }
+    : { automatico: true };
+}
+
+/**
  * Converte uma vistoria no formato legado (localStorage nbr9050_vistorias)
  * para o formato canônico Zod sem perder nenhum dado preenchido.
  */
@@ -117,6 +127,7 @@ export function converterLegadoParaCanonica(legada) {
       resposta: respostaNormalizada,
       observacao: typeof obs === 'string' ? obs : String(obs),
       foto: foto || null,
+      ...extrairMarcaTriagem(item),
     };
   }
 

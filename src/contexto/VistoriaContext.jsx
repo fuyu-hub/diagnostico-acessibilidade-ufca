@@ -15,6 +15,7 @@ import { Vistoria } from '../dados/esquema.js';
 import {
   gerarUUID,
   normalizarValorResposta,
+  extrairMarcaTriagem,
 } from '../dados/migracoes.js';
 import {
   criarEnvelopeExportacao,
@@ -49,6 +50,7 @@ function enriquecerParaUI(canonica) {
       foto: d.foto || null,
       resposta: d.resposta,
       observacao: d.observacao || '',
+      ...extrairMarcaTriagem(d),
     };
   }
 
@@ -96,6 +98,7 @@ function converterUIParaCanonica(vistoriaUI) {
       resposta,
       observacao: typeof obs === 'string' ? obs : String(obs),
       foto: foto || null,
+      ...extrairMarcaTriagem(item),
     };
   }
 
@@ -470,6 +473,7 @@ export function VistoriaProvider({ children }) {
             resposta: respostaNorm,
             observacao: obs,
             foto,
+            ...extrairMarcaTriagem(resposta),
           };
         }
 

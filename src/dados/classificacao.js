@@ -21,7 +21,8 @@ export function classificarNota(nota) {
     };
   }
 
-  const n = Math.max(0, Math.min(10, nota));
+  // A faixa é decidida pela nota com uma casa decimal, a mesma que é exibida
+  const n = Number(Math.max(0, Math.min(10, nota)).toFixed(1));
   const notaFormatada = n.toFixed(1).replace('.', ',');
 
   if (n >= 9.0) {
