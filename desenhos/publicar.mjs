@@ -58,6 +58,19 @@ const APROVADAS = {
   elevador_entrada: [81, 85],
   bebedouro_bica: [87, 184],
   inclinacao_longitudinal: [49],
+  // Lote 5
+  porta_giratoria: [32],
+  catraca_vao: [33],
+  vaga_idoso: [36],
+  auditorio_assento_pmr: [123],
+  interprete_libras: [125],
+  arquibancada_pcr: [175],
+  banco_patio: [177],
+  luminaria_rota: [178],
+  mapa_tatil: [182],
+  plateia_corrimao: [124],
+  sinalizacao_luminosa_piso: [128],
+  iluminacao_balcao: [145],
 };
 
 // Imagens antigas que já têm substituta aprovada

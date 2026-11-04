@@ -20,7 +20,7 @@ function faixaAlerta(x, y, l, a, passo = 22) {
 }
 
 /** Quadro com faixa de título colorida, como em "Piso firme e regular". */
-function quadro(x, y, l, a, titulo, cor) {
+export function quadro(x, y, l, a, titulo, cor) {
   return `<rect x="${x}" y="${y}" width="${l}" height="${a}" rx="10" fill="#fff" stroke="${C.linha}" stroke-width="2.5"/>`
     + `<rect x="${x}" y="${y}" width="${l}" height="54" rx="10" fill="${cor}"/>`
     + texto(x + l / 2, y + 37, titulo, { tam: 25, cor: '#fff', halo: false });

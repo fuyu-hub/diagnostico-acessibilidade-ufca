@@ -547,7 +547,7 @@
       "referencia": "NBR 9050:2020 - 6.2 (Acessos – Condições Gerais), 6.2.7",
       "dica": "A entrada alternativa precisa estar aberta durante o funcionamento, e não apenas existir.",
       "comoAveriguar": "[Visual] Verifique se há outra entrada ao lado da porta giratória e percorra-a como faria uma pessoa em cadeira de rodas.",
-      "imagem": null
+      "imagem": "porta_giratoria.svg"
     },
     {
       "id": 1006,
@@ -575,7 +575,7 @@
       "referencia": "NBR 9050:2020 - 6.2 (Acessos – Condições Gerais), 6.2.5 e 6.2.6",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Visual/Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "catraca_vao.svg"
     },
     {
       "id": 1007,
@@ -632,7 +632,7 @@
       "referencia": "NBR 9050:2020 - 6.14 (Vagas Reservadas para Veículos), 6.14.1.1; Lei 10741/2003 (EPI)",
       "dica": "Confirme a sinalização dupla (piso + placa vertical) e o percurso acessível contínuo até a edificação.",
       "comoAveriguar": "[Visual] Conte o total de vagas, calcule o percentual exigido e meça a vaga reservada e o espaço adicional com trena.",
-      "imagem": null
+      "imagem": "vaga_idoso.svg"
     },
     {
       "id": 37,
@@ -1869,7 +1869,7 @@
       "referencia": "NBR 9050:2020 - 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.2.5 e 10.3.4.2; 4.7 (Assentos para Pessoas Obesas); Decreto nº 5.296:2004",
       "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
       "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
-      "imagem": null
+      "imagem": "auditorio_assento_pmr.svg"
     },
     {
       "id": 124,
@@ -1881,7 +1881,7 @@
       "referencia": "NBR 9050:2020 - 10.4 (Plateia, Palco e Bastidores – Circulação), 10.4.1",
       "dica": "Meça dos dois lados e verifique a firmeza: corrimão solto também é uma barreira.",
       "comoAveriguar": "[Trena] Meça o que a pergunta pede (altura, prolongamento, espaçamento ou diâmetro) em pelo menos 2 pontos, sempre da face superior até o piso.",
-      "imagem": null
+      "imagem": "plateia_corrimao.svg"
     },
     {
       "id": 125,
@@ -1893,7 +1893,7 @@
       "referencia": "NBR 9050:2020 - 5.2 (Sinalização), 5.2.8.1.6; 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.1 g)",
       "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
       "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
-      "imagem": null
+      "imagem": "interprete_libras.svg"
     },
     {
       "id": 126,
@@ -1929,7 +1929,7 @@
       "referencia": "NBR 9050:2020 - 10.4 (Plateia, Palco e Bastidores – Circulação), 10.4.2.1",
       "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
       "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
-      "imagem": null
+      "imagem": "sinalizacao_luminosa_piso.svg"
     },
     {
       "id": 1017,
@@ -2189,7 +2189,7 @@
       "referencia": "NBR 9050:2020 - 9.2 (Balcão, Bilheterias e Balcões de Informação), 9.2.1.3",
       "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
       "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
-      "imagem": null
+      "imagem": "iluminacao_balcao.svg"
     },
     {
       "id": 146,
@@ -2654,7 +2654,7 @@
       "referencia": "NBR 9050:2020 - 10.11 (Locais de Esporte, Lazer e Turismo), 10.11.2 e 10.11.3; 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.1",
       "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
       "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
-      "imagem": null
+      "imagem": "arquibancada_pcr.svg"
     },
     {
       "id": 176,
@@ -2678,7 +2678,7 @@
       "referencia": "NBR 9050:2020 - 8.9 (Assentos Públicos), 8.9.1 e 8.9.3; Figura 134",
       "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
       "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
-      "imagem": null
+      "imagem": "banco_patio.svg"
     },
     {
       "id": 178,
@@ -2690,7 +2690,7 @@
       "referencia": "NBR 9050:2020 - 6.4 (Rota de Fuga e Área de Resgate – Condições Gerais), 6.4.1.2",
       "dica": "Teste o equipamento quando possível: existir não significa funcionar no dia a dia.",
       "comoAveriguar": "[Teste] Acione o item, observe o resultado e registre se está funcionando no dia da vistoria.",
-      "imagem": null
+      "imagem": "luminaria_rota.svg"
     },
     {
       "id": 179,
@@ -2738,7 +2738,7 @@
       "referencia": "NBR 9050:2020 - 5.5 (Sinalização de Emergência), 5.5.1.3; 5.4 (Aplicações Essenciais), 5.4.2",
       "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
       "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
-      "imagem": null
+      "imagem": "mapa_tatil.svg"
     }
   ]
 }
