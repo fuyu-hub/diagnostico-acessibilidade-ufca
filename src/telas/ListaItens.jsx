@@ -23,7 +23,7 @@ function obterTextoResposta(valor, automatico) {
 function iconeResposta(valor) {
   if (valor === 'conforme' || valor === 'sim')     return <IconCheck size={22} color="var(--text-success)" />;
   if (valor === 'nao-conforme' || valor === 'nao') return <IconX size={22} color="var(--text-danger)" />;
-  if (valor === 'nao-aplica')                     return <IconMinus size={22} color="var(--text-warning)" />;
+  if (valor === 'nao-aplica')                     return <IconMinus size={22} color="var(--text-na, var(--text-muted))" />;
   return <IconCircle size={22} color="var(--border-strong)" />;
 }
 

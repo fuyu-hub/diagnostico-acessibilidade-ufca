@@ -36,57 +36,106 @@
   --border-warning: rgba(234, 179, 8, 0.48);
   --text-warning: #facc15;
 
-  /* Faixas do Índice de Avaliação de Acessibilidade */
+  /* Não se aplica (N/A) neutro e legível */
+  --bg-na: rgba(148, 163, 184, 0.14);
+  --border-na: rgba(148, 163, 184, 0.35);
+  --text-na: #94a3b8;
+
+  /* Faixas do Índice de Avaliação de Acessibilidade (IAA) - Dark */
   --iaa-critico: #ef4444;
+  --iaa-critico-nota: #ef4444;
+  --iaa-critico-bg: rgba(239, 68, 68, 0.15);
+  --iaa-critico-border: rgba(239, 68, 68, 0.35);
+  --iaa-critico-dot: #ef4444;
+
   --iaa-insuficiente: #f97316;
-  --iaa-parcial: #eab308;
+  --iaa-insuficiente-nota: #f97316;
+  --iaa-insuficiente-bg: rgba(249, 115, 22, 0.15);
+  --iaa-insuficiente-border: rgba(249, 115, 22, 0.35);
+  --iaa-insuficiente-dot: #f97316;
+
+  --iaa-parcial: #facc15;
+  --iaa-parcial-nota: #facc15;
+  --iaa-parcial-bg: rgba(234, 179, 8, 0.15);
+  --iaa-parcial-border: rgba(234, 179, 8, 0.35);
+  --iaa-parcial-dot: #eab308;
+
   --iaa-adequado: #22c55e;
+  --iaa-adequado-nota: #22c55e;
+  --iaa-adequado-bg: rgba(34, 197, 94, 0.15);
+  --iaa-adequado-border: rgba(34, 197, 94, 0.35);
+  --iaa-adequado-dot: #22c55e;
 
   --radius-sm: 12px;
-  --radius-md: 20px;
-  --radius-lg: 28px;
-  --radius-xl: 36px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
 }
 
 :root[data-tema="claro"] {
   color-scheme: light;
 
-  --bg: #f4f5f7;
+  --bg: #f8fafc;
   --surface-1: #ffffff;
-  --surface-2: #f0f1f4;
-  --surface-3: #e4e6ea;
+  --surface-2: #f1f5f9;
+  --surface-3: #e2e8f0;
   --vidro: rgba(255, 255, 255, 0.92);
   --tinta-suave: rgba(0, 0, 0, 0.04);
 
-  --border: rgba(0, 0, 0, 0.14);
-  --border-strong: rgba(0, 0, 0, 0.26);
-  --border-stronger: rgba(0, 0, 0, 0.45);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.16);
+  --border-stronger: rgba(0, 0, 0, 0.30);
 
-  --text-strong: #0b0d10;
-  --text-primary: #14171c;
-  --text-secondary: #474d57;
-  --text-muted: #5b626d;
+  --text-strong: #0f172a;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
 
-  --accent: #1d5fd8;
-  --accent-text: #1a56c4;
-  --fill-accent: #1d5fd8;
-  --btn-primary-bg: #14171c;
+  --accent: #1d4ed8;
+  --accent-text: #1e40af;
+  --fill-accent: #2563eb;
+  --btn-primary-bg: #1d4ed8;
   --btn-primary-fg: #ffffff;
 
-  --bg-success: rgba(21, 128, 61, 0.10);
-  --border-success: rgba(21, 128, 61, 0.45);
-  --text-success: #116530;
+  --bg-success: rgba(22, 163, 74, 0.10);
+  --border-success: rgba(22, 163, 74, 0.30);
+  --text-success: #15803d;
 
-  --bg-danger: rgba(185, 28, 28, 0.08);
-  --border-danger: rgba(185, 28, 28, 0.42);
-  --text-danger: #a81b1b;
+  --bg-danger: rgba(220, 38, 38, 0.08);
+  --border-danger: rgba(220, 38, 38, 0.30);
+  --text-danger: #dc2626;
 
-  --bg-warning: rgba(161, 98, 7, 0.10);
-  --border-warning: rgba(161, 98, 7, 0.50);
-  --text-warning: #7a4a05;
+  --bg-warning: rgba(217, 119, 6, 0.10);
+  --border-warning: rgba(217, 119, 6, 0.35);
+  --text-warning: #b45309;
 
-  --iaa-critico: #b91c1c;
-  --iaa-insuficiente: #b84607;
-  --iaa-parcial: #805206;
-  --iaa-adequado: #15703a;
+  /* Não se aplica (N/A) neutro e elegante no claro */
+  --bg-na: rgba(100, 116, 139, 0.08);
+  --border-na: rgba(100, 116, 139, 0.25);
+  --text-na: #64748b;
+
+  /* Faixas do Índice de Avaliação de Acessibilidade (IAA) - Light */
+  --iaa-critico: #dc2626;
+  --iaa-critico-nota: #dc2626;
+  --iaa-critico-bg: rgba(239, 68, 68, 0.09);
+  --iaa-critico-border: rgba(239, 68, 68, 0.28);
+  --iaa-critico-dot: #ef4444;
+
+  --iaa-insuficiente: #c2410c;
+  --iaa-insuficiente-nota: #ea580c;
+  --iaa-insuficiente-bg: rgba(249, 115, 22, 0.09);
+  --iaa-insuficiente-border: rgba(249, 115, 22, 0.28);
+  --iaa-insuficiente-dot: #f97316;
+
+  --iaa-parcial: #b45309;
+  --iaa-parcial-nota: #b45309;
+  --iaa-parcial-bg: rgba(245, 158, 11, 0.09);
+  --iaa-parcial-border: rgba(245, 158, 11, 0.28);
+  --iaa-parcial-dot: #f59e0b;
+
+  --iaa-adequado: #15803d;
+  --iaa-adequado-nota: #15803d;
+  --iaa-adequado-bg: rgba(34, 197, 94, 0.09);
+  --iaa-adequado-border: rgba(34, 197, 94, 0.28);
+  --iaa-adequado-dot: #22c55e;
 }

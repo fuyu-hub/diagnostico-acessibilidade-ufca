@@ -192,7 +192,7 @@ function ConteudoVistoria({ id, vistoria }) {
             <div className={styles.cabecalhoConteudo}>
               <div className={styles.tituloLinha}>
                 <h2 className={styles.titulo}>{vistoria.nome}</h2>
-                <span className={`tag ${ativa ? (temPendente ? 'ativa' : 'salva') : 'salva'}`}>
+                <span className={`tag ${!ativa ? 'salva' : temPendente ? 'em-andamento' : 'concluida'}`}>
                   {ativa ? (temPendente ? 'Em andamento' : 'Concluída') : 'Não iniciada'}
                 </span>
               </div>
@@ -248,7 +248,7 @@ function ConteudoVistoria({ id, vistoria }) {
                 <span className={styles.miniCardLabel}>Não Conf.</span>
               </div>
               <div className={`${styles.miniCard} ${styles.miniCardResultado}`}>
-                <span className={styles.miniCardNumero} style={{ color: 'var(--text-warning)' }}>{indice.na}</span>
+                <span className={styles.miniCardNumero} style={{ color: 'var(--text-na, var(--text-muted))' }}>{indice.na}</span>
                 <span className={styles.miniCardLabel}>N/A</span>
               </div>
             </div>

@@ -4,10 +4,62 @@
  */
 
 export const FAIXAS_INDICE = [
-  { minPct: 0,  maxPct: 40,  minNota: 0.0, maxNota: 4.0, rotulo: 'CRÍTICO',     cor: 'var(--iaa-critico)', bg: 'rgba(239, 68, 68, 0.15)', borda: 'rgba(239, 68, 68, 0.35)', faixaTexto: '0,0 – 3,9', descricao: 'Necessita de medidas de adequação urgentes' },
-  { minPct: 40, maxPct: 70,  minNota: 4.0, maxNota: 7.0, rotulo: 'INSUFICIENTE', cor: 'var(--iaa-insuficiente)', bg: 'rgba(249, 115, 22, 0.15)', borda: 'rgba(249, 115, 22, 0.35)', faixaTexto: '4,0 – 6,9', descricao: 'Necessita de medidas de adequação a curto ou a médio prazo' },
-  { minPct: 70, maxPct: 90,  minNota: 7.0, maxNota: 9.0, rotulo: 'PARCIALMENTE ADEQUADO',     cor: 'var(--iaa-parcial)', bg: 'rgba(234, 179, 8, 0.15)', borda: 'rgba(234, 179, 8, 0.35)', faixaTexto: '7,0 – 8,9', descricao: 'Apresenta pequenas não conformidades, com necessidade de ajustes pontuais' },
-  { minPct: 90, maxPct: 100, minNota: 9.0, maxNota: 10.0, rotulo: 'ADEQUADO',   cor: 'var(--iaa-adequado)', bg: 'rgba(34, 197, 94, 0.15)', borda: 'rgba(34, 197, 94, 0.35)', faixaTexto: '9,0 – 10,0', descricao: 'Com necessidade apenas de intervenções mínimas' },
+  {
+    minPct: 0,
+    maxPct: 40,
+    minNota: 0.0,
+    maxNota: 4.0,
+    rotulo: 'CRÍTICO',
+    cor: 'var(--iaa-critico)',
+    corNota: 'var(--iaa-critico-nota, var(--iaa-critico))',
+    bg: 'var(--iaa-critico-bg)',
+    borda: 'var(--iaa-critico-border)',
+    dot: 'var(--iaa-critico-dot, var(--iaa-critico))',
+    faixaTexto: '0,0 – 3,9',
+    descricao: 'Necessita de medidas de adequação urgentes',
+  },
+  {
+    minPct: 40,
+    maxPct: 70,
+    minNota: 4.0,
+    maxNota: 7.0,
+    rotulo: 'INSUFICIENTE',
+    cor: 'var(--iaa-insuficiente)',
+    corNota: 'var(--iaa-insuficiente-nota, var(--iaa-insuficiente))',
+    bg: 'var(--iaa-insuficiente-bg)',
+    borda: 'var(--iaa-insuficiente-border)',
+    dot: 'var(--iaa-insuficiente-dot, var(--iaa-insuficiente))',
+    faixaTexto: '4,0 – 6,9',
+    descricao: 'Necessita de medidas de adequação a curto ou a médio prazo',
+  },
+  {
+    minPct: 70,
+    maxPct: 90,
+    minNota: 7.0,
+    maxNota: 9.0,
+    rotulo: 'PARCIALMENTE ADEQUADO',
+    cor: 'var(--iaa-parcial)',
+    corNota: 'var(--iaa-parcial-nota, var(--iaa-parcial))',
+    bg: 'var(--iaa-parcial-bg)',
+    borda: 'var(--iaa-parcial-border)',
+    dot: 'var(--iaa-parcial-dot, var(--iaa-parcial))',
+    faixaTexto: '7,0 – 8,9',
+    descricao: 'Apresenta pequenas não conformidades, com necessidade de ajustes pontuais',
+  },
+  {
+    minPct: 90,
+    maxPct: 100,
+    minNota: 9.0,
+    maxNota: 10.0,
+    rotulo: 'ADEQUADO',
+    cor: 'var(--iaa-adequado)',
+    corNota: 'var(--iaa-adequado-nota, var(--iaa-adequado))',
+    bg: 'var(--iaa-adequado-bg)',
+    borda: 'var(--iaa-adequado-border)',
+    dot: 'var(--iaa-adequado-dot, var(--iaa-adequado))',
+    faixaTexto: '9,0 – 10,0',
+    descricao: 'Com necessidade apenas de intervenções mínimas',
+  },
 ];
 
 export function classificarNota(nota) {
@@ -16,8 +68,10 @@ export function classificarNota(nota) {
       notaFormatada: '–',
       rotulo: 'SEM DADOS',
       cor: 'var(--text-muted)',
+      corNota: 'var(--text-muted)',
       bg: 'var(--tinta-suave)',
       borda: 'var(--border)',
+      dot: 'var(--text-muted)',
     };
   }
 
@@ -31,8 +85,10 @@ export function classificarNota(nota) {
       rotulo: 'ADEQUADO',
       descricao: 'Com necessidade apenas de intervenções mínimas',
       cor: 'var(--iaa-adequado)',
-      bg: 'rgba(34, 197, 94, 0.15)',
-      borda: 'rgba(34, 197, 94, 0.35)',
+      corNota: 'var(--iaa-adequado-nota, var(--iaa-adequado))',
+      bg: 'var(--iaa-adequado-bg)',
+      borda: 'var(--iaa-adequado-border)',
+      dot: 'var(--iaa-adequado-dot, var(--iaa-adequado))',
     };
   }
   if (n >= 7.0) {
@@ -41,8 +97,10 @@ export function classificarNota(nota) {
       rotulo: 'PARCIALMENTE ADEQUADO',
       descricao: 'Apresenta pequenas não conformidades, com necessidade de ajustes pontuais',
       cor: 'var(--iaa-parcial)',
-      bg: 'rgba(234, 179, 8, 0.15)',
-      borda: 'rgba(234, 179, 8, 0.35)',
+      corNota: 'var(--iaa-parcial-nota, var(--iaa-parcial))',
+      bg: 'var(--iaa-parcial-bg)',
+      borda: 'var(--iaa-parcial-border)',
+      dot: 'var(--iaa-parcial-dot, var(--iaa-parcial))',
     };
   }
   if (n >= 4.0) {
@@ -51,8 +109,10 @@ export function classificarNota(nota) {
       rotulo: 'INSUFICIENTE',
       descricao: 'Necessita de medidas de adequação a curto ou a médio prazo',
       cor: 'var(--iaa-insuficiente)',
-      bg: 'rgba(249, 115, 22, 0.15)',
-      borda: 'rgba(249, 115, 22, 0.35)',
+      corNota: 'var(--iaa-insuficiente-nota, var(--iaa-insuficiente))',
+      bg: 'var(--iaa-insuficiente-bg)',
+      borda: 'var(--iaa-insuficiente-border)',
+      dot: 'var(--iaa-insuficiente-dot, var(--iaa-insuficiente))',
     };
   }
   return {
@@ -60,8 +120,10 @@ export function classificarNota(nota) {
     rotulo: 'CRÍTICO',
     descricao: 'Necessita de medidas de adequação urgentes',
     cor: 'var(--iaa-critico)',
-    bg: 'rgba(239, 68, 68, 0.15)',
-    borda: 'rgba(239, 68, 68, 0.35)',
+    corNota: 'var(--iaa-critico-nota, var(--iaa-critico))',
+    bg: 'var(--iaa-critico-bg)',
+    borda: 'var(--iaa-critico-border)',
+    dot: 'var(--iaa-critico-dot, var(--iaa-critico))',
   };
 }
 

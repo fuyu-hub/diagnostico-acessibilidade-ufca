@@ -143,7 +143,7 @@ export default function Resultado() {
               Índice de Avaliação de Acessibilidade (IAA) Geral {ehParcial ? '· Prévia' : ''}
             </span>
 
-            <div className={styles.notaGeralValor} style={{ color: classGeral.cor }}>
+            <div className={styles.notaGeralValor} style={{ color: classGeral.corNota || classGeral.cor }}>
               {classGeral.notaFormatada}
             </div>
 
@@ -169,7 +169,7 @@ export default function Resultado() {
                 <div className={styles.statLblResumo}>Não conf.</div>
               </div>
               <div className={styles.statCardResumo} aria-label={`${indiceGeral.na} itens não aplicáveis`}>
-                <div className={styles.statValResumo} style={{ color: 'var(--text-warning)' }}>{indiceGeral.na}</div>
+                <div className={styles.statValResumo} style={{ color: 'var(--text-na, var(--text-muted))' }}>{indiceGeral.na}</div>
                 <div className={styles.statLblResumo}>N/A</div>
               </div>
             </div>
@@ -197,7 +197,7 @@ export default function Resultado() {
                     }}
                   >
                     <div className={styles.tabelaFaixa} role="cell">
-                      <span className={styles.tabelaDot} style={{ background: faixa.cor }} />
+                      <span className={styles.tabelaDot} style={{ background: faixa.dot || faixa.cor }} />
                       <span>{faixa.faixaTexto}</span>
                     </div>
                     <div role="cell" className={styles.tabelaDescricaoWrapper}>

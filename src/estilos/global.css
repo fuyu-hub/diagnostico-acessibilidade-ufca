@@ -249,13 +249,13 @@ input[type="time"] {
 }
 
 .btn-resposta.nao-aplica {
-  background: var(--bg-warning);
-  border-color: var(--border-warning);
-  color: var(--text-warning);
+  background: var(--bg-na);
+  border-color: var(--border-na);
+  color: var(--text-na);
 }
 .btn-resposta.nao-aplica .icone {
-  background: rgba(234, 179, 8, 0.28);
-  color: var(--text-warning);
+  background: var(--bg-na);
+  color: var(--text-na);
 }
 
 /* Botões de navegação */
@@ -264,7 +264,7 @@ input[type="time"] {
   padding: 16px 20px;
   border-radius: 14px;
   border: 1.5px solid var(--border-strong);
-  background: transparent;
+  background: var(--surface-1);
   color: var(--text-primary);
   font-family: inherit;
   font-size: 1rem;
@@ -275,7 +275,12 @@ input[type="time"] {
   gap: 10px;
   margin-top: 10px;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: all 0.15s ease;
+}
+
+.btn-nav:hover {
+  background: var(--surface-2);
+  border-color: var(--border-stronger);
 }
 
 .btn-nav:active { opacity: 0.7; }
@@ -284,6 +289,11 @@ input[type="time"] {
   background: var(--btn-primary-bg);
   color: var(--btn-primary-fg);
   border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-nav.primario:hover {
+  filter: brightness(1.08);
 }
 
 /* Section label */
@@ -309,6 +319,8 @@ input[type="time"] {
 }
 
 .tag.ativa { background: var(--bg-success); color: var(--text-success); border: 1px solid var(--border-success); }
+.tag.concluida { background: var(--bg-success); color: var(--text-success); border: 1px solid var(--border-success); }
+.tag.em-andamento { background: rgba(59, 130, 246, 0.12); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.35); }
 .tag.salva { background: var(--surface-3); color: var(--text-muted); border: 1px solid var(--border); }
 .tag.triagem { background: var(--bg-warning); color: var(--text-warning); border: 1px solid var(--border-warning); }
 
