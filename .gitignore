@@ -29,3 +29,6 @@ dist-ssr
 # Playwright
 /test-results/
 /playwright-report/
+
+# Rascunhos dos desenhos: o que vale fica em desenhos/aprovadas
+/desenhos/saida/

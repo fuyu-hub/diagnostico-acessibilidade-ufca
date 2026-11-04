@@ -58,8 +58,8 @@
       "pergunta": "A entrada de alunos está localizada na via de menor fluxo de tráfego de veículos?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 10.15 (Escolas), 10.15.1",
-      "dica": "Leia atentamente o texto do item, pois não há um método único de aferição indicado.",
-      "comoAveriguar": "Combine observação visual e, se necessário, medição pontual para confirmar a conformidade.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
       "imagem": null
     },
     {
@@ -82,8 +82,8 @@
       "pergunta": "Sobre a calçada, o piso é firme, regular, estável, não escorregadio e não trepidante para dispositivos com rodas, mesmo quando molhado?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.2",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": "calcada_faixa_livre.png"
     },
     {
@@ -118,9 +118,9 @@
       "pergunta": "Existe uma altura livre mínima de 2,10 m em toda a extensão da calçada, sem interferência de galhos, placas, toldos ou caixas de ar-condicionado?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.12 (Circulação Externa), 6.12.3",
-      "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
-      "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": "piso_tatil_externo.png"
+      "dica": "Observe galhos, placas, toldos e equipamentos no caminho inteiro, não apenas no início do trecho.",
+      "comoAveriguar": "[Trena] Percorra o trajeto olhando para cima. Onde houver algo baixo, meça do piso até o ponto mais baixo do elemento.",
+      "imagem": null
     },
     {
       "id": 6,
@@ -142,8 +142,8 @@
       "pergunta": "Existem objetos fixados nas paredes (como orelhões ou floreiras) que avançam mais de 10 cm para dentro da calçada, situados entre 0,60 m e 2,10 m de altura? (Se existirem, devem ser sinalizados com piso tátil de alerta).",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 4.3 (Área de Circulação e de Manobra), 4.3.3",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Visual/Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
+      "dica": "Objetos salientes nessa faixa de altura podem não ser percebidos pela bengala e causar colisão.",
+      "comoAveriguar": "[Trena] Meça quanto o objeto avança da parede e a que altura está. Se passar do limite, confira se há sinalização no piso.",
       "imagem": null
     },
     {
@@ -174,7 +174,7 @@
       "referencia": "NBR 9050:2020 - 6.12 (Circulação Externa), 6.12.7.3",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 8,33% equivale a no máximo 4,8 graus na tela do seu celular (ideal de 5% = até 2,9°).",
       "comoAveriguar": "[Inclinômetro/Celular e Trena] Meça a largura do rebaixo com a trena (mín. 1,20 m). Para a inclinação, coloque o celular deitado na rampa no sentido do caimento (em direção à rua). Meça em 3 pontos. Se o celular marcar 4,8° ou menos (ideal até 2,9°), o rebaixo está Conforme.",
-      "imagem": null
+      "imagem": "rebaixamento_calcada.svg"
     },
     {
       "id": 10,
@@ -184,9 +184,9 @@
       "pergunta": "Não existe desnível entre o término do rebaixamento e o nível da rua?",
       "dependeDe": 1001,
       "referencia": "NBR 9050:2020 - 6.12 (Circulação Externa), 6.12.7.3.1",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Visual/Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
-      "imagem": null
+      "dica": "Pequenos desníveis travam rodas e causam tropeço. Verifique as emendas de piso, soleiras e saídas de rebaixo.",
+      "comoAveriguar": "[Trena] Meça a altura do desnível. Nos intermediários, confira também a inclinação do chanfro.",
+      "imagem": "rebaixamento_calcada.svg"
     },
     {
       "id": 11,
@@ -253,8 +253,8 @@
       "pergunta": "No caso de haver degraus ou escada de acesso, estes estão associados a uma rampa ou equipamento eletromecânico acessível (elevador ou plataforma de elevação)?\n(Deve-se dar preferência à rampa)",
       "dependeDe": 1002,
       "referencia": "NBR 9050:2020 - 6.7 (Degraus e Escadas Fixas em Rotas Acessíveis); 6.10 (Equipamentos Eletromecânicos de Circulação), 6.10.1",
-      "dica": "Teste o funcionamento real do equipamento (não considerar apenas a existência física); registre se está operante no dia da vistoria.",
-      "comoAveriguar": "[Visual] Acione o elevador, cronometre a resposta, ouça o anúncio sonoro e verifique visualmente os painéis interno e externo.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
       "imagem": null
     },
     {
@@ -277,9 +277,9 @@
       "pergunta": "Os degraus seguem as dimensões regulamentares: piso (p) entre 0,28 m e 0,32 m, espelho (e) entre 0,16 m e 0,18 m, e a fórmula 0,63 m <= p + 2e <= 0,65 m?",
       "dependeDe": 1002,
       "referencia": "NBR 9050:2020 - 6.8 (Escadas), 6.8.2",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
-      "imagem": null
+      "dica": "Meça mais de um degrau: diferenças entre degraus também causam queda.",
+      "comoAveriguar": "[Trena] Meça a profundidade do piso (p) e a altura do espelho (e) em pelo menos 3 degraus e compare com os limites da pergunta.",
+      "imagem": "escada_degrau_dimensoes.svg"
     },
     {
       "id": 15,
@@ -289,9 +289,9 @@
       "pergunta": "Os espelhos dos degraus são fechados (sem vazados) e o bocel ou espelho inclinado avança no máximo 1,5 cm sobre o piso abaixo?",
       "dependeDe": 1002,
       "referencia": "NBR 9050:2020 - 6.7 (Degraus e Escadas Fixas em Rotas Acessíveis), 6.7.1",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Visual/Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
-      "imagem": null
+      "dica": "Meça mais de um degrau: diferenças entre degraus também causam queda.",
+      "comoAveriguar": "[Trena] Meça a profundidade do piso (p) e a altura do espelho (e) em pelo menos 3 degraus e compare com os limites da pergunta.",
+      "imagem": "escada_degrau_dimensoes.svg"
     },
     {
       "id": 16,
@@ -301,8 +301,8 @@
       "pergunta": "A sinalização visual dos degraus (faixa contrastante no piso e espelho, preferencialmente fotoluminescente) tem 3 cm de largura e, no mínimo, 7 cm de comprimento?",
       "dependeDe": 1002,
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.4.2",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Visual/Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "A faixa precisa contrastar com o degrau inteiro para quem tem baixa visão.",
+      "comoAveriguar": "[Trena] Meça a largura e o comprimento da faixa em alguns degraus, nos pisos e nos espelhos, e observe o contraste.",
       "imagem": null
     },
     {
@@ -347,7 +347,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.5; Mota e Sonza (2024, p.32)",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "rampa_dimensoes.svg"
     },
     {
       "id": 19,
@@ -357,9 +357,9 @@
       "pergunta": "Os patamares no início, no término e entre os segmentos de rampa têm comprimento mínimo de 1,20 m?",
       "dependeDe": 1003,
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2 e 6.6.4",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
-      "imagem": null
+      "dica": "Meça onde o espaço fica mais estreito, contando obstáculos como extintor, vaso, poste ou mobiliário.",
+      "comoAveriguar": "[Trena] Meça o comprimento de cada patamar no sentido da circulação: no início, no término e entre os segmentos da rampa.",
+      "imagem": "rampa_dimensoes.svg"
     },
     {
       "id": 20,
@@ -369,8 +369,8 @@
       "pergunta": "Sobre a rampa, o piso é firme, regular, estável, não escorregadio e não trepidante para dispositivos com rodas, mesmo quando molhado?",
       "dependeDe": 1003,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.2",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -383,7 +383,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.1 e 6.6.2.2",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 8,33% equivale a no máximo 4,8 graus na tela do seu celular (em reformas excepcionais até 12,5% = 7,1°).",
       "comoAveriguar": "Coloque o celular deitado diretamente sobre o piso da rampa, alinhado no sentido da subida/descida (longitudinal). Meça no início, meio e fim de cada segmento de rampa. Se o celular marcar 4,8° ou menos (ou até 7,1° em reformas de pequeno porte), a rampa está Conforme.",
-      "imagem": null
+      "imagem": "rampa_dimensoes.svg"
     },
     {
       "id": 22,
@@ -435,7 +435,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.6; 6.9 (Corrimãos e Guarda-Corpos), 6.9.3.2, 6.9.3.5",
       "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
       "comoAveriguar": "[Visual/Trena] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
-      "imagem": null
+      "imagem": "corrimao_alturas.svg"
     },
     {
       "id": 25,
@@ -457,8 +457,8 @@
       "pergunta": "Os corrimãos intermediários são interrompidos quando o comprimento do patamar for superior a 1,40m, garantindo espaçamento mínimo de 0,80 m entre o término de um segmento e o início do seguinte?",
       "dependeDe": 1004,
       "referencia": "NBR 9050:2020 - 6.9 (Corrimãos e Guarda-Corpos), 6.9.3.6",
-      "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
-      "comoAveriguar": "[Trena] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
+      "dica": "Meça dos dois lados e verifique a firmeza: corrimão solto também é uma barreira.",
+      "comoAveriguar": "[Trena] Meça o que a pergunta pede (altura, prolongamento, espaçamento ou diâmetro) em pelo menos 2 pontos, sempre da face superior até o piso.",
       "imagem": null
     },
     {
@@ -469,9 +469,9 @@
       "pergunta": "Os corrimãos se prolongam pelo menos 0,30 m além do início e do término das rampas, com extremidades recurvadas fixadas à parede ou ao piso?",
       "dependeDe": 1004,
       "referencia": "NBR 9050:2020 - 6.9 (Corrimãos e Guarda-Corpos), 6.9.3.2 e 6.9.3.4",
-      "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
-      "comoAveriguar": "[Visual/Trena] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
-      "imagem": null
+      "dica": "Meça dos dois lados e verifique a firmeza: corrimão solto também é uma barreira.",
+      "comoAveriguar": "[Trena] Meça o que a pergunta pede (altura, prolongamento, espaçamento ou diâmetro) em pelo menos 2 pontos, sempre da face superior até o piso.",
+      "imagem": "corrimao_alturas.svg"
     },
     {
       "id": 28,
@@ -483,7 +483,7 @@
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.5",
       "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
       "comoAveriguar": "[Trena/Paquímetro] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
-      "imagem": null
+      "imagem": "corrimao_alturas.svg"
     },
     {
       "id": 29,
@@ -493,8 +493,8 @@
       "pergunta": "Os corrimãos possuem sinalização do número do pavimento em relevo e em Braille na geratriz superior?",
       "dependeDe": 1004,
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.3",
-      "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
-      "comoAveriguar": "[Visual/Tato] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
+      "dica": "Confirme pelo tato, não só pela aparência. Se possível, peça a validação de uma pessoa que leia Braille.",
+      "comoAveriguar": "[Tato/Trena] Toque o relevo e o Braille, confira se a informação corresponde ao local e meça a altura, quando a pergunta indicar.",
       "imagem": null
     },
     {
@@ -505,9 +505,9 @@
       "pergunta": "As portas de acesso principal, quando abertas, possuem vão livre mínimo de 0,80 m de largura e 2,10 m de altura?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.11 (Circulação Interna), 6.11.2.4",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "dica": "O vão útil é o espaço realmente livre: a própria folha da porta aberta e o batente reduzem a medida.",
+      "comoAveriguar": "[Trena] Abra a porta totalmente, em 90°, e meça da face da folha até o batente oposto. Meça também a altura livre, quando a pergunta pedir.",
+      "imagem": "porta_vao_livre.svg"
     },
     {
       "id": 31,
@@ -545,8 +545,8 @@
       "pergunta": "Se existir porta giratória, há outra entrada acessível disponível ao lado?",
       "dependeDe": 1005,
       "referencia": "NBR 9050:2020 - 6.2 (Acessos – Condições Gerais), 6.2.7",
-      "dica": "Meça com a porta totalmente aberta a 90°, pois o vão útil muda conforme o ângulo de abertura.",
-      "comoAveriguar": "[Visual] Abra a porta a 90° e meça a largura e altura livres com trena.",
+      "dica": "A entrada alternativa precisa estar aberta durante o funcionamento, e não apenas existir.",
+      "comoAveriguar": "[Visual] Verifique se há outra entrada ao lado da porta giratória e percorra-a como faria uma pessoa em cadeira de rodas.",
       "imagem": null
     },
     {
@@ -606,8 +606,8 @@
       "pergunta": "O piso do estacionamento é antiderrapante, regular e estável?",
       "dependeDe": 1007,
       "referencia": "NBR 9050:2020 - 6.14 (Vagas Reservadas para Veículos), 6.14.1.2",
-      "dica": "Confirme a sinalização dupla (piso + placa vertical) e o percurso acessível contínuo até a edificação.",
-      "comoAveriguar": "[Visual] Conte o total de vagas, calcule o percentual exigido e meça a vaga reservada e o espaço adicional com trena.",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -615,7 +615,7 @@
       "tipo": "tecnico",
       "secaoId": 1,
       "subgrupo": "Estacionamento",
-      "pergunta": "Existem vagas reservadas para pessoas com deficiência (2% do total ou 1 vaga, o que for maior) , devidamente sinalizadas com o Símbolo Internacional de Acesso (SIA) no piso e em placa vertical?",
+      "pergunta": "Existem vagas reservadas para pessoas com deficiência (2% do total ou 1 vaga, o que for maior), devidamente sinalizadas com o Símbolo Internacional de Acesso (SIA) no piso e em placa vertical?",
       "dependeDe": 1007,
       "referencia": "NBR 9050:2020 - 6.14 (Vagas Reservadas para Veículos), 6.14.1.2 e 5.3 (Símbolos), 5.3.2; Lei 13146/2015 (EPD); Lei 5296/2004",
       "dica": "Confirme a sinalização dupla (piso + placa vertical) e o percurso acessível contínuo até a edificação.",
@@ -666,8 +666,8 @@
       "pergunta": "A partir da vaga para estacionamento direcionada para pessoas com deficiência e idosos, o percurso até o acesso à edificação é de, no máximo, 50m?",
       "dependeDe": 1007,
       "referencia": "NBR 9050:2020 - 6.14 (Vagas Reservadas para Veículos), 6.14.1.2",
-      "dica": "Confirme a sinalização dupla (piso + placa vertical) e o percurso acessível contínuo até a edificação.",
-      "comoAveriguar": "[Fita métrica] Conte o total de vagas, calcule o percentual exigido e meça a vaga reservada e o espaço adicional com trena.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Trena/Passos] Meça ou estime o percurso da vaga até o acesso da edificação e compare com o limite da pergunta.",
       "imagem": null
     },
     {
@@ -704,7 +704,7 @@
       "referencia": "NBR 9050:2020 - 6.11 (Circulação Interna), 6.11.1",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Trena/Fita métrica] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "corredor_largura.svg"
     },
     {
       "id": 43,
@@ -716,7 +716,7 @@
       "referencia": "NBR 9050:2020 - 6.11 (Circulação Interna), 6.11.1; 6.1 (Rota Acessível), 6.1.1.2",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Visual] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "corredor_largura.svg"
     },
     {
       "id": 44,
@@ -726,8 +726,8 @@
       "pergunta": "O piso interno dos corredores é firme, regular, estável, não escorregadio e não trepidante para dispositivos com rodas, mesmo quando molhado?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -738,8 +738,8 @@
       "pergunta": "A iluminação dos corredores e rotas acessíveis internas é suficiente para distinguir o piso tátil, os degraus, as portas e os obstáculos sem dificuldade, mesmo em dias nublados ou períodos sem luz natural?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2",
-      "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
-      "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
+      "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
+      "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
       "imagem": null
     },
     {
@@ -752,7 +752,7 @@
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.9; Figura 26",
       "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
       "comoAveriguar": "[Trena] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
-      "imagem": null
+      "imagem": "comandos_alturas.svg"
     },
     {
       "id": 47,
@@ -762,8 +762,8 @@
       "pergunta": "Desníveis no piso de até 5 mm podem estar sem tratamento, desníveis entre 5 mm e 20 mm possuem inclinação máxima de 1:2 (50%), e desníveis acima de 20 mm são tratados como degraus com rampa associada?\n(Ideal não haver desníveis)",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.4",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Visual/Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
+      "dica": "Pequenos desníveis travam rodas e causam tropeço. Verifique as emendas de piso, soleiras e saídas de rebaixo.",
+      "comoAveriguar": "[Trena] Meça a altura do desnível. Nos intermediários, confira também a inclinação do chanfro.",
       "imagem": null
     },
     {
@@ -798,8 +798,8 @@
       "pergunta": "Objetos suspensos nas paredes (quadros, extintores, bebedouros) entre 0,60 m e 2,10 m de altura possuem saliência máxima de 10 cm em relação à superfície da parede? (Se excederem, devem estar sinalizados com piso tátil de alerta ou elemento detectável por bengala.)",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 4.3 (Área de Circulação e Manobra), 4.3.3",
-      "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
-      "comoAveriguar": "[Visual/Trena] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
+      "dica": "Objetos salientes nessa faixa de altura podem não ser percebidos pela bengala e causar colisão.",
+      "comoAveriguar": "[Trena] Meça quanto o objeto avança da parede e a que altura está. Se passar do limite, confira se há sinalização no piso.",
       "imagem": null
     },
     {
@@ -812,7 +812,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.6; Mota e Sonza (2024, p. 25)",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": null
+      "imagem": "piso_tatil_interno.svg"
     },
     {
       "id": 52,
@@ -824,7 +824,7 @@
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.6; Mota e Sonza (2024, p. 26)",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": null
+      "imagem": "piso_tatil_interno.svg"
     },
     {
       "id": 53,
@@ -836,7 +836,7 @@
       "referencia": "NBR 9050:2020 - 5.2 (Sinalização), 5.2.9.1.1; Mota e Sonza (2024, p. 30)",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": null
+      "imagem": "piso_tatil_interno.svg"
     },
     {
       "id": 1008,
@@ -864,8 +864,8 @@
       "pergunta": "Toda diferença de nível (pavimento a pavimento) é servida por, no mínimo, duas formas de circulação vertical (ex.: escada + rampa, ou escada + elevador)?",
       "dependeDe": 1008,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3 (introdução); 6.10 (Equipamentos Eletromecânicos de Circulação), 6.10.1",
-      "dica": "Teste o funcionamento real do equipamento (não considerar apenas a existência física); registre se está operante no dia da vistoria.",
-      "comoAveriguar": "[Visual] Acione o elevador, cronometre a resposta, ouça o anúncio sonoro e verifique visualmente os painéis interno e externo.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
       "imagem": null
     },
     {
@@ -923,8 +923,8 @@
       "pergunta": "Sobre as escadas, o piso é firme, regular, estável e não escorregadio, mesmo quando molhado?",
       "dependeDe": 1009,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.2",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -971,9 +971,9 @@
       "pergunta": "Os degraus seguem as dimensões regulamentares: piso (p) entre 0,28 m e 0,32 m, espelho (e) entre 0,16 m e 0,18 m, e a fórmula 0,63 m <= p + 2e <= 0,65 m?",
       "dependeDe": 1009,
       "referencia": "NBR 9050:2020 - 6.8 (Escadas), 6.8.2",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
-      "imagem": null
+      "dica": "Meça mais de um degrau: diferenças entre degraus também causam queda.",
+      "comoAveriguar": "[Trena] Meça a profundidade do piso (p) e a altura do espelho (e) em pelo menos 3 degraus e compare com os limites da pergunta.",
+      "imagem": "escada_degrau_dimensoes.svg"
     },
     {
       "id": 60,
@@ -983,9 +983,9 @@
       "pergunta": "Os espelhos dos degraus são fechados (sem vazados) e o bocel ou espelho inclinado avança no máximo 1,5 cm sobre o piso abaixo?",
       "dependeDe": 1009,
       "referencia": "NBR 9050:2020 - 6.7 (Degraus e Escadas Fixas em Rotas Acessíveis), 6.7.1",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Visual/Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
-      "imagem": null
+      "dica": "Meça mais de um degrau: diferenças entre degraus também causam queda.",
+      "comoAveriguar": "[Trena] Meça a profundidade do piso (p) e a altura do espelho (e) em pelo menos 3 degraus e compare com os limites da pergunta.",
+      "imagem": "escada_degrau_dimensoes.svg"
     },
     {
       "id": 61,
@@ -995,8 +995,8 @@
       "pergunta": "A sinalização visual dos degraus (faixa contrastante no piso e espelho, preferencialmente fotoluminescente) tem 3 cm de largura e, no mínimo, 7 cm de comprimento?",
       "dependeDe": 1009,
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.4.2",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Visual/Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "A faixa precisa contrastar com o degrau inteiro para quem tem baixa visão.",
+      "comoAveriguar": "[Trena] Meça a largura e o comprimento da faixa em alguns degraus, nos pisos e nos espelhos, e observe o contraste.",
       "imagem": null
     },
     {
@@ -1041,7 +1041,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.5; Mota e Sonza (2024, p.32)",
       "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
       "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "imagem": "rampa_dimensoes.svg"
     },
     {
       "id": 64,
@@ -1051,9 +1051,9 @@
       "pergunta": "Os patamares no início, no término e entre os segmentos de rampa têm comprimento mínimo de 1,20 m?",
       "dependeDe": 1010,
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2, 6.6.4",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
-      "imagem": null
+      "dica": "Meça onde o espaço fica mais estreito, contando obstáculos como extintor, vaso, poste ou mobiliário.",
+      "comoAveriguar": "[Trena] Meça o comprimento de cada patamar no sentido da circulação: no início, no término e entre os segmentos da rampa.",
+      "imagem": "rampa_dimensoes.svg"
     },
     {
       "id": 65,
@@ -1063,8 +1063,8 @@
       "pergunta": "Sobre a rampa, o piso é firme, regular, estável, não escorregadio e não trepidante para dispositivos com rodas, mesmo quando molhado?",
       "dependeDe": 1010,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação - Piso), 6.3.2",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -1077,7 +1077,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.1 e 6.6.2.2",
       "dica": "Não tem um inclinômetro digital? Use o seu celular! No iPhone, use o app \"Medida\" (aba Nível). No Android, pesquise por \"bubble level\" no Google ou baixe um app de nível. O limite de 8,33% equivale a no máximo 4,8 graus na tela do seu celular (em reformas excepcionais até 12,5% = 7,1°).",
       "comoAveriguar": "Coloque o celular deitado diretamente sobre o piso da rampa interna, alinhado no sentido da subida/descida (longitudinal). Meça no início, meio e fim de cada segmento. Se o celular marcar 4,8° ou menos (ou até 7,1° em reformas), a rampa está Conforme.",
-      "imagem": null
+      "imagem": "rampa_dimensoes.svg"
     },
     {
       "id": 67,
@@ -1129,7 +1129,7 @@
       "referencia": "NBR 9050:2020 - 6.6 (Rampas), 6.6.2.6; 6.9 (Corrimãos e Guarda-Corpos), 6.9.3.2, 6.9.3.5",
       "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
       "comoAveriguar": "[Visual/Trena] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
-      "imagem": null
+      "imagem": "corrimao_alturas.svg"
     },
     {
       "id": 74,
@@ -1151,8 +1151,8 @@
       "pergunta": "Os corrimãos intermediários são interrompidos quando o comprimento do patamar for superior a 1,40m, garantindo espaçamento mínimo de 0,80 m entre o término de um segmento e o início do seguinte?",
       "dependeDe": 1027,
       "referencia": "NBR 9050:2020 - 6.9 (Corrimãos e Guarda-Corpos), 6.9.3.6",
-      "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
-      "comoAveriguar": "[Trena] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
+      "dica": "Meça dos dois lados e verifique a firmeza: corrimão solto também é uma barreira.",
+      "comoAveriguar": "[Trena] Meça o que a pergunta pede (altura, prolongamento, espaçamento ou diâmetro) em pelo menos 2 pontos, sempre da face superior até o piso.",
       "imagem": null
     },
     {
@@ -1163,9 +1163,9 @@
       "pergunta": "Os corrimãos se prolongam pelo menos 0,30 m além do início e do término das rampas, com extremidades recurvadas fixadas à parede ou ao piso?",
       "dependeDe": 1027,
       "referencia": "NBR 9050:2020 - 6.9 (Corrimãos e Guarda-Corpos), 6.9.3.2 e 6.9.3.4",
-      "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
-      "comoAveriguar": "[Visual/Trena] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
-      "imagem": null
+      "dica": "Meça dos dois lados e verifique a firmeza: corrimão solto também é uma barreira.",
+      "comoAveriguar": "[Trena] Meça o que a pergunta pede (altura, prolongamento, espaçamento ou diâmetro) em pelo menos 2 pontos, sempre da face superior até o piso.",
+      "imagem": "corrimao_alturas.svg"
     },
     {
       "id": 77,
@@ -1177,7 +1177,7 @@
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.5",
       "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
       "comoAveriguar": "[Trena/Paquímetro] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
-      "imagem": null
+      "imagem": "corrimao_alturas.svg"
     },
     {
       "id": 78,
@@ -1187,8 +1187,8 @@
       "pergunta": "Os corrimãos possuem sinalização do número do pavimento em relevo e em Braille na geratriz superior?",
       "dependeDe": 1027,
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.3",
-      "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
-      "comoAveriguar": "[Visual/Tato] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
+      "dica": "Confirme pelo tato, não só pela aparência. Se possível, peça a validação de uma pessoa que leia Braille.",
+      "comoAveriguar": "[Tato/Trena] Toque o relevo e o Braille, confira se a informação corresponde ao local e meça a altura, quando a pergunta indicar.",
       "imagem": null
     },
     {
@@ -1246,8 +1246,8 @@
       "pergunta": "A porta do elevador contrasta visualmente com a parede do pavimento, facilitando sua localização?",
       "dependeDe": 1012,
       "referencia": "NBR 9050:2020 - 5.2 (Sinalização), 5.2.9.1.1; Mota e Sonza (2024, p. 40)",
-      "dica": "Teste o funcionamento real do equipamento (não considerar apenas a existência física); registre se está operante no dia da vistoria.",
-      "comoAveriguar": "[Visual] Acione o elevador, cronometre a resposta, ouça o anúncio sonoro e verifique visualmente os painéis interno e externo.",
+      "dica": "Observe a uma certa distância: quem tem baixa visão localiza a porta pelo contraste com a parede.",
+      "comoAveriguar": "[Visual] Com a porta fechada, compare a cor da porta e a da parede ao redor.",
       "imagem": null
     },
     {
@@ -1294,8 +1294,8 @@
       "pergunta": "O piso da cabina do elevador possui revestimento duro e antiderrapante e contrasta com o piso do pavimento (excluídas as soleiras)?",
       "dependeDe": 1012,
       "referencia": "Mota e Sonza (2024, p. 41)",
-      "dica": "Teste o funcionamento real do equipamento (não considerar apenas a existência física); registre se está operante no dia da vistoria.",
-      "comoAveriguar": "[Visual] Acione o elevador, cronometre a resposta, ouça o anúncio sonoro e verifique visualmente os painéis interno e externo.",
+      "dica": "Desconsidere a soleira: compare o piso da cabina com o do pavimento.",
+      "comoAveriguar": "[Visual/Tato] Observe o revestimento da cabina, confira se é duro e antiderrapante e compare com o piso do pavimento.",
       "imagem": null
     },
     {
@@ -1308,7 +1308,7 @@
       "referencia": "NBR 9050:2020 - 6.10 (Equipamentos Eletromecânicos de Circulação), Tabela 6; 5.4 (Aplicações Essenciais), 5.4.6",
       "dica": "Verifique se o piso tátil não está encoberto por tapetes, capachos, móveis ou sujeira acumulada, e se o contraste tátil-visual é perceptível mesmo em ambientes escuros.",
       "comoAveriguar": "[Visual] Percorra o trajeto observando continuidade, relevo (alerta = bolinhas / direcional = linhas) e contraste de cor com o piso adjacente.",
-      "imagem": null
+      "imagem": "piso_tatil_interno.svg"
     },
     {
       "id": 1013,
@@ -1338,8 +1338,8 @@
       "pergunta": "No caso de bebedouros de bica: a bica é do tipo jato inclinado e está localizada no lado frontal do bebedouro, garantindo a utilização por meio de copos?",
       "dependeDe": 1013,
       "referencia": "NBR 9050:2020 - 8.5 (Bebedouros), 8.5.1 (Bebedouros de bica), 8.5.1.1",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
+      "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
       "imagem": null
     },
     {
@@ -1350,9 +1350,9 @@
       "pergunta": "Os bebedouros possuem, no mínimo, duas alturas de bica: uma a 0,90 m (para PCR e crianças) e outra entre 1,00 m e 1,10 m (para adultos em pé)?",
       "dependeDe": 1013,
       "referencia": "NBR 9050:2020 - 8.5 (Bebedouros), 8.5.1 (Bebedouros de bica), 8.5.1.2; Mota e Sonza (2024, p. 54)",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
+      "imagem": "bebedouro_alturas.svg"
     },
     {
       "id": 89,
@@ -1362,9 +1362,9 @@
       "pergunta": "O bebedouro com bica a 0,90 m tem altura livre inferior de no mínimo 0,73 m do piso, permitindo a aproximação frontal de PCR (0,8m x 1,20 m)?",
       "dependeDe": 1013,
       "referencia": "NBR 9050:2020 - 8.5 (Bebedouros), 8.5.1.3",
-      "dica": "Confirme com a leitura tátil real (não apenas visual) e, se possível, com pessoa cega ou tabela Braille oficial.",
-      "comoAveriguar": "[Visual/Tato] Toque os caracteres em relevo/Braille e compare com a numeração/informação esperada no ponto avaliado.",
-      "imagem": null
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
+      "imagem": "bebedouro_alturas.svg"
     },
     {
       "id": 184,
@@ -1374,7 +1374,7 @@
       "pergunta": "A bica do bebedouro é do tipo de jato inclinado, localizada no lado frontal, e permite o uso com copo?",
       "dependeDe": 1013,
       "referencia": "NBR 9050:2020 - 8.5 (Bebedouros), 8.5.1.1",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
+      "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
       "comoAveriguar": "[Visual] Observe o tipo e a posição da bica: deve ser de jato inclinado, no lado frontal do bebedouro, permitindo encher um copo com facilidade.",
       "imagem": null
     },
@@ -1386,9 +1386,9 @@
       "pergunta": "O acionamento dos bebedouros (botão, alavanca ou sensor) está entre 0,80 m e 1,20 m de altura do piso, com esforço de acionamento acessível?",
       "dependeDe": 1013,
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.9; 8.5 (Bebedouros), 8.5.2",
-      "dica": "Meça com a porta totalmente aberta a 90°, pois o vão útil muda conforme o ângulo de abertura.",
-      "comoAveriguar": "[Trena] Abra a porta a 90° e meça a largura e altura livres com trena.",
-      "imagem": null
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
+      "imagem": "bebedouro_alturas.svg"
     },
     {
       "id": 91,
@@ -1398,8 +1398,8 @@
       "pergunta": "Todas as salas de aula e laboratórios estão localizados em rota acessível, com acesso sem degraus isolados ou, quando existentes, associados a rampa ou equipamento eletromecânico?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 10.15 (Escolas), 10.15.2; 6.1 (Rota Acessível), 6.1.1",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
       "imagem": null
     },
     {
@@ -1410,9 +1410,9 @@
       "pergunta": "A porta da sala/laboratório, quando aberta, possui vão livre mínimo de 0,80 m de largura e 2,10 m de altura? (Em locais de prática esportiva ou laboratórios com equipamentos grandes: mínimo de 1,00 m de largura.)",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.11 (Circulação Interna), 6.11.2.4",
-      "dica": "Avalie em diferentes horários/condições de luz natural quando possível (dia nublado x dia claro).",
-      "comoAveriguar": "[Visual] Observe visualmente pontos de sombra ou ofuscamento; se disponível, use luxímetro para conferir o nível mínimo exigido.",
-      "imagem": null
+      "dica": "O vão útil é o espaço realmente livre: a própria folha da porta aberta e o batente reduzem a medida.",
+      "comoAveriguar": "[Trena] Abra a porta totalmente, em 90°, e meça da face da folha até o batente oposto. Meça também a altura livre, quando a pergunta pedir.",
+      "imagem": "porta_vao_livre.svg"
     },
     {
       "id": 93,
@@ -1422,8 +1422,8 @@
       "pergunta": "A porta possui sinalização tátil (relevo e Braille) na parede ao lado da maçaneta, entre 1,20 m e 1,60 m de altura, identificando a sala?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.1",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Confirme pelo tato, não só pela aparência. Se possível, peça a validação de uma pessoa que leia Braille.",
+      "comoAveriguar": "[Tato/Trena] Toque o relevo e o Braille, confira se a informação corresponde ao local e meça a altura, quando a pergunta indicar.",
       "imagem": null
     },
     {
@@ -1434,8 +1434,8 @@
       "pergunta": "As maçanetas são do tipo alavanca, possuindo ao menos 10 cm de comprimento, com acabamento sem arestas e recurvado na extremidade, apresentando distância mínima de 4cm da superfície da porta, instaladas entre 0,80 m e 1,10 m de altura do piso?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.6.1",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Visual/Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -1446,8 +1446,8 @@
       "pergunta": "Existe espaço livre de 0,60 m ao lado da maçaneta, no sentido de abertura da porta, para aproximação de pessoa em cadeira de rodas?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.11 (Circulação Interna), 6.11.2.1, 6.11.2.2 e 6.11.2.3",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
+      "dica": "Avalie com a porta fechada e sem contar lixeiras, carrinhos e móveis no espaço de manobra.",
+      "comoAveriguar": "[Trena] Marque a área indicada na pergunta e confira se ela fica livre de obstáculos.",
       "imagem": null
     },
     {
@@ -1458,8 +1458,8 @@
       "pergunta": "O piso das salas e laboratórios é firme, regular, estável e não escorregadio, sem padronagem que cause sensação de insegurança?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2",
-      "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
-      "comoAveriguar": "[Trena] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -1470,8 +1470,8 @@
       "pergunta": "A iluminação das salas de aula e laboratórios é uniforme, sem pontos de sombra pronunciada sobre as carteiras, a lousa e as bancadas, e sem ofuscamento direto causado por luminárias ou janelas sem proteção (cortinas, persianas ou películas)?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2; Anexo B, B.1",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
+      "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
       "imagem": null
     },
     {
@@ -1482,9 +1482,9 @@
       "pergunta": "Pelo menos 1% das carteiras (mínimo: 1 para cada duas salas) são acessíveis a pessoas em cadeira de rodas, com altura livre mínima sob o tampo de 0,73 m e largura livre mínima sob o tampo de 0,80 m e profundidade livre mínima de 0,50 m?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 10.15 (Escolas), 10.15.6; 9.3 (Mesas ou Superfícies), 9.3.1",
-      "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
-      "comoAveriguar": "[Trena] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
-      "imagem": null
+      "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
+      "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
+      "imagem": "mesa_vao_livre.svg"
     },
     {
       "id": 99,
@@ -1494,8 +1494,8 @@
       "pergunta": "As carteiras/mesas acessíveis estão distribuídas pela sala de modo que a pessoa em cadeira de rodas não fique segregada, com área de manobra de 360° adjacente (diâmetro mínimo de 1,50 m)?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.1.2; 4.3 (Área de Circulação e Manobra), 4.3.4",
-      "dica": "Leia atentamente o texto do item, pois não há um método único de aferição indicado.",
-      "comoAveriguar": "Combine observação visual e, se necessário, medição pontual para confirmar a conformidade.",
+      "dica": "Avalie com a porta fechada e sem contar lixeiras, carrinhos e móveis no espaço de manobra.",
+      "comoAveriguar": "[Trena] Marque a área indicada na pergunta e confira se ela fica livre de obstáculos.",
       "imagem": null
     },
     {
@@ -1506,8 +1506,8 @@
       "pergunta": "A lousa/quadro está instalada com borda inferior a no máximo 0,90 m do piso, permitindo aproximação e uso lateral por pessoa em cadeira de rodas?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 10.15 (Escolas), 10.15.7",
-      "dica": "Confirme com a leitura tátil real (não apenas visual) e, se possível, com pessoa cega ou tabela Braille oficial.",
-      "comoAveriguar": "Toque os caracteres em relevo/Braille e compare com a numeração/informação esperada no ponto avaliado.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -1518,20 +1518,20 @@
       "pergunta": "Os interruptores e tomadas dos terminais de consulta e mesas acessíveis estão instalados entre 0,60 m a 1,00 m e 0,40 m e 1,00 m de altura do piso, respectivamente?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.9; Figura 26",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
-      "imagem": null
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
+      "imagem": "comandos_alturas.svg"
     },
     {
       "id": 102,
       "tipo": "tecnico",
       "secaoId": 5,
       "subgrupo": "Lousa, Tomadas e Projeção",
-      "pergunta": "A borda inferior da tela de projeção (ou da imagem projetada na parede) está uma altura máxima de 0,90 m do piso, garantindo a visualização confortável de quem está sentado?",
+      "pergunta": "A borda inferior da tela de projeção (ou da imagem projetada na parede) está a uma altura máxima de 0,90 m do piso, garantindo a visualização confortável de quem está sentado?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 4.8 (Parâmetros Visuais), 4.8.2; 10.15 (Escolas), 10.15.7",
-      "dica": "Confirme a sinalização dupla (piso + placa vertical) e o percurso acessível contínuo até a edificação.",
-      "comoAveriguar": "[Visual] Conte o total de vagas, calcule o percentual exigido e meça a vaga reservada e o espaço adicional com trena.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -1555,12 +1555,12 @@
       "tipo": "tecnico",
       "secaoId": 5,
       "subgrupo": "Bancadas de Laboratório",
-      "pergunta": "As bancadas de laboratório acessíveis possuem altura entre mínima de 0,73 m, largura livre mínima sob a bancada de 0,80 m e profundidade livre mínima de 0,50 m?",
+      "pergunta": "As bancadas de laboratório acessíveis possuem altura mínima de 0,73 m, largura livre mínima sob a bancada de 0,80 m e profundidade livre mínima de 0,50 m?",
       "dependeDe": 1014,
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.1.3 e 9.3.1.4",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "dica": "A medida que importa é o vão livre sob o tampo, descontando travessas, gavetas e pés.",
+      "comoAveriguar": "[Trena] Meça do piso até a parte de baixo do tampo, a largura entre os apoios e a profundidade livre.",
+      "imagem": "mesa_vao_livre.svg"
     },
     {
       "id": 104,
@@ -1570,8 +1570,8 @@
       "pergunta": "A sala de aula dispõe de serviços de apoio para pessoas com deficiência auditiva, como recursos eletrônicos para acompanhamento de legendas em tempo real ou presença de intérprete de Libras?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 10.5 (Sistemas auxiliares de comunicação), 10.5.1, 10.5.3; 10.15 (Escolas), 10.15.9",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
+      "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
       "imagem": null
     },
     {
@@ -1582,8 +1582,8 @@
       "pergunta": "A sala de aula dispõe de sistema de comunicação ou serviços de apoio para pessoas com deficiência visual, como recursos de audiodescrição, materiais em Braille/táteis ou outras tecnologias assistivas?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 10.5 (Sistemas auxiliares de comunicação), 10.5.1, 10.5.3; 10.15 (Escolas), 10.15.9",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
+      "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
       "imagem": null
     },
     {
@@ -1620,8 +1620,8 @@
       "pergunta": "A biblioteca está localizada em rota acessível, com acesso sem barreiras físicas?",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 10.16 (Bibliotecas e Centros de Leitura), 10.16.1; 6.1 (Rota Acessível), 6.1.1",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Visual/Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
+      "dica": "Um único degrau ou porta estreita interrompe a rota até a biblioteca.",
+      "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
       "imagem": null
     },
     {
@@ -1632,9 +1632,9 @@
       "pergunta": "A porta de acesso à biblioteca, quando aberta, possui vão livre mínimo de 0,80 m de largura e 2,10 m de altura?",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 6.11 (Circulação Interna), 6.11.2.4",
-      "dica": "Meça a altura e o diâmetro em ambos os lados (podem ser diferentes); verifique se o corrimão gira em falso (mal fixado).",
-      "comoAveriguar": "[Visual/Trena] Meça com trena a altura da face superior do corrimão até o piso, em pelo menos 2 pontos, e o diâmetro com paquímetro/fita.",
-      "imagem": null
+      "dica": "O vão útil é o espaço realmente livre: a própria folha da porta aberta e o batente reduzem a medida.",
+      "comoAveriguar": "[Trena] Abra a porta totalmente, em 90°, e meça da face da folha até o batente oposto. Meça também a altura livre, quando a pergunta pedir.",
+      "imagem": "porta_vao_livre.svg"
     },
     {
       "id": 108,
@@ -1644,8 +1644,8 @@
       "pergunta": "O piso da biblioteca é firme, regular, estável e não escorregadio?",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2 e 6.3.7",
-      "dica": "Avalie em diferentes horários/condições de luz natural quando possível (dia nublado x dia claro).",
-      "comoAveriguar": "[Visual] Observe visualmente pontos de sombra ou ofuscamento; se disponível, use luxímetro para conferir o nível mínimo exigido.",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -1656,8 +1656,8 @@
       "pergunta": "A iluminação da biblioteca é uniforme, sem pontos de sombra ou ofuscamento que prejudiquem a visualização?",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2; Anexo B, B.1",
-      "dica": "Teste o item em operação real, não apenas por inspeção visual do equipamento.",
-      "comoAveriguar": "[Visual/Auditivo] Acione o dispositivo e confirme o sinal sonoro esperado.",
+      "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
+      "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
       "imagem": null
     },
     {
@@ -1668,8 +1668,8 @@
       "pergunta": "A largura livre nos corredores entre estantes é de no mínimo 0,90 m, com espaço para manobra de cadeira de rodas a cada 15 m (medida mínima de 1,20m x 1,50m)?",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 4.3 (Área de Circulação e Manobra), 4.3.4; 10.16 (Bibliotecas e Centros de Leitura), 10.15.3, 10.16.3; Figura 153",
-      "dica": "Pergunte a mais de uma pessoa (gestor e usuário) para confirmar a informação.",
-      "comoAveriguar": "[Visual/Entrevista] Entreviste responsáveis/usuários sobre a existência e o funcionamento do recurso.",
+      "dica": "Meça onde o espaço fica mais estreito, contando obstáculos como extintor, vaso, poste ou mobiliário.",
+      "comoAveriguar": "[Trena] Estique a trena de um lado ao outro, na perpendicular ao caminho, no ponto mais estreito. Anote o menor valor e compare com a pergunta.",
       "imagem": null
     },
     {
@@ -1677,12 +1677,12 @@
       "tipo": "tecnico",
       "secaoId": 6,
       "subgrupo": "Biblioteca (Acesso, Piso, Iluminação, Mobiliário e Acervo)",
-      "pergunta": "Os interruptores, tomadas, interfones e outros comandos das áreas administrativas estão instalados entre 0,40 m e 1,20 m de altura do piso?",
+      "pergunta": "Os interruptores, tomadas, interfones e outros comandos da biblioteca estão instalados entre 0,40 m e 1,20 m de altura do piso?",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.9; Figura 26",
-      "dica": "Avalie em diferentes horários/condições de luz natural quando possível (dia nublado x dia claro).",
-      "comoAveriguar": "[Visual] Observe visualmente pontos de sombra ou ofuscamento; se disponível, use luxímetro para conferir o nível mínimo exigido.",
-      "imagem": null
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
+      "imagem": "comandos_alturas.svg"
     },
     {
       "id": 112,
@@ -1692,9 +1692,9 @@
       "pergunta": "Pelo menos 5% das mesas (mínimo de 1) são acessíveis a PCR e PMR, com altura mínima de tampo de 0,73 m, largura livre sob o tampo de no mínimo 0,80 m e profundidade livre de no mínimo 0,50 m?\n(Recomenda-se que outros 10% sejam adaptáveis para acessibilidade)",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 10.16 (Bibliotecas e Centros de Leitura), 10.16.2, 10.16.6; 9.3 (Mesas ou Superfícies), 9.3.1",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
-      "imagem": null
+      "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
+      "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
+      "imagem": "mesa_vao_livre.svg"
     },
     {
       "id": 113,
@@ -1704,9 +1704,9 @@
       "pergunta": "As mesas acessíveis estão distribuídas pelo espaço (e não segregadas em um canto), com área de manobra de 180° adjacente (1,20m x 1,50m)?",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.1.2; 4.3 (Área de Circulação e Manobra), 4.3.4",
-      "dica": "Avalie em diferentes horários/condições de luz natural quando possível (dia nublado x dia claro).",
-      "comoAveriguar": "[Visual] Observe visualmente pontos de sombra ou ofuscamento; se disponível, use luxímetro para conferir o nível mínimo exigido.",
-      "imagem": null
+      "dica": "Avalie com a porta fechada e sem contar lixeiras, carrinhos e móveis no espaço de manobra.",
+      "comoAveriguar": "[Trena] Marque a área indicada na pergunta e confira se ela fica livre de obstáculos.",
+      "imagem": "giro_180.svg"
     },
     {
       "id": 114,
@@ -1716,9 +1716,9 @@
       "pergunta": "Pelo menos 5% dos terminais de consulta por computador (mínimo de 1) são acessíveis a PCR, com altura mínima de tampo de 0,73 m, largura livre sob o tampo de no mínimo 0,80 m e profundidade livre de no mínimo 0,50 m?",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 10.16 (Bibliotecas e Centros de Leitura), 10.16.6; Figura 152",
-      "dica": "Conte o total de unidades do ambiente antes de calcular o percentual mínimo exigido.",
-      "comoAveriguar": "[Visual/Contagem] Faça a contagem completa (mesas, terminais, vagas etc.) e calcule o percentual normativo.",
-      "imagem": null
+      "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
+      "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
+      "imagem": "mesa_vao_livre.svg"
     },
     {
       "id": 115,
@@ -1728,8 +1728,8 @@
       "pergunta": "A altura de utilização dos fichários/estantes é de no máximo 1,20 m, com puxadores/fechaduras entre 0,80 m e 1,10 m, respeitando as faixas de alcance manual para PCR?",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 10.16 (Bibliotecas e Centros de Leitura), 10.16.4; 7.14 (Vestiários), 7.14.3; 4.6 (Alcance Manual), 4.6.1",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -1740,8 +1740,8 @@
       "pergunta": "A biblioteca dispõe de recursos audiovisuais, publicações em texto digital acessível e, preferencialmente, acervo em Braille?",
       "dependeDe": 1015,
       "referencia": "NBR 9050:2020 - 10.16 (Bibliotecas e Centros de Leitura), 10.16.5",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
+      "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
+      "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
       "imagem": null
     },
     {
@@ -1777,8 +1777,8 @@
       "pergunta": "O auditório está localizado em rota acessível, conectada a uma rota de fuga?",
       "dependeDe": 1016,
       "referencia": "NBR 9050:2020 - 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.1 a)",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Visual] Percorra o caminho até o auditório e dele até a rota de fuga. Anote degraus, portas estreitas e outras barreiras.",
       "imagem": null
     },
     {
@@ -1791,7 +1791,7 @@
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.9; Figura 26",
       "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
       "comoAveriguar": "[Trena] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
-      "imagem": null
+      "imagem": "comandos_alturas.svg"
     },
     {
       "id": 1025,
@@ -1819,9 +1819,9 @@
       "pergunta": "Existem espaços reservados para pessoa em cadeira de rodas (PCR), na proporção de 2% das vagas, com no mínimo 1 espaço, distribuídos em diferentes setores do auditório?",
       "dependeDe": 1016,
       "referencia": "NBR 9050:2020 - 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.1; 5.5 (Sinalização de Emergência), 5.5.2.2; Decreto nº 5.296:2004",
-      "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
-      "comoAveriguar": "[Trena] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
-      "imagem": null
+      "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
+      "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
+      "imagem": "auditorio_espaco_pcr.svg"
     },
     {
       "id": 120,
@@ -1831,9 +1831,9 @@
       "pergunta": "Os espaços para PCR possuem dimensões mínimas de 0,80 m × 1,20 m e estão deslocados 0,30 m em relação ao encosto da cadeira adjacente, com faixa livre de 0,30 m em relação à fileira frontal ou posterior?",
       "dependeDe": 1025,
       "referencia": "NBR 9050:2020 - 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.4.1",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
-      "imagem": null
+      "dica": "Avalie com a porta fechada e sem contar lixeiras, carrinhos e móveis no espaço de manobra.",
+      "comoAveriguar": "[Trena] Marque a área indicada na pergunta e confira se ela fica livre de obstáculos.",
+      "imagem": "auditorio_espaco_pcr.svg"
     },
     {
       "id": 121,
@@ -1843,9 +1843,9 @@
       "pergunta": "Os espaços para PCR estão sinalizados com o Símbolo Internacional de Acesso (SIA) no piso?",
       "dependeDe": 1025,
       "referencia": "NBR 9050:2020 - 5.5 (Sinalização de Emergência), 5.5.2.2; Figura 66",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
+      "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
+      "imagem": "auditorio_espaco_pcr.svg"
     },
     {
       "id": 122,
@@ -1855,9 +1855,9 @@
       "pergunta": "Há pelo menos um assento companheiro ao lado de cada espaço reservado para PCR?",
       "dependeDe": 1025,
       "referencia": "NBR 9050:2020 - 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.1 c)",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
-      "imagem": null
+      "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
+      "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
+      "imagem": "auditorio_espaco_pcr.svg"
     },
     {
       "id": 123,
@@ -1867,8 +1867,8 @@
       "pergunta": "Existem assentos para pessoas com mobilidade reduzida (PMR) e pessoas obesas (PO) junto aos corredores, com apoio de braços basculante ou removível no lado do corredor e espaço livre frontal mínimo de 0,60 m (2% dos assentos ou mínimo de 1 assento, o que for maior)?",
       "dependeDe": 1016,
       "referencia": "NBR 9050:2020 - 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.2.5 e 10.3.4.2; 4.7 (Assentos para Pessoas Obesas); Decreto nº 5.296:2004",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
+      "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
       "imagem": null
     },
     {
@@ -1879,8 +1879,8 @@
       "pergunta": "Os corredores de circulação da plateia estão livres de obstáculos, e, quando apresentam rampa ou degrau, há pelo menos um corrimão a 0,70 m de altura?",
       "dependeDe": 1016,
       "referencia": "NBR 9050:2020 - 10.4 (Plateia, Palco e Bastidores – Circulação), 10.4.1",
-      "dica": "Avalie em diferentes horários/condições de luz natural quando possível (dia nublado x dia claro).",
-      "comoAveriguar": "[Visual] Observe visualmente pontos de sombra ou ofuscamento; se disponível, use luxímetro para conferir o nível mínimo exigido.",
+      "dica": "Meça dos dois lados e verifique a firmeza: corrimão solto também é uma barreira.",
+      "comoAveriguar": "[Trena] Meça o que a pergunta pede (altura, prolongamento, espaçamento ou diâmetro) em pelo menos 2 pontos, sempre da face superior até o piso.",
       "imagem": null
     },
     {
@@ -1891,8 +1891,8 @@
       "pergunta": "Existe local previamente identificado com iluminação direcional para o intérprete de Libras, garantindo visibilidade da cabeça até os joelhos, sem sombra no plano de fundo? Estes locais devem ser identificados com o símbolo internacional de pessoas com deficiência auditiva.",
       "dependeDe": 1016,
       "referencia": "NBR 9050:2020 - 5.2 (Sinalização), 5.2.8.1.6; 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.1 g)",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
+      "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
       "imagem": null
     },
     {
@@ -1903,8 +1903,8 @@
       "pergunta": "O auditório dispõe de sistema de amplificação sonora ou laço de indução magnética compatível com diferentes modelos de aparelhos auditivos e implantes cocleares?",
       "dependeDe": 1016,
       "referencia": "NBR 9050:2020 - 10.5 (Sistemas Auxiliares de Comunicação), 10.5.2",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Teste o equipamento quando possível: existir não significa funcionar no dia a dia.",
+      "comoAveriguar": "[Teste] Acione o item, observe o resultado e registre se está funcionando no dia da vistoria.",
       "imagem": null
     },
     {
@@ -1915,8 +1915,8 @@
       "pergunta": "O auditório disponibiliza recursos de audiodescrição (transmissores FM ou tecnologia equivalente) para pessoas com deficiência visual durante apresentações e eventos?",
       "dependeDe": 1016,
       "referencia": "NBR 9050:2020 - 10.5 (Sistemas Auxiliares de Comunicação), 10.5.1 e 10.5.2",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Teste o equipamento quando possível: existir não significa funcionar no dia a dia.",
+      "comoAveriguar": "[Teste] Acione o item, observe o resultado e registre se está funcionando no dia da vistoria.",
       "imagem": null
     },
     {
@@ -1927,8 +1927,8 @@
       "pergunta": "A rota acessível interna do auditório inclui sinalização luminosa próxima ao piso ou no piso para orientação em ambiente com iluminação reduzida?",
       "dependeDe": 1016,
       "referencia": "NBR 9050:2020 - 10.4 (Plateia, Palco e Bastidores – Circulação), 10.4.2.1",
-      "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
-      "comoAveriguar": "[Visual] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
+      "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
+      "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
       "imagem": null
     },
     {
@@ -1963,8 +1963,8 @@
       "pergunta": "O refeitório/cantina está localizado em rota acessível, conectada ao sanitário acessível?",
       "dependeDe": 1017,
       "referencia": "NBR 9050:2020 - 10.8 (Restaurantes, Refeitórios, Bares e Similares), 10.8.1",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Visual/Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Visual] Percorra o caminho até o refeitório e dele até o sanitário acessível. Anote o que interrompa a rota.",
       "imagem": null
     },
     {
@@ -1975,8 +1975,8 @@
       "pergunta": "A iluminação do refeitório/cantina é uniforme sobre os balcões e mesas, sem zonas de sombra que dificultem a identificação dos alimentos e a leitura de preços ou identificações?",
       "dependeDe": 1017,
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2; Anexo B, B.1",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
+      "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
       "imagem": null
     },
     {
@@ -1987,8 +1987,8 @@
       "pergunta": "Pelo menos 5% das mesas (mínimo de 1) são acessíveis a PCR, distribuídas pelo espaço de modo integrado às demais e com acesso a todos os serviços disponíveis?",
       "dependeDe": 1017,
       "referencia": "NBR 9050:2020 - 10.8 (Restaurantes, Refeitórios, Bares e Similares), 10.8.1 e 10.8.2",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Fita métrica] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
+      "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
       "imagem": null
     },
     {
@@ -1999,9 +1999,9 @@
       "pergunta": "As mesas acessíveis têm altura livre mínima sob o tampo de 0,73 m, largura livre mínima sob o tampo de 0,80 m e profundidade livre mínima de 0,50 m?",
       "dependeDe": 1017,
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.2.3 e 9.3.2.4",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Contagem/Visual] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
-      "imagem": null
+      "dica": "A medida que importa é o vão livre sob o tampo, descontando travessas, gavetas e pés.",
+      "comoAveriguar": "[Trena] Meça do piso até a parte de baixo do tampo, a largura entre os apoios e a profundidade livre.",
+      "imagem": "mesa_vao_livre.svg"
     },
     {
       "id": 133,
@@ -2011,9 +2011,9 @@
       "pergunta": "Há área de manobra de 180° (1,20 m × 1,50 m) adjacente às mesas acessíveis?",
       "dependeDe": 1017,
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.2.2; 4.3 (Área de Circulação e Manobra), 4.3.4",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual/Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
-      "imagem": null
+      "dica": "Avalie com a porta fechada e sem contar lixeiras, carrinhos e móveis no espaço de manobra.",
+      "comoAveriguar": "[Trena] Marque a área indicada na pergunta e confira se ela fica livre de obstáculos.",
+      "imagem": "giro_180.svg"
     },
     {
       "id": 134,
@@ -2023,8 +2023,8 @@
       "pergunta": "Os balcões de autosserviço (bandejas, talheres, alimentos) têm superfície entre 0,75 m e 0,85 m de altura e corredor de circulação adjacente com largura mínima de 0,90 m?",
       "dependeDe": 1017,
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.3.3",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual/Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -2035,8 +2035,8 @@
       "pergunta": "Os alimentos e bebidas dispostos no balcão estão dentro da faixa de alcance manual (máximo de 1,20 m de altura do piso e profundidade máxima de 0,50 m) e visualmente acessíveis?",
       "dependeDe": 1017,
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.3.1 e 9.3.3.2; 4.6 (Alcance Manual), 4.6.1",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -2047,8 +2047,8 @@
       "pergunta": "O piso do refeitório é firme, regular, estável e não escorregadio, sem padronagem que cause sensação de insegurança?",
       "dependeDe": 1017,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -2059,9 +2059,9 @@
       "pergunta": "Os corredores entre as mesas têm largura livre mínima de 0,90 m para circulação e, a cada 10 m, há espaço para manobra de cadeira de rodas de, no mínimo, 1,20m x 1,50 m (rotação de 180°)?",
       "dependeDe": 1017,
       "referencia": "NBR 9050:2020 - 10.17 (Locais de Comércio), 10.17.1 (aplicado por analogia ao refeitório); 4.3 (Área de Circulação e Manobra), 4.3.4",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
-      "imagem": null
+      "dica": "Meça onde o espaço fica mais estreito, contando obstáculos como extintor, vaso, poste ou mobiliário.",
+      "comoAveriguar": "[Trena] Estique a trena de um lado ao outro, na perpendicular ao caminho, no ponto mais estreito. Anote o menor valor e compare com a pergunta.",
+      "imagem": "giro_180.svg"
     },
     {
       "id": 138,
@@ -2071,8 +2071,8 @@
       "pergunta": "As áreas administrativas (secretaria, coordenações, atendimento ao público) estão localizadas em rota acessível?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.1; 10.19 (Atendimento ao Público), 10.19.1",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
       "imagem": null
     },
     {
@@ -2083,9 +2083,9 @@
       "pergunta": "A porta de acesso à área administrativa, quando aberta, possui vão livre mínimo de 0,80 m de largura e 2,10 m de altura?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.11 (Circulação Interna), 6.11.2.4",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
-      "imagem": null
+      "dica": "O vão útil é o espaço realmente livre: a própria folha da porta aberta e o batente reduzem a medida.",
+      "comoAveriguar": "[Trena] Abra a porta totalmente, em 90°, e meça da face da folha até o batente oposto. Meça também a altura livre, quando a pergunta pedir.",
+      "imagem": "porta_vao_livre.svg"
     },
     {
       "id": 140,
@@ -2095,8 +2095,8 @@
       "pergunta": "A iluminação das áreas administrativas é uniforme, sem pontos de sombra sobre o balcão de atendimento ou mesas de trabalho?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2; Anexo B, B.1",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
+      "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
       "imagem": null
     },
     {
@@ -2107,9 +2107,9 @@
       "pergunta": "O balcão de atendimento acessível tem superfície com largura mínima de 0,90 m, altura livre mínima sob o tampo de 0,73 m e profundidade livre mínima de 0,50 m?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.3.3",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual/Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
-      "imagem": null
+      "dica": "A medida que importa é o vão livre sob o tampo, descontando travessas, gavetas e pés.",
+      "comoAveriguar": "[Trena] Meça do piso até a parte de baixo do tampo, a largura entre os apoios e a profundidade livre.",
+      "imagem": "mesa_vao_livre.svg"
     },
     {
       "id": 142,
@@ -2119,9 +2119,9 @@
       "pergunta": "Há módulo de referência (0,80 m × 1,20 m) posicionado frontalmente ao balcão acessível, com circulação adjacente que permita giro de 180° para PCR (1,20m x 1,50m)?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 9.2 (Balcão, Bilheterias e Balcões de Informação), 9.2.1.2",
-      "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
-      "comoAveriguar": "[Trena] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
-      "imagem": null
+      "dica": "Avalie com a porta fechada e sem contar lixeiras, carrinhos e móveis no espaço de manobra.",
+      "comoAveriguar": "[Trena] Marque a área indicada na pergunta e confira se ela fica livre de obstáculos.",
+      "imagem": "giro_180.svg"
     },
     {
       "id": 1018,
@@ -2147,8 +2147,8 @@
       "pergunta": "Quando há conjuntos com mais de 6 postos de atendimento, existe pelo menos 1 posto acessível para atendente em cadeira de rodas?",
       "dependeDe": 1018,
       "referencia": "NBR 9050:2020 - 9.2 (Balcão, Bilheterias e Balcões de Informação), 9.2.1.6",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual/Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
+      "comoAveriguar": "[Contagem] Conte os postos de atendimento e verifique se ao menos um é acessível para atendente em cadeira de rodas.",
       "imagem": null
     },
     {
@@ -2175,8 +2175,8 @@
       "pergunta": "Se existir local de espera com assentos fixos na área administrativa, 5% dos assentos (mínimo de 1) são para PO e 5% (mínimo de 1) são espaços para PCR, sinalizados com o SIA?",
       "dependeDe": 1019,
       "referencia": "NBR 9050:2020 - 10.19 (Atendimento ao Público), 10.19.3",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
+      "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
       "imagem": null
     },
     {
@@ -2187,8 +2187,8 @@
       "pergunta": "O projeto de iluminação do balcão de atendimento garante que a face do atendente esteja uniformemente iluminada (facilitando leitura labial por pessoas com deficiência auditiva)?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 9.2 (Balcão, Bilheterias e Balcões de Informação), 9.2.1.3",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual/Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
+      "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
       "imagem": null
     },
     {
@@ -2199,9 +2199,9 @@
       "pergunta": "As mesas de trabalho acessíveis na sala de professores/área administrativa têm tampo com largura mínima de 0,90 m, altura entre 0,75 m e 0,85 m, altura livre mínima sob o tampo de 0,73 m e profundidade livre mínima de 0,50 m?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 9.3 (Mesas ou Superfícies), 9.3.1.3 e 9.3.1.4; Figura 135",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
-      "imagem": null
+      "dica": "A medida que importa é o vão livre sob o tampo, descontando travessas, gavetas e pés.",
+      "comoAveriguar": "[Trena] Meça do piso até a parte de baixo do tampo, a largura entre os apoios e a profundidade livre.",
+      "imagem": "mesa_vao_livre.svg"
     },
     {
       "id": 147,
@@ -2211,9 +2211,9 @@
       "pergunta": "Os interruptores, tomadas, interfones e outros comandos das áreas administrativas estão instalados entre 0,40 m e 1,20 m de altura do piso?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 4.6 (Alcance Manual), 4.6.9; Figura 26",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual/Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
-      "imagem": null
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
+      "imagem": "comandos_alturas.svg"
     },
     {
       "id": 148,
@@ -2223,8 +2223,8 @@
       "pergunta": "O piso das áreas administrativas é firme, regular, estável e não escorregadio, sem tapetes soltos ou forrações que possam causar tropeço?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2 e 6.3.7",
-      "dica": "Confirme com a leitura tátil real (não apenas visual) e, se possível, com pessoa cega ou tabela Braille oficial.",
-      "comoAveriguar": "[Visual/Tato] Toque os caracteres em relevo/Braille e compare com a numeração/informação esperada no ponto avaliado.",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -2268,8 +2268,8 @@
       "pergunta": "Os sanitários acessíveis estão localizados em rota acessível, próximos à circulação principal e integrados (ou próximos) às demais instalações sanitárias?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.3 (Localização), 7.3.1",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual/Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
       "imagem": null
     },
     {
@@ -2280,8 +2280,8 @@
       "pergunta": "A distância máxima de qualquer ponto da edificação até o sanitário acessível não ultrapassa 50 m?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.3 (Localização), 7.3.2",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual/Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Trena/Passos] Estime o percurso do ponto mais distante até o sanitário acessível. Em caso de dúvida, meça com trena longa ou pela planta.",
       "imagem": null
     },
     {
@@ -2292,8 +2292,8 @@
       "pergunta": "O número mínimo de sanitários acessíveis atende à legislação: 5% do total de peças sanitárias (mínimo de 1 por sexo por pavimento) para edificações de uso público? (Ver Tabela 7 da NBR 9050.)",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 7.4 (Quantificação e Características), 7.4.3; Tabela 7",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
+      "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
       "imagem": null
     },
     {
@@ -2304,8 +2304,8 @@
       "pergunta": "Os sanitários acessíveis possuem entrada independente, com porta que abre para fora ou de correr, com vão livre de no mínimo 0,80 m?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.4 (Quantificação e Características), 7.4.2; 7.5 (Dimensões do Sanitário Acessível), 7.5 f) e g)",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "O vão útil é o espaço realmente livre: a própria folha da porta aberta e o batente reduzem a medida.",
+      "comoAveriguar": "[Trena] Abra a porta totalmente, em 90°, e meça da face da folha até o batente oposto. Meça também a altura livre, quando a pergunta pedir.",
       "imagem": null
     },
     {
@@ -2316,8 +2316,8 @@
       "pergunta": "Do lado oposto ao de abertura da porta dos sanitários, há puxador horizontal com diâmetro entre 25 mm e 35 mm, comprimento mínimo de 0,40 m e instalado na altura da maçaneta (0,80m a 1,10m)?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 6.11 (Circulação Interna), 6.11.2.7; 4.6 (Alcance Manual), 4.6.6.3",
-      "dica": "Avalie em diferentes horários/condições de luz natural quando possível (dia nublado x dia claro).",
-      "comoAveriguar": "[Visual] Observe visualmente pontos de sombra ou ofuscamento; se disponível, use luxímetro para conferir o nível mínimo exigido.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -2328,8 +2328,8 @@
       "pergunta": "O piso dos sanitários é antiderrapante, sem desníveis na entrada e com grelhas/ralos posicionados fora das áreas de manobra e transferência?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.5 (Dimensões do Sanitário Acessível), 7.5 (final)",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -2340,9 +2340,9 @@
       "pergunta": "O sanitário acessível permite rotação de 360° (diâmetro mínimo de 1,50 m) e as áreas de transferência lateral, perpendicular e diagonal para a bacia sanitária estão garantidas?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.5 (Dimensões do Sanitário Acessível), 7.5 a) e b); Figuras 98 e 100",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
-      "imagem": null
+      "dica": "Avalie com a porta fechada e sem contar lixeiras, carrinhos e móveis no espaço de manobra.",
+      "comoAveriguar": "[Trena] Marque a área indicada na pergunta e confira se ela fica livre de obstáculos.",
+      "imagem": "sanitario_area_manobra.svg"
     },
     {
       "id": 156,
@@ -2352,8 +2352,8 @@
       "pergunta": "A bacia sanitária (com assento) está entre 0,43 m e 0,46 m de altura do piso? (Sem assento: entre 0,43 m e 0,45 m.)",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.7 (Bacia Sanitária), 7.7.2.1; Figura 104",
-      "dica": "Conte o total de unidades do ambiente antes de calcular o percentual mínimo exigido.",
-      "comoAveriguar": "[Contagem/Visual] Faça a contagem completa (mesas, terminais, vagas etc.) e calcule o percentual normativo.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -2364,8 +2364,8 @@
       "pergunta": "A bacia sanitária não possui abertura frontal no assento?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.7 (Bacia Sanitária), 7.7.1 (introdução)",
-      "dica": "Avalie em diferentes horários/condições de luz natural quando possível (dia nublado x dia claro).",
-      "comoAveriguar": "[Visual] Observe visualmente pontos de sombra ou ofuscamento; se disponível, use luxímetro para conferir o nível mínimo exigido.",
+      "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
+      "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
       "imagem": null
     },
     {
@@ -2376,9 +2376,9 @@
       "pergunta": "Quando há parede lateral, existe barra de apoio reta horizontal (mínimo de 0,80 m de comprimento) a 0,75 m do piso, a 0,40 m do eixo da bacia e a 0,50 m da borda frontal, e barra vertical (mínimo de 0,70 m de comprimento) a 0,10 m acima da horizontal, a 0,30 m da borda frontal da bacia sanitária?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.7 (Bacia Sanitária), 7.7.2.2.1; Figuras 106 a 108",
-      "dica": "Conte o total de unidades do ambiente antes de calcular o percentual mínimo exigido.",
-      "comoAveriguar": "[Contagem/Visual] Faça a contagem completa (mesas, terminais, vagas etc.) e calcule o percentual normativo.",
-      "imagem": null
+      "dica": "Confira também a firmeza: uma barra solta não oferece apoio.",
+      "comoAveriguar": "[Trena] Meça altura, comprimento e distâncias da bacia conforme a pergunta, e o diâmetro e o afastamento da parede.",
+      "imagem": "bacia_barras.svg"
     },
     {
       "id": 159,
@@ -2388,9 +2388,9 @@
       "pergunta": "Existe barra reta horizontal na parede do fundo (mínimo de 0,80 m), a 0,75 m do piso, com face externa a no máximo 0,11 m da parede, estendendo-se 0,30 m além do eixo da bacia?\n(Ver figuras 106 a 108 da NBR 9050:2020)",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.7 (Bacia Sanitária), 7.7.2.2.2; Figuras 106 a 108",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
-      "imagem": null
+      "dica": "Confira também a firmeza: uma barra solta não oferece apoio.",
+      "comoAveriguar": "[Trena] Meça altura, comprimento e distâncias da bacia conforme a pergunta, e o diâmetro e o afastamento da parede.",
+      "imagem": "bacia_barras.svg"
     },
     {
       "id": 160,
@@ -2400,9 +2400,9 @@
       "pergunta": "As barras de apoio têm seção circular com diâmetro entre 30 mm e 45 mm, afastamento mínimo de 40 mm entre a barra e a parede, e suportam esforço mínimo de 150 kg?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.6 (Barras de Apoio), 7.6.1 e 7.6.3; Figura 102",
-      "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
-      "comoAveriguar": "[Trena] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
-      "imagem": null
+      "dica": "Confira também a firmeza: uma barra solta não oferece apoio.",
+      "comoAveriguar": "[Trena] Meça altura, comprimento e distâncias da bacia conforme a pergunta, e o diâmetro e o afastamento da parede.",
+      "imagem": "bacia_barras.svg"
     },
     {
       "id": 161,
@@ -2412,9 +2412,9 @@
       "pergunta": "A válvula de descarga ou mecanismo de acionamento está a no máximo 1,00 m de altura e exige pouca força de acionamento? (Preferencialmente acionada por sensor eletrônico)",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.7 (Bacia Sanitária), 7.7.3.1; Figura 112",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
-      "imagem": null
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
+      "imagem": "bacia_barras.svg"
     },
     {
       "id": 162,
@@ -2424,8 +2424,8 @@
       "pergunta": "O lavatório é sem coluna, com coluna suspensa ou sobre tampo, com superfície superior entre 0,78 m e 0,80 m e com área de aproximação frontal para PCR (círculo inscrito de 1,50m de diâmetro)?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.5 (Dimensões do Sanitário Acessível), 7.5 d) e e); 7.8 (Instalação de Lavatório e Barras de Apoio), 7.8; Figura 99",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -2436,8 +2436,8 @@
       "pergunta": "A torneira do lavatório é acionada por alavanca, sensor eletrônico ou dispositivo equivalente, solicitando pouco esforço para acionamento?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.8 (Instalação de Lavatório e Barras de Apoio), 7.8.2",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Teste o equipamento quando possível: existir não significa funcionar no dia a dia.",
+      "comoAveriguar": "[Teste] Acione o item, observe o resultado e registre se está funcionando no dia da vistoria.",
       "imagem": null
     },
     {
@@ -2448,8 +2448,8 @@
       "pergunta": "Existe dispositivo de alarme de emergência instalado próximo à bacia sanitária e ao boxe do chuveiro (quando existente), a 40 cm do piso, com cor contrastante com a parede?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 5.6 (Alarmes), 5.6.4.1; Figura 67; Mota e Sonza (2024, p. 45 e 46)",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -2460,8 +2460,8 @@
       "pergunta": "O espelho do sanitário está instalado com borda inferior a no máximo 0,90 m do piso e borda superior a pelo menos 1,80 m (ou cobrindo a faixa de 0,50 m a 1,80 m)?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.11 (Acessórios para Sanitários Acessíveis e Coletivos), 7.11.1; Figura 123",
-      "dica": "Avalie em diferentes horários/condições de luz natural quando possível (dia nublado x dia claro).",
-      "comoAveriguar": "[Visual] Observe visualmente pontos de sombra ou ofuscamento; se disponível, use luxímetro para conferir o nível mínimo exigido.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -2472,8 +2472,8 @@
       "pergunta": "Os acessórios do sanitário (saboneteira, toalheiro, papeleira, cabide) estão na faixa de alcance entre 0,80 m e 1,20 m de altura e não interferem nas áreas de transferência e manobra?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 7.11 (Acessórios para Sanitários Acessíveis e Coletivos), 7.11.1 a 7.11.4; Figura 122",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -2484,8 +2484,8 @@
       "pergunta": "A porta dos sanitários e vestiários possui sinalização tátil (relevo e Braille) identificando o sexo e o símbolo de acessibilidade, na parede ao lado da maçaneta, entre 1,20 m e 1,60 m de altura?",
       "dependeDe": 1020,
       "referencia": "NBR 9050:2020 - 5.4 (Aplicações Essenciais), 5.4.1; 5.3 (Símbolos), 5.3.5.3",
-      "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
-      "comoAveriguar": "[Trena] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
+      "dica": "Confirme pelo tato, não só pela aparência. Se possível, peça a validação de uma pessoa que leia Braille.",
+      "comoAveriguar": "[Tato/Trena] Toque o relevo e o Braille, confira se a informação corresponde ao local e meça a altura, quando a pergunta indicar.",
       "imagem": null
     },
     {
@@ -2513,8 +2513,8 @@
       "pergunta": "Os vestiários acessíveis possuem box de chuveiro com banco articulado ou removível (altura de 0,46 m, profundidade mínima de 0,45 m, comprimento mínimo de 0,70 m), barras de apoio a 90° na parede lateral ao banco e barra vertical na parede de fixação do banco?",
       "dependeDe": 1021,
       "referencia": "NBR 9050:2020 - 7.12 (Banheiros Acessíveis e Vestiários com Banheiros Conjugados), 7.12.1 e 7.12.3; Figura 127",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Confirme que o banco funciona e fica firme quando aberto.",
+      "comoAveriguar": "[Trena] Meça altura, profundidade e comprimento do banco e a posição das barras.",
       "imagem": null
     },
     {
@@ -2559,8 +2559,8 @@
       "pergunta": "As áreas de lazer e esporte estão conectadas ao restante da edificação por rota acessível?",
       "dependeDe": 1022,
       "referencia": "NBR 9050:2020 - 10.11 (Locais de Esporte, Lazer e Turismo), 10.11.3",
-      "dica": "Meça no ponto mais estreito do trecho, não apenas na entrada; obstáculos pontuais (extintor, vaso) reduzem a largura útil.",
-      "comoAveriguar": "[Trena] Estique a trena perpendicularmente ao sentido do fluxo, no ponto mais estreito, e registre o valor mínimo encontrado.",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
       "imagem": null
     },
     {
@@ -2571,8 +2571,8 @@
       "pergunta": "O piso dos pátios e áreas de lazer é firme, regular, estável, antiderrapante e não trepidante para dispositivos com rodas, mesmo quando molhado?",
       "dependeDe": 1022,
       "referencia": "NBR 9050:2020 - 6.3 (Circulação – Piso), 6.3.2",
-      "dica": "Meça sempre a partir do piso acabado (nunca do piso bruto) e, se o piso for irregular, use a média de 2-3 pontos.",
-      "comoAveriguar": "[Trena] Meça com trena a partir do piso acabado até o elemento avaliado (maçaneta, tomada, painel, etc.).",
+      "dica": "Observe buracos, emendas, tapetes soltos e peças trincadas. Se possível, avalie o piso molhado ou pergunte como ele fica na chuva.",
+      "comoAveriguar": "[Visual] Percorra a área observando o piso. Empurre algo com rodas ou caminhe para sentir trepidação, folgas e escorregamento.",
       "imagem": null
     },
     {
@@ -2583,8 +2583,8 @@
       "pergunta": "A iluminação das áreas de lazer e esporte é uniforme, sem pontos de sombra ou ofuscamento que prejudiquem a visualização do ambiente?",
       "dependeDe": 1022,
       "referencia": "NBR 9050:2020 - 6.1 (Rota Acessível), 6.1.2; Anexo B, B.1",
-      "dica": "Confirme com a leitura tátil real (não apenas visual) e, se possível, com pessoa cega ou tabela Braille oficial.",
-      "comoAveriguar": "[Visual/Entrevista] Toque os caracteres em relevo/Braille e compare com a numeração/informação esperada no ponto avaliado.",
+      "dica": "Avalie em mais de um horário, quando possível, e com as luzes como são usadas no dia a dia.",
+      "comoAveriguar": "[Visual] Observe sombras e ofuscamento nos pontos de uso. Se houver luxímetro, registre a medida.",
       "imagem": null
     },
     {
@@ -2612,8 +2612,8 @@
       "pergunta": "As quadras esportivas são acessíveis por rota sem degraus isolados (ou com rampa associada), com acesso livre de obstáculos?",
       "dependeDe": 1023,
       "referencia": "NBR 9050:2020 - 10.11 (Locais de Esporte, Lazer e Turismo), 10.11.4",
-      "dica": "Verifique a existência de pelo menos duas alturas de bica quando houver mais de um bebedouro no mesmo ponto.",
-      "comoAveriguar": "[Visual] Meça a altura da bica e o vão livre inferior com trena; teste o acionamento (botão/alavanca/sensor).",
+      "dica": "Percorra o caminho como faria uma pessoa em cadeira de rodas: um único degrau já interrompe a rota.",
+      "comoAveriguar": "[Visual] Percorra o trajeto da entrada até o local. Anote degraus, portas estreitas e distâncias que interrompam a rota.",
       "imagem": null
     },
     {
@@ -2624,9 +2624,9 @@
       "pergunta": "As portas de acesso às quadras possuem vão livre mínimo de 1,00 m (para cadeiras de rodas tipo cambadas)?",
       "dependeDe": 1023,
       "referencia": "NBR 9050:2020 - 10.11 (Locais de Esporte, Lazer e Turismo), 10.11.1; 6.11 (Circulação Interna), 6.11.2.12",
-      "dica": "Verifique a existência de pelo menos duas alturas de bica quando houver mais de um bebedouro no mesmo ponto.",
-      "comoAveriguar": "[Trena] Meça a altura da bica e o vão livre inferior com trena; teste o acionamento (botão/alavanca/sensor).",
-      "imagem": null
+      "dica": "O vão útil é o espaço realmente livre: a própria folha da porta aberta e o batente reduzem a medida.",
+      "comoAveriguar": "[Trena] Abra a porta totalmente, em 90°, e meça da face da folha até o batente oposto. Meça também a altura livre, quando a pergunta pedir.",
+      "imagem": "porta_vao_livre.svg"
     },
     {
       "id": 1024,
@@ -2652,8 +2652,8 @@
       "pergunta": "As arquibancadas possuem espaços reservados para PCR distribuídos em diferentes setores, na proporção de 2% do total de assentos (ou 1 espaço no mínimo, o que for maior), sinalizados com o SIA e conectados por rota acessível aos vestiários e sanitários?",
       "dependeDe": 1024,
       "referencia": "NBR 9050:2020 - 10.11 (Locais de Esporte, Lazer e Turismo), 10.11.2 e 10.11.3; 10.3 (Cinemas, Teatros, Auditórios e Similares), 10.3.1",
-      "dica": "Verifique a existência de pelo menos duas alturas de bica quando houver mais de um bebedouro no mesmo ponto.",
-      "comoAveriguar": "[Trena] Meça a altura da bica e o vão livre inferior com trena; teste o acionamento (botão/alavanca/sensor).",
+      "dica": "Conte o total antes de calcular o mínimo exigido, e arredonde sempre para cima.",
+      "comoAveriguar": "[Contagem] Conte o total, calcule o percentual da pergunta e confira quantos atendem aos requisitos.",
       "imagem": null
     },
     {
@@ -2664,8 +2664,8 @@
       "pergunta": "A vegetação existente nas áreas de lazer não interfere nas rotas acessíveis (galhos, raízes ou espinhos), com altura livre mínima de 2,10 m nas faixas de circulação?",
       "dependeDe": 1022,
       "referencia": "NBR 9050:2020 - 8.8 (Ornamentação da Paisagem e Ambientação Urbana – Vegetação), 8.8.1 e 8.8.2",
-      "dica": "Verifique a existência de pelo menos duas alturas de bica quando houver mais de um bebedouro no mesmo ponto.",
-      "comoAveriguar": "[Visual] Meça a altura da bica e o vão livre inferior com trena; teste o acionamento (botão/alavanca/sensor).",
+      "dica": "Observe galhos, placas, toldos e equipamentos no caminho inteiro, não apenas no início do trecho.",
+      "comoAveriguar": "[Trena] Percorra o trajeto olhando para cima. Onde houver algo baixo, meça do piso até o ponto mais baixo do elemento.",
       "imagem": null
     },
     {
@@ -2676,8 +2676,8 @@
       "pergunta": "Os bancos públicos/assentos do pátio possuem encosto, altura entre 0,40 m e 0,45 m, largura individual entre 0,45 m e 0,50 m, e há módulo de referência (0,80 m × 1,20 m) ao lado de cada assento fixo para PCR?",
       "dependeDe": 1022,
       "referencia": "NBR 9050:2020 - 8.9 (Assentos Públicos), 8.9.1 e 8.9.3; Figura 134",
-      "dica": "Verifique a existência de pelo menos duas alturas de bica quando houver mais de um bebedouro no mesmo ponto.",
-      "comoAveriguar": "[Trena] Meça a altura da bica e o vão livre inferior com trena; teste o acionamento (botão/alavanca/sensor).",
+      "dica": "Meça a partir do piso acabado, no ponto onde a pessoa usa o elemento. Em piso irregular, faça a média de 2 ou 3 pontos.",
+      "comoAveriguar": "[Trena] Apoie a trena no piso e leia a altura até o ponto indicado na pergunta. Anote o valor encontrado.",
       "imagem": null
     },
     {
@@ -2688,8 +2688,8 @@
       "pergunta": "As luminárias de emergência existem e estão visíveis nas rotas de fuga (corredores, escadas e saídas), aparentemente em bom estado de conservação (sem vidros quebrados, sem luminárias apagadas) e posicionadas de modo a iluminar o caminho até a saída?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.4 (Rota de Fuga e Área de Resgate – Condições Gerais), 6.4.1.2",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Teste o equipamento quando possível: existir não significa funcionar no dia a dia.",
+      "comoAveriguar": "[Teste] Acione o item, observe o resultado e registre se está funcionando no dia da vistoria.",
       "imagem": null
     },
     {
@@ -2700,8 +2700,8 @@
       "pergunta": "As saídas de emergência são acessíveis para PCR, sem degraus isolados sem rampa associada, e com portas dotadas de barras antipânico com vão livre ≥ 0,80 m?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.4 (Rota de Fuga e Área de Resgate – Condições Gerais), 6.4.1.1; Mota e Sonza (2024, p. 53)",
-      "dica": "Feche a porta e avalie o espaço de manobra real, sem contar áreas ocupadas por lixeiras, carrinhos ou outros obstáculos temporários.",
-      "comoAveriguar": "[Visual/Trena] Use trena para medir alturas, distâncias entre eixos e diâmetros/afastamentos das barras de apoio, com a porta fechada.",
+      "dica": "O vão útil é o espaço realmente livre: a própria folha da porta aberta e o batente reduzem a medida.",
+      "comoAveriguar": "[Trena] Abra a porta totalmente, em 90°, e meça da face da folha até o batente oposto. Meça também a altura livre, quando a pergunta pedir.",
       "imagem": null
     },
     {
@@ -2712,8 +2712,8 @@
       "pergunta": "Existem áreas de resgate em cada pavimento (fora do fluxo principal de circulação), com pelo menos um espaço para PCR por escada/elevador de emergência, provido de intercomunicador entre 0,80 m e 1,20 m de altura?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.4 (Rota de Fuga e Área de Resgate – Condições Gerais), 6.4.2.1 e 6.4.2.2",
-      "dica": "Teste o funcionamento real do equipamento (não considerar apenas a existência física); registre se está operante no dia da vistoria.",
-      "comoAveriguar": "[Visual/Trena] Acione o elevador, cronometre a resposta, ouça o anúncio sonoro e verifique visualmente os painéis interno e externo.",
+      "dica": "Procure a área em cada pavimento e confirme que ela não fica no caminho principal de circulação.",
+      "comoAveriguar": "[Visual/Trena] Localize a área de resgate, confira o espaço reservado, teste o intercomunicador e meça a altura dele.",
       "imagem": null
     },
     {
@@ -2724,9 +2724,9 @@
       "pergunta": "Os espaços para PCR nas áreas de resgate estão sinalizados com o SIA e têm dimensões mínimas de 0,80 m × 1,20 m, com manobra de 180° garantida?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 6.4 (Rota de Fuga e Área de Resgate – Condições Gerais), 6.4.2.1; 5.5 (Sinalização de Emergência), 5.5.2.1; Figura 69",
-      "dica": "Registre a medida exata encontrada (não apenas SIM/NÃO) para permitir auditoria posterior.",
-      "comoAveriguar": "[Visual/Trena] Meça com trena/fita métrica e compare com o valor de referência da norma.",
-      "imagem": null
+      "dica": "Avalie com a porta fechada e sem contar lixeiras, carrinhos e móveis no espaço de manobra.",
+      "comoAveriguar": "[Trena] Marque a área indicada na pergunta e confira se ela fica livre de obstáculos.",
+      "imagem": "giro_180.svg"
     },
     {
       "id": 182,
@@ -2736,8 +2736,8 @@
       "pergunta": "Internamente, os locais confinados de uso coletivo (salas de aula, laboratórios, auditório) contêm mapa acessível da rota de fuga da edificação, em formato visual e tátil?",
       "dependeDe": null,
       "referencia": "NBR 9050:2020 - 5.5 (Sinalização de Emergência), 5.5.1.3; 5.4 (Aplicações Essenciais), 5.4.2",
-      "dica": "Registre foto do item avaliado para compor o relatório de vistoria.",
-      "comoAveriguar": "[Visual] Observe visualmente o item e compare com o parâmetro normativo indicado na coluna de referência.",
+      "dica": "Confira no local e, se não for possível, pergunte a mais de uma pessoa e registre quem informou.",
+      "comoAveriguar": "[Visual/Entrevista] Procure o recurso no local. Se não estiver visível, pergunte à gestão e registre a resposta.",
       "imagem": null
     }
   ]

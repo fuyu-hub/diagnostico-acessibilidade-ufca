@@ -289,3 +289,11 @@ test('foto grande é reduzida ao ser anexada', async ({ page }) => {
   }, (await lerResposta(page, id, 1)).foto);
   expect(dimensoes).toEqual([1920, 1440]);
 });
+
+test('item exibe a imagem aprovada com descrição acessível', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await page.goto(`/checklist/${id}/item/${n(42)}`);
+  const imagem = page.getByRole('img', { name: /Corredor em perspectiva/ });
+  await expect(imagem).toHaveAttribute('src', '/imagens/corredor_largura.svg');
+  await expect.poll(() => imagem.evaluate(e => e.naturalWidth)).toBeGreaterThan(0);
+});

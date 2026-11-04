@@ -8,6 +8,7 @@ import {
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
+import DESCRICOES_IMAGENS from '../dados/imagens.json';
 import { TODOS_ITENS, ITENS_TECNICOS, dependentesComDados, dependentesEmCascata, dependentesParaLimpar } from '../dados/checklist';
 import Topbar from '../componentes/Topbar';
 import BarraProgresso from '../componentes/BarraProgresso';
@@ -298,7 +299,7 @@ export default function ItemChecklist() {
 
             {imagemSrc && (
               <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid var(--border-strong)', marginBottom: 14 }}>
-                <img src={imagemSrc} alt={item.subgrupo || 'Referência NBR 9050'} style={{ width: '100%', height: 'auto', display: 'block' }} />
+                <img src={imagemSrc} alt={DESCRICOES_IMAGENS[item.imagem] || item.subgrupo || 'Referência NBR 9050'} style={{ width: '100%', height: 'auto', display: 'block' }} />
               </div>
             )}
 

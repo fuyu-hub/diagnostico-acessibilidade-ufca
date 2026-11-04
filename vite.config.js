@@ -11,7 +11,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons.svg', 'imagens/*.png', 'modelo_planilha.xlsx'],
+      includeAssets: ['favicon.svg', 'icons.svg', 'imagens/*.{png,svg}', 'modelo_planilha.xlsx'],
       manifest: {
         name: 'Diagnóstico de Acessibilidade — NBR 9050',
         short_name: 'NBR 9050',
