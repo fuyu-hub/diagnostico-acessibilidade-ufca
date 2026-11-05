@@ -15,8 +15,8 @@
 
   --text-strong: #ffffff;
   --text-primary: #ffffff;
-  --text-secondary: #a8a8a8;
-  --text-muted: #8e8e93;
+  --text-secondary: #b4b4b4;
+  --text-muted: #9a9aa0;
 
   --accent: #3b82f6;
   --accent-text: #60a5fa;
@@ -70,10 +70,38 @@
   --radius-md: 18px;
   --radius-lg: 24px;
   --radius-xl: 32px;
+
+  /* Ajuste de tamanho do texto (Ajustes): 1 = 100% */
+  --escala: 1;
+
+  /* Escala de espaçamento */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+
+  /* Escala tipográfica (rem acompanha o tamanho do texto) */
+  --fs-xs: 0.8125rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.375rem;
+  --fs-pergunta: clamp(1.06rem, 0.96rem + 0.5vw, 1.3rem);
+  --fs-pergunta-longa: clamp(0.98rem, 0.92rem + 0.3vw, 1.14rem);
+
+  /* Alvos de toque */
+  --alvo: 48px;
+  --alvo-min: 44px;
+  --sombra: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --overlay: rgba(0, 0, 0, 0.72);
 }
 
 :root[data-tema="claro"] {
   color-scheme: light;
+  --sombra: 0 10px 30px rgba(15, 23, 42, 0.18);
+  --overlay: rgba(15, 23, 42, 0.55);
 
   --bg: #f8fafc;
   --surface-1: #ffffff;
@@ -88,8 +116,8 @@
 
   --text-strong: #0f172a;
   --text-primary: #1e293b;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
+  --text-secondary: #3f4a5c;
+  --text-muted: #525d6f;
 
   --accent: #1d4ed8;
   --accent-text: #1e40af;
@@ -103,7 +131,7 @@
 
   --bg-danger: rgba(220, 38, 38, 0.08);
   --border-danger: rgba(220, 38, 38, 0.30);
-  --text-danger: #dc2626;
+  --text-danger: #b42020;
 
   --bg-warning: rgba(217, 119, 6, 0.10);
   --border-warning: rgba(217, 119, 6, 0.35);
@@ -112,7 +140,7 @@
   /* Não se aplica (N/A) neutro e elegante no claro */
   --bg-na: rgba(100, 116, 139, 0.08);
   --border-na: rgba(100, 116, 139, 0.25);
-  --text-na: #64748b;
+  --text-na: #46536a;
 
   /* Faixas do Índice de Avaliação de Acessibilidade (IAA) - Light */
   --iaa-critico: #dc2626;

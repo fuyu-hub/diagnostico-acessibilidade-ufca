@@ -6,6 +6,12 @@
   padding: 0;
 }
 
+html {
+  /* Tamanho do texto escolhido em Ajustes */
+  font-size: calc(100% * var(--escala));
+  -webkit-text-size-adjust: 100%;
+}
+
 html, body, #root {
   min-height: 100%;
   background: var(--bg);
@@ -93,11 +99,12 @@ textarea {
   min-width: 0;
   background: var(--surface-1);
   border: 1.5px solid var(--border-strong);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-family: inherit;
   font-size: 1rem;
-  padding: 14px 18px;
+  min-height: var(--alvo-min);
+  padding: 10px 14px;
   outline: none;
   box-sizing: border-box;
   resize: none;
@@ -446,6 +453,16 @@ input[type="submit"],
 }
 
 /* 3. Suporte a preferência de movimento reduzido (WCAG 2.3.3) */
+/* "Reduzir movimento" em Ajustes ou no sistema */
+html.reduzir-movimento *,
+html.reduzir-movimento *::before,
+html.reduzir-movimento *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

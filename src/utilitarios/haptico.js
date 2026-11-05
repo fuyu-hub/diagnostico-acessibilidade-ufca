@@ -4,8 +4,10 @@
  * Silencioso e seguro: não executa em dispositivos sem motor de vibração ou desktop.
  */
 
+import { obterPreferencias } from './preferencias.js';
+
 export function vibrarSuave() {
-  if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+  if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && obterPreferencias().vibracao) {
     try {
       navigator.vibrate(30);
     } catch {
@@ -15,7 +17,7 @@ export function vibrarSuave() {
 }
 
 export function vibrarConfirmacao() {
-  if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+  if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && obterPreferencias().vibracao) {
     try {
       navigator.vibrate(45);
     } catch {
@@ -25,7 +27,7 @@ export function vibrarConfirmacao() {
 }
 
 export function vibrarAlerta() {
-  if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+  if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && obterPreferencias().vibracao) {
     try {
       navigator.vibrate([40, 60, 40]);
     } catch {

@@ -7,8 +7,10 @@ import '@fontsource/inter/700.css';
 import './estilos/global.css';
 import App from './App.jsx';
 import { iniciarTema } from './utilitarios/tema.js';
+import { aplicarPreferencias } from './utilitarios/preferencias.js';
 
 iniciarTema();
+aplicarPreferencias();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
