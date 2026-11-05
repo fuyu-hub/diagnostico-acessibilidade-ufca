@@ -17,6 +17,7 @@ export default function VisualizadorImagem({ aberto, src, titulo, descricao, lar
   const idTitulo = useId();
   const idDescricao = useId();
   const [mostrarDescricao, setMostrarDescricao] = useState(true);
+  const [dicaArrastar, setDicaArrastar] = useState(false);
   const [vista, setVista] = useState({ s: 1, x: 0, y: 0, ajuste: 1 });
   const vistaRef = useRef(vista);
   // Atualiza a referência na hora, para toques seguidos no zoom somarem
@@ -46,6 +47,23 @@ export default function VisualizadorImagem({ aberto, src, titulo, descricao, lar
     definirVista(limitar({ s: ajuste, x: 0, y: 0, ajuste }));
   }, [limitar, definirVista]);
 
+  /**
+   * Vista ao abrir. Com a tela em pé e a imagem deitada, "caber inteira" deixa os rótulos com 4 a 6 px;
+   * então a imagem preenche a altura e a pessoa arrasta para os lados. Deitada, cabe inteira.
+   */
+  const vistaInicial = useCallback(() => {
+    const palco = palcoRef.current;
+    if (!palco || !palco.clientWidth) return;
+    const W = palco.clientWidth, H = palco.clientHeight;
+    const { w: w0, h: h0 } = base.current;
+    const ajuste = Math.min(W / w0, H / h0);
+    const emPe = H > W * 1.1 && w0 > h0;
+    const s = emPe ? Math.min(H / h0, ajuste * ZOOM_MAXIMO) : ajuste;
+    setDicaArrastar(emPe && s > ajuste * 1.05);
+    // Em pé, começa pela esquerda (ordem de leitura); a pessoa arrasta para a direita
+    definirVista(limitar({ s, x: emPe ? 0 : (W - w0 * s) / 2, y: (H - h0 * s) / 2, ajuste }));
+  }, [limitar, definirVista]);
+
   const zoomEm = useCallback((fator, cx, cy) => {
     const palco = palcoRef.current;
     if (!palco) return;
@@ -73,14 +91,14 @@ export default function VisualizadorImagem({ aberto, src, titulo, descricao, lar
     const img = palco?.querySelector('img');
     const iniciar = () => {
       if (!larguraBase && img?.naturalWidth > 0) base.current = { w: img.naturalWidth, h: img.naturalHeight };
-      ajustar();
+      vistaInicial();
     };
     if (img?.complete) setTimeout(iniciar, 0);
     else img?.addEventListener('load', iniciar, { once: true });
-    const ro = new ResizeObserver(() => ajustar());
+    const ro = new ResizeObserver(() => vistaInicial());
     if (palco) ro.observe(palco);
     return () => ro.disconnect();
-  }, [aberto, src, larguraBase, ajustar]);
+  }, [aberto, src, larguraBase, vistaInicial]);
 
   // Gestos: arrastar com um dedo/mouse, pinça com dois, toque duplo alterna o zoom
   useEffect(() => {
@@ -95,6 +113,7 @@ export default function VisualizadorImagem({ aberto, src, titulo, descricao, lar
       return [e.clientX - r.left, e.clientY - r.top];
     };
     function baixar(e) {
+      setDicaArrastar(false);
       palco.setPointerCapture(e.pointerId);
       ponteiros.set(e.pointerId, { x: e.clientX, y: e.clientY });
       if (ponteiros.size === 2) {
@@ -218,6 +237,11 @@ export default function VisualizadorImagem({ aberto, src, titulo, descricao, lar
           draggable="false"
           style={{ width: base.current.w * vista.s, height: base.current.h * vista.s, left: vista.x, top: vista.y }}
         />
+        {dicaArrastar && (
+          <span className={styles.dica} aria-hidden="true">
+            Arraste para os lados para ver toda a ilustração, ou gire o celular
+          </span>
+        )}
       </div>
 
       <div className={styles.ferramentas} role="toolbar" aria-label="Zoom">
@@ -228,7 +252,7 @@ export default function VisualizadorImagem({ aberto, src, titulo, descricao, lar
         <button type="button" className={styles.botao} onClick={() => zoomEm(1.25)} aria-label="Aumentar zoom" aria-keyshortcuts="+">
           <IconZoomIn size={24} />
         </button>
-        <button type="button" className={styles.botao} onClick={ajustar} aria-keyshortcuts="0">
+        <button type="button" className={styles.botao} onClick={() => { setDicaArrastar(false); ajustar(); }} aria-keyshortcuts="0">
           <IconMaximize size={20} /> <span>Ajustar</span>
         </button>
       </div>
