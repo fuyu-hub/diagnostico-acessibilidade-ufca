@@ -2,7 +2,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import {
   IconCheck, IconX, IconMinus, IconCircle, IconChevronRight,
-  IconChevronDown, IconChevronUp, IconArrowRight
+  IconChevronDown, IconChevronUp, IconArrowRight, IconSearch, IconClock
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { TODOS_ITENS, SECOES, ITENS_POR_SECAO, ITENS_TECNICOS } from '../dados/checklist';
@@ -11,6 +11,8 @@ import Topbar from '../componentes/Topbar';
 import styles from './ListaItens.module.css';
 
 const FILTROS = ['Todos', 'Pendentes', 'Não conforme'];
+
+const normalizarBusca = texto => String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
 function obterTextoResposta(valor, automatico) {
   if (automatico) return 'Não se aplica por triagem';
@@ -40,6 +42,7 @@ export default function ListaItens() {
   const [filtro, setFiltro] = useState('Todos');
   const [secaoAberta, setSecaoAberta] = useState(secaoParam);
   const [expandidos, setExpandidos] = useState({});
+  const [busca, setBusca] = useState('');
 
   const respostas = vistoria?.respostas || {};
   const respondidos = ITENS_TECNICOS.filter(i => respostas[i.id]?.valor).length;
@@ -124,96 +127,102 @@ export default function ListaItens() {
   const itensSecaoRespondidos = itensDaSecao.filter(i => respostas[i.id]?.valor).length;
 
   if (!secaoAberta) {
+    const termo = normalizarBusca(busca.trim());
+    const achados = termo.length >= 3
+      ? TODOS_ITENS.filter(i => normalizarBusca(`${i.pergunta} ${i.subgrupo || ''}`).includes(termo)).slice(0, 30)
+      : [];
+
     return (
       <div className="app-shell">
-        <Topbar titulo={`Seções — ${vistoria.nome}`} voltar={`/vistoria/${id}`} />
+        <Topbar eyebrow={vistoria.nome} titulo="Seções" voltar={`/vistoria/${id}`} />
 
-        <div className="tela-body" style={{ padding: '0 0 32px' }}>
-          <div style={{ padding: '20px 20px 0' }}>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: 20 }}>
-              {respondidos} de {ITENS_TECNICOS.length} itens avaliados no total
+        <main className="tela-body" style={{ padding: '0 0 32px' }}>
+          <div style={{ padding: '16px 20px 0' }}>
+            <div role="search" className={styles.busca}>
+              <label htmlFor="busca-itens" className="sr-only">Buscar item por palavra</label>
+              <IconSearch size={18} aria-hidden="true" />
+              <input
+                id="busca-itens"
+                type="search"
+                placeholder="Buscar item (ex.: corrimão, rampa)"
+                value={busca}
+                onChange={e => setBusca(e.target.value)}
+                autoComplete="off"
+              />
+            </div>
+
+            <div aria-live="polite">
+              {termo.length >= 3 && (
+                <section className={styles.resultadosBusca} aria-label="Resultados da busca">
+                  <h2 className={styles.resultadosTitulo}>
+                    {achados.length === 0 ? 'Nenhum item encontrado' : `${achados.length}${achados.length === 30 ? '+' : ''} ${achados.length === 1 ? 'item encontrado' : 'itens encontrados'}`}
+                  </h2>
+                  <ul>
+                    {achados.map(item => (
+                      <li key={item.id}>
+                        <button
+                          type="button"
+                          className={styles.linhaBusca}
+                          onClick={() => navigate(`/checklist/${id}/item/${idxGlobal(item) + 1}`)}
+                        >
+                          {iconeResposta(respostas[item.id]?.valor)}
+                          <span>
+                            {item.pergunta}
+                            <small>{item.tipo === 'triagem' ? 'Triagem' : `Item ${ITENS_TECNICOS.indexOf(item) + 1}`} · {obterTextoResposta(respostas[item.id]?.valor, respostas[item.id]?.automatico)}</small>
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+            </div>
+
+            <p className={styles.totalAvaliados}>
+              <strong>{respondidos} de {ITENS_TECNICOS.length}</strong> itens avaliados
             </p>
 
-            <div className={styles.gridSecoes}>
+            <ul className={styles.listaSecoes}>
               {SECOES.map(s => {
                 const itensSecao = ITENS_POR_SECAO[s.id] || [];
                 const itensSecaoTecnicos = itensSecao.filter(i => i.tipo === 'tecnico');
                 const respondidosSecao = itensSecaoTecnicos.filter(i => respostas[i.id]?.valor).length;
                 const pctSecao = itensSecaoTecnicos.length > 0 ? Math.round((respondidosSecao / itensSecaoTecnicos.length) * 100) : 0;
-                const pendenteSecao = itensSecaoTecnicos.find(item => !respostas[item.id]?.valor);
                 const indiceSecao = calcularIndiceItens(itensSecaoTecnicos, respostas);
                 const { classificacao } = indiceSecao;
+                const estado = respondidosSecao === 0 ? 'nao' : respondidosSecao === itensSecaoTecnicos.length ? 'ok' : 'andamento';
+                const rotuloEstado = { nao: 'Não iniciada', andamento: 'Em andamento', ok: 'Concluída' }[estado];
 
                 return (
-                  <div
-                    key={s.id}
-                    className={styles.cardSecao}
-                    onClick={() => abrirSecao(s.id)}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Seção ${s.id}: ${s.nome}. ${respondidosSecao} de ${itensSecaoTecnicos.length} respondidos (${pctSecao}%). ${pendenteSecao ? 'Possui pendências' : 'Concluída'}. Toque para abrir subgrupos.`}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        abrirSecao(s.id);
-                      }
-                    }}
-                  >
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div className={styles.cardSecaoTopo}>
-                        <p className={styles.nomeSecao}>{s.nome}</p>
-
-                        <span
-                          className={styles.notaSecaoValor}
-                          style={{
-                            color: indiceSecao.total > 0 ? classificacao.cor : 'var(--text-muted)',
-                            fontSize: indiceSecao.total > 0 ? undefined : '0.78rem',
-                            fontWeight: indiceSecao.total > 0 ? undefined : 500,
-                          }}
-                          title={indiceSecao.total > 0 ? `Nota: ${classificacao.notaFormatada} (${classificacao.rotulo})` : 'Ainda sem itens avaliados'}
-                        >
-                          {indiceSecao.total > 0 ? classificacao.notaFormatada : 'Pendente'}
+                  <li key={s.id}>
+                    <button
+                      type="button"
+                      className={`${styles.linhaSecao} ${estado === 'ok' ? styles.linhaSecaoConcluida : ''}`}
+                      onClick={() => abrirSecao(s.id)}
+                      aria-label={`${s.nome}. ${rotuloEstado}, ${respondidosSecao} de ${itensSecaoTecnicos.length} respondidos.${indiceSecao.total > 0 ? ` Nota ${classificacao.notaFormatada}.` : ' Sem nota.'}`}
+                    >
+                      <span className={styles.linhaSecaoNome}>{s.nome}</span>
+                      <span className={styles.linhaSecaoLado}>
+                        {indiceSecao.total > 0
+                          ? <strong style={{ color: classificacao.corNota || classificacao.cor }}>{classificacao.notaFormatada}</strong>
+                          : <span className={styles.semNota}>Sem nota</span>}
+                        <IconChevronRight size={20} aria-hidden="true" />
+                      </span>
+                      <span className={styles.linhaSecaoDetalhe}>
+                        <span className={`${styles.estado} ${styles[`estado_${estado}`]}`}>
+                          {estado === 'ok' ? <IconCheck size={14} aria-hidden="true" /> : estado === 'andamento' ? <IconClock size={14} aria-hidden="true" /> : <IconMinus size={14} aria-hidden="true" />}
+                          {rotuloEstado}
                         </span>
-                      </div>
-
-                      <p className={styles.progressoSecaoTxt}>
-                        {respondidosSecao} de {itensSecaoTecnicos.length} respondidos ({pctSecao}%)
-                      </p>
-
-                      <div className="progresso-track" style={{ height: 4, marginTop: 10 }}>
-                        <div className="progresso-fill" style={{ width: `${pctSecao}%` }} />
-                      </div>
-
-                      <div className={styles.cardSecaoRodape}>
-                        {pendenteSecao ? (
-                          <button
-                            type="button"
-                            className={styles.btnSecaoRapida}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/checklist/${id}/item/${idxGlobal(pendenteSecao) + 1}`);
-                            }}
-                            title={`Ir para o primeiro item pendente: #${pendenteSecao.id}`}
-                          >
-                            {respondidosSecao > 0 ? 'Continuar' : 'Iniciar'}
-                            <IconArrowRight size={14} />
-                          </button>
-                        ) : (
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                            Seção concluída
-                          </span>
-                        )}
-                        <span className={styles.verSubgruposLink}>
-                          Ver subgrupos <IconChevronRight size={14} />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                        <span>{respondidosSecao} de {itensSecaoTecnicos.length}</span>
+                      </span>
+                      <span className={styles.linhaSecaoBarra} aria-hidden="true"><span style={{ width: `${pctSecao}%` }} /></span>
+                    </button>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
@@ -224,7 +233,7 @@ export default function ListaItens() {
     <div className="app-shell">
       <Topbar titulo={secao.nome} voltar={fecharSecao} />
 
-      <div className={`tela-body ${styles.slideIn}`} style={{ padding: '0 0 32px' }}>
+      <main className={`tela-body ${styles.slideIn}`} style={{ padding: '0 0 32px' }}>
 
         {/* Card de Ação no Topo da Seção */}
         <div style={{ padding: '16px 20px 0' }}>
@@ -355,8 +364,10 @@ export default function ListaItens() {
                     </div>
                   </button>
                 )}
-                {isExpanded && (
-                  <div id={`subgrupo-corpo-${encodeURIComponent(subgrupo)}`}>
+                {/* Sempre no DOM (oculto quando recolhido) para o aria-controls apontar para algo */}
+                <div id={`subgrupo-corpo-${encodeURIComponent(subgrupo)}`} hidden={!isExpanded}>
+                  {isExpanded && (
+                  <div>
                     {itens.map(item => {
                       const resp = respostas[item.id]?.valor;
                       const idx = idxGlobal(item);
@@ -396,12 +407,13 @@ export default function ListaItens() {
                       );
                     })}
                   </div>
-                )}
+                  )}
+                </div>
               </div>
             );
           })}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

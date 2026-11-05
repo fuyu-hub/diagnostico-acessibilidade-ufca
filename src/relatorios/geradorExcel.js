@@ -2,6 +2,7 @@ import ExcelJS from 'exceljs';
 import { ITENS_TECNICOS, SECOES } from '../dados/checklist.js';
 
 import { CATEGORIAS, CATEGORIA_POR_SECAO, campo, formatarData, classificarResposta, extrairDadosInstituicao } from './vistoriaComum.js';
+import { listarFotos, ehFotoExibivel } from '../dados/fotos.js';
 
 /* =========================================================================
  * Planilha de vistoria — reproduz o layout de "Modelo - Planilha Vistoria.xlsx"
@@ -104,7 +105,7 @@ const CELULA_PX = { largura: LARGURAS_COLUNAS[COL_FOTO - 1] * 7 + 5, altura: (AL
 const MOLDURA_PX = { largura: CELULA_PX.largura - 10, altura: CELULA_PX.altura - 8 };
 
 /** Ancora a foto centralizada na célula, mantendo a proporção. */
-function ancorarFoto(ws, imageId, foto, numeroLinha) {
+function ancorarFoto(ws, imageId, foto, numeroLinha, coluna = COL_FOTO) {
   let w = MOLDURA_PX.largura;
   let h = MOLDURA_PX.altura;
   if (foto.largura && foto.altura) {
@@ -114,7 +115,7 @@ function ancorarFoto(ws, imageId, foto, numeroLinha) {
   }
   ws.addImage(imageId, {
     tl: {
-      col: COL_FOTO - 1 + (CELULA_PX.largura - w) / 2 / CELULA_PX.largura,
+      col: coluna - 1 + (CELULA_PX.largura - w) / 2 / CELULA_PX.largura,
       row: numeroLinha - 1 + (CELULA_PX.altura - h) / 2 / CELULA_PX.altura,
     },
     ext: { width: w, height: h },
@@ -264,9 +265,10 @@ export async function gerarPlanilhaVistoria(vistoria) {
     const celFoto = ws.getCell(linha, COL_FOTO);
     celFoto.border = BORDA;
     celFoto.alignment = CENTRO;
-    if (resp.foto && typeof resp.foto === 'string' && resp.foto.startsWith('data:image')) {
+    const primeiraFoto = listarFotos(resp)[0];
+    if (primeiraFoto && primeiraFoto.startsWith('data:image')) {
       try {
-        const foto = await prepararFoto(resp.foto);
+        const foto = await prepararFoto(primeiraFoto);
         if (foto) {
           const imageId = workbook.addImage({ buffer: foto.buffer, extension: foto.extensao });
           ancorarFoto(ws, imageId, foto, linha);
@@ -383,6 +385,39 @@ export async function gerarPlanilhaVistoria(vistoria) {
       bloco(wsObs, l, 2, l, 2, item.pergunta, { font: fonte({ size: 11 }), alignment: ESQUERDA });
       bloco(wsObs, l, 3, l, 3, respostas[item.id].obs, { font: fonte({ size: 11 }), alignment: ESQUERDA });
     });
+  }
+
+  // ====================== ABA 4 — FOTOS ADICIONAIS ======================
+  // A aba Questionário mostra a primeira foto de cada item; aqui entram as demais.
+  const comExtras = itens.filter(({ item }) => listarFotos(respostas[item.id]).filter(ehFotoExibivel).length > 1);
+  if (comExtras.length) {
+    const wsFotos = workbook.addWorksheet('Fotos adicionais');
+    wsFotos.views = [{ showGridLines: false }];
+    wsFotos.columns = [{ width: 6.4 }, { width: 60 }, { width: 12 }, { width: LARGURAS_COLUNAS[COL_FOTO - 1] }];
+    ['N°', 'Item a Verificar', 'Foto', 'Imagem'].forEach((t, i) =>
+      bloco(wsFotos, 1, i + 1, 1, i + 1, t, { font: fonte({ bold: true }) }));
+    wsFotos.getRow(1).height = 30;
+    let l = 2;
+    for (const { item, numero } of comExtras) {
+      const lista = listarFotos(respostas[item.id]).filter(ehFotoExibivel);
+      for (let k = 1; k < lista.length; k++) {
+        wsFotos.getRow(l).height = ALTURA_LINHA_ITEM;
+        bloco(wsFotos, l, 1, l, 1, numero, { font: fonte({ size: 11 }), alignment: CENTRO });
+        bloco(wsFotos, l, 2, l, 2, item.pergunta, { font: fonte({ size: 11 }), alignment: ESQUERDA });
+        bloco(wsFotos, l, 3, l, 3, `${k + 1} de ${lista.length}`, { font: fonte({ size: 11 }), alignment: CENTRO });
+        wsFotos.getCell(l, 4).border = BORDA;
+        try {
+          const foto = await prepararFoto(lista[k]);
+          if (foto) {
+            const imageId = workbook.addImage({ buffer: foto.buffer, extension: foto.extensao });
+            ancorarFoto(wsFotos, imageId, foto, l, 4);
+          }
+        } catch (errImg) {
+          console.warn('Falha ao ancorar foto adicional no Excel:', errImg);
+        }
+        l++;
+      }
+    }
   }
 
   // ====================== DOWNLOAD ======================

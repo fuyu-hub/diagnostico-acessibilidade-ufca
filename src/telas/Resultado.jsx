@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  IconRefresh, IconArrowLeft,
-  IconDashboard, IconAlertTriangle, IconAlertCircle
+  IconRefresh, IconDashboard, IconAlertTriangle, IconAlertCircle,
+  IconArrowRight, IconCircleCheck, IconCamera,
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { SECOES, ITENS_POR_SECAO, ITENS_TECNICOS } from '../dados/checklist';
+import { SECOES, ITENS_POR_SECAO, ITENS_TECNICOS, TODOS_ITENS } from '../dados/checklist';
+import { listarFotos, ehFotoExibivel } from '../dados/fotos.js';
+import AnelNota, { SeloClassificacao } from '../componentes/AnelNota';
+import AcoesRelatorio from '../componentes/AcoesRelatorio';
 import { calcularIndiceItens, FAIXAS_INDICE } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
 import styles from './Resultado.module.css';
@@ -96,170 +99,185 @@ export default function Resultado() {
     );
   }
 
+  // Seções com nota, da pior para a melhor; as sem respostas vão para o fim
+  const secoesComNota = indicesPorSecao.filter(s => s.total > 0).sort((a, b) => a.nota - b.nota);
+  const secoesSemNota = indicesPorSecao.filter(s => s.total === 0);
+  const ncs = ITENS_TECNICOS.filter(i => respostas[i.id]?.valor === 'nao-conforme');
+  const ncSemFoto = ncs.filter(i => listarFotos(respostas[i.id]).length === 0).length;
+  const ncSemObs = ncs.filter(i => !(respostas[i.id]?.obs || '').trim()).length;
+  const proximoPendente = TODOS_ITENS.find(i => !respostas[i.id]?.valor);
+  const posicao = item => TODOS_ITENS.indexOf(item) + 1;
+  const faixaAtual = FAIXAS_INDICE.find(f => f.rotulo === classGeral.rotulo);
+  const pendentesTotal = totalContaveis - respondidosCount;
+
   return (
     <div className="app-shell">
-      <Topbar titulo="Resultado do Diagnóstico" voltar={`/vistoria/${id}`} />
+      <Topbar eyebrow={vistoria.nome} titulo={ehParcial ? 'Resultado (prévia)' : 'Resultado do Diagnóstico'} voltar={`/vistoria/${id}`} />
 
-      <div className="tela-body" style={{ padding: '24px 20px 48px' }}>
+      <main className="tela-body" style={{ padding: '24px 20px 48px' }}>
         <div className={styles.container}>
-          <header className={styles.cabecalho}>
-            <h1 className={styles.titulo}>{vistoria.nome}</h1>
+          <section className={styles.cardNotaGeral} aria-labelledby="titulo-iaa">
+            <h2 id="titulo-iaa" className={styles.tituloIaa}>Índice de Avaliação de Acessibilidade</h2>
             <p className={styles.subtitulo}>
               {vistoria.bairro ? `${vistoria.bairro}, ` : ''}{vistoria.cidade || 'Local não informado'} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : 'Data não informada'}
             </p>
-          </header>
+            <AnelNota nota={indiceGeral.total > 0 ? indiceGeral.nota : null} classificacao={classGeral} parcial={ehParcial} grande />
+            <SeloClassificacao classificacao={classGeral} parcial={ehParcial} />
+            {faixaAtual && <p className={styles.descricaoFaixa}>{faixaAtual.descricao}.</p>}
 
-          {ehParcial && (
-            <div
-              role="status"
-              aria-live="polite"
-              style={{
-                background: 'rgba(234, 179, 8, 0.12)',
-                border: '1.5px solid rgba(234, 179, 8, 0.35)',
-                borderRadius: 14,
-                padding: '12px 16px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                color: 'var(--text-warning)',
-                fontSize: '0.86rem',
-                lineHeight: 1.5,
-              }}
-            >
-              <IconAlertTriangle size={24} style={{ flexShrink: 0 }} />
-              <div>
-                <strong>Prévia / Resultado Parcial:</strong> Este índice reflete os {respondidosCount} itens respondidos até o momento (de {totalContaveis} exigências técnicas). A classificação definitiva será consolidada após o preenchimento integral.
-              </div>
-            </div>
-          )}
-
-          {/* Card Destaque Nota Geral */}
-          <section
-            className={styles.cardNotaGeral}
-            role="region"
-            aria-label={`Índice de Avaliação de Acessibilidade Geral: nota ${classGeral.notaFormatada}, classificação ${classGeral.rotulo}`}
-          >
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: 0.8, fontWeight: 600 }}>
-              Índice de Avaliação de Acessibilidade (IAA) Geral {ehParcial ? '· Prévia' : ''}
-            </span>
-
-            <div className={styles.notaGeralValor} style={{ color: classGeral.corNota || classGeral.cor }}>
-              {classGeral.notaFormatada}
-            </div>
-
-            <span
-              className={styles.badgeClassificacaoGeral}
-              style={{
-                color: classGeral.cor,
-                background: classGeral.bg,
-                borderColor: classGeral.borda,
-              }}
-            >
-              {ehParcial ? `${classGeral.rotulo} · PRÉVIA` : classGeral.rotulo}
-            </span>
-
-            {/* Cards de contagem */}
             <div className={styles.gridContagem} role="group" aria-label="Resumo de conformidade dos itens">
-              <div className={styles.statCardResumo} aria-label={`${indiceGeral.conf} itens conformes`}>
+              <div className={styles.statCardResumo}>
                 <div className={styles.statValResumo} style={{ color: 'var(--text-success)' }}>{indiceGeral.conf}</div>
                 <div className={styles.statLblResumo}>Conformes</div>
               </div>
-              <div className={styles.statCardResumo} aria-label={`${indiceGeral.nc} itens não conformes`}>
+              <div className={styles.statCardResumo}>
                 <div className={styles.statValResumo} style={{ color: 'var(--text-danger)' }}>{indiceGeral.nc}</div>
                 <div className={styles.statLblResumo}>Não conf.</div>
               </div>
-              <div className={styles.statCardResumo} aria-label={`${indiceGeral.na} itens não aplicáveis`}>
+              <div className={styles.statCardResumo}>
                 <div className={styles.statValResumo} style={{ color: 'var(--text-na, var(--text-muted))' }}>{indiceGeral.na}</div>
                 <div className={styles.statLblResumo}>N/A</div>
               </div>
+              <div className={styles.statCardResumo}>
+                <div className={styles.statValResumo}>{pendentesTotal}</div>
+                <div className={styles.statLblResumo}>Pendentes</div>
+              </div>
             </div>
           </section>
 
-          {/* Tabela Oficial de Interpretação do Índice (Imagem 2) */}
-          <section className={styles.cardTabelaInterpretacao} aria-labelledby="titulo-tabela-interpretacao">
-            <h3 id="titulo-tabela-interpretacao" className={styles.tabelaTitulo}>Interpretação do Índice</h3>
-            <div className={styles.tabelaGrid} role="table" aria-label="Tabela de faixas de classificação do Índice de Acessibilidade">
-              <div role="row" className="sr-only">
-                <span role="columnheader">Faixa percentual</span>
-                <span role="columnheader">Classificação</span>
-              </div>
-              {FAIXAS_INDICE.map(faixa => {
-                const ehFaixaAtual = faixa.rotulo === classGeral.rotulo;
+          {ehParcial ? (
+            <section className={`${styles.cardRevisao} ${styles.cardRevisaoAviso}`} aria-labelledby="titulo-revisao">
+              <h2 id="titulo-revisao" className={styles.tituloCard}>
+                <IconAlertTriangle size={20} aria-hidden="true" /> Antes de concluir
+              </h2>
+              <p className={styles.textoCard}>
+                Este índice é uma prévia com {respondidosCount} de {totalContaveis} itens. A classificação definitiva sai quando todos forem respondidos.
+              </p>
+              <ul className={styles.checagem}>
+                <li><strong>{pendentesTotal}</strong> {pendentesTotal === 1 ? 'item ainda sem resposta' : 'itens ainda sem resposta'}</li>
+                <li><strong>{ncSemFoto}</strong> {ncSemFoto === 1 ? 'não conformidade sem foto' : 'não conformidades sem foto'}</li>
+                <li><strong>{ncSemObs}</strong> {ncSemObs === 1 ? 'não conformidade sem observação' : 'não conformidades sem observação'}</li>
+              </ul>
+              {proximoPendente && (
+                <button type="button" className="btn-nav primario" onClick={() => navigate(`/checklist/${id}/item/${posicao(proximoPendente)}`)}>
+                  Ir ao próximo pendente <IconArrowRight size={18} aria-hidden="true" />
+                </button>
+              )}
+            </section>
+          ) : (
+            <section className={styles.cardRevisao} aria-labelledby="titulo-completa">
+              <h2 id="titulo-completa" className={styles.tituloCard}>
+                <IconCircleCheck size={20} aria-hidden="true" /> Vistoria completa
+              </h2>
+              <p className={styles.textoCard}>
+                {ncSemFoto ? `${ncSemFoto} ${ncSemFoto === 1 ? 'não conformidade está' : 'não conformidades estão'} sem foto.` : 'Todas as não conformidades têm foto.'}
+              </p>
+            </section>
+          )}
+
+          <section className={styles.cardRevisao} aria-labelledby="titulo-relatorios">
+            <h2 id="titulo-relatorios" className={styles.tituloCard}>Relatórios</h2>
+            {ehParcial && <p className={styles.textoCard}>Sairão marcados como resultado parcial.</p>}
+            <AcoesRelatorio vistoria={vistoria} variante="botoes" />
+          </section>
+
+          <section aria-labelledby="titulo-secoes-resultado">
+            <h2 id="titulo-secoes-resultado" className="label-secao" style={{ marginBottom: 12 }}>
+              Seções, da pior para a melhor
+            </h2>
+            <div className={styles.listaSecoes}>
+              {secoesComNota.map(s => {
+                const ncsSecao = (ITENS_POR_SECAO[s.id] || []).filter(i => i.tipo === 'tecnico' && respostas[i.id]?.valor === 'nao-conforme');
                 return (
-                  <div
-                    key={faixa.rotulo}
-                    className={styles.tabelaLinha}
-                    role="row"
-                    aria-current={ehFaixaAtual ? 'true' : undefined}
-                    aria-label={`${faixa.faixaTexto}: ${faixa.rotulo}${ehFaixaAtual ? ' (Faixa obtida nesta vistoria)' : ''}`}
-                    style={{
-                      background: ehFaixaAtual ? faixa.bg : 'transparent',
-                    }}
-                  >
-                    <div className={styles.tabelaFaixa} role="cell">
-                      <span className={styles.tabelaDot} style={{ background: faixa.dot || faixa.cor }} />
-                      <span>{faixa.faixaTexto}</span>
-                    </div>
-                    <div role="cell" className={styles.tabelaDescricaoWrapper}>
-                      <span className={styles.tabelaRotulo} style={{ color: faixa.cor }}>
-                        {faixa.rotulo}
+                  <details key={s.id} className={styles.secaoResultado}>
+                    <summary>
+                      <span className={styles.secaoNome}>{s.nome}</span>
+                      <strong className={styles.secaoNota} style={{ color: s.classificacao.corNota || s.classificacao.cor }}>{s.classificacao.notaFormatada}</strong>
+                      <span className={styles.barraNota} aria-hidden="true">
+                        <span style={{ width: `${s.nota * 10}%`, background: s.classificacao.cor }} />
                       </span>
-                      <span className={styles.tabelaDescTexto}>
-                        {faixa.descricao}
+                      <span className={styles.secaoRotulo}>
+                        {s.classificacao.rotulo.toLowerCase()} · {s.nc} {s.nc === 1 ? 'não conformidade' : 'não conformidades'}
+                        {ncsSecao.length > 0 && <span className={styles.verMais}> · ver o que corrigir</span>}
                       </span>
-                    </div>
-                  </div>
+                    </summary>
+                    {ncsSecao.length > 0 ? (
+                      <ul className={styles.listaNc}>
+                        {ncsSecao.map(item => {
+                          const r = respostas[item.id];
+                          const fotos = listarFotos(r).filter(ehFotoExibivel);
+                          return (
+                            <li key={item.id} className={styles.itemNc}>
+                              <span className={styles.miniatura} aria-hidden="true">
+                                {fotos[0] ? <img src={fotos[0]} alt="" /> : <IconCamera size={20} />}
+                              </span>
+                              <div>
+                                <button type="button" className={styles.linkItem} onClick={() => navigate(`/checklist/${id}/item/${posicao(item)}`)}>
+                                  Item {ITENS_TECNICOS.indexOf(item) + 1}: {item.pergunta}
+                                </button>
+                                <p className={styles.obsNc}>
+                                  {r?.obs ? r.obs : 'Sem observação'} · {fotos.length === 0 ? 'sem foto' : fotos.length === 1 ? '1 foto' : `${fotos.length} fotos`}
+                                </p>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    ) : (
+                      <p className={styles.semNc}>Nenhuma não conformidade nesta seção.</p>
+                    )}
+                  </details>
                 );
               })}
-            </div>
-          </section>
-
-          {/* Índice por Seção */}
-          <section className={styles.cardSecoesContainer} aria-labelledby="titulo-secoes-resultado">
-            <p id="titulo-secoes-resultado" className="label-secao" style={{ marginBottom: 14 }}>
-              Índice por Seção de Acessibilidade
-            </p>
-            <div className={styles.gridSecoesResultado}>
-              {indicesPorSecao.map(s => (
-                <div
-                  key={s.id}
-                  className={styles.cardSecaoResultado}
-                  role="article"
-                  aria-label={`Seção ${s.nome}: nota ${s.classificacao.notaFormatada}, classificação ${s.classificacao.rotulo}`}
-                >
-                  <span className={styles.nomeSecao}>{s.nome}</span>
-                  <div className={styles.badgeSecao} style={{ color: s.total > 0 ? s.classificacao.cor : 'var(--text-muted)' }}>
-                    <span className={styles.notaSecaoValor}>{s.total > 0 ? s.classificacao.notaFormatada : 'Pendente'}</span>
-                    {s.total > 0 ? (
-                      <span className={styles.notaSecaoRotulo}>{s.classificacao.rotulo}</span>
-                    ) : (
-                      <span className={styles.notaSecaoRotulo} style={{ color: 'var(--text-muted)' }}>Sem respostas</span>
-                    )}
-                  </div>
+              {secoesSemNota.map(s => (
+                <div key={s.id} className={styles.secaoSemNota}>
+                  <span>{s.nome}</span>
+                  <span>Sem respostas</span>
                 </div>
               ))}
             </div>
           </section>
 
+          <details className={styles.secaoResultado}>
+            <summary><span className={styles.secaoNome}>Como interpretar o índice</span></summary>
+            <div className={styles.interpretacao}>
+              <p className={styles.textoCard}>
+                Nota = conformes ÷ (conformes + não conformes) × 10. Itens "Não se aplica" e pendentes ficam fora do cálculo.
+              </p>
+              <table className={styles.tabelaFaixas}>
+                <caption className="sr-only">Faixas do Índice de Avaliação de Acessibilidade</caption>
+                <thead>
+                  <tr><th scope="col">Nota</th><th scope="col">Classificação</th><th scope="col">Significado</th></tr>
+                </thead>
+                <tbody>
+                  {FAIXAS_INDICE.map(faixa => {
+                    const atual = faixa.rotulo === classGeral.rotulo;
+                    return (
+                      <tr key={faixa.rotulo} aria-current={atual ? 'true' : undefined} style={{ background: atual ? faixa.bg : undefined }}>
+                        <td>{faixa.faixaTexto}</td>
+                        <td>
+                          <span className={styles.tabelaDot} style={{ background: faixa.dot || faixa.cor }} aria-hidden="true" />
+                          {faixa.rotulo}{atual && <span className="sr-only"> (faixa desta vistoria)</span>}
+                        </td>
+                        <td>{faixa.descricao}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </details>
+
           <div className={styles.botoesWrap}>
-            <button className="btn-nav primario" onClick={() => navigate(`/vistoria/${id}`)}>
-              <IconDashboard size={18} /> Painel da Vistoria e Ficha
+            <button className="btn-nav" onClick={() => navigate(`/vistoria/${id}`)}>
+              <IconDashboard size={18} aria-hidden="true" /> Painel da vistoria
             </button>
-
             <button className="btn-nav" onClick={() => navigate(`/checklist/${id}/itens`)}>
-              <IconRefresh size={18} /> Revisar Seções e Itens
-            </button>
-
-            <button
-              className="btn-nav"
-              style={{ border: 'none', color: 'var(--text-secondary)' }}
-              onClick={() => navigate('/')}
-            >
-              <IconArrowLeft size={18} /> Voltar ao Início
+              <IconRefresh size={18} aria-hidden="true" /> Revisar seções e itens
             </button>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -493,3 +493,124 @@
     display: inline;
   }
 }
+/* ==========================================================================
+   Repaginação: abas, resumo com nota e atalhos
+   ========================================================================== */
+.abas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.abas [role="tab"] {
+  min-height: var(--alvo-min);
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.abas [role="tab"][aria-selected="true"] {
+  background: var(--surface-1);
+  color: var(--text-strong);
+  outline: 1.5px solid var(--border-strong);
+}
+
+.abas [role="tab"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.painelAba { display: flex; flex-direction: column; gap: 16px; }
+
+.gridMetricas { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 8px !important; }
+.miniCardProgresso, .miniCardResultado { grid-column: span 1 !important; }
+
+.resumoNota { display: flex; align-items: center; gap: 16px; }
+.resumoNotaTexto { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+
+.atalhos { display: flex; flex-direction: column; gap: 8px; }
+
+.atalho {
+  width: 100%;
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text-secondary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.atalho:hover { border-color: var(--border-stronger); }
+.atalho:focus-visible, .linhaCritica:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.atalhoIcone {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--surface-3);
+  color: var(--accent-text);
+}
+
+.atalhoTextos { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.atalhoTextos strong { color: var(--text-strong); font-size: var(--fs-md); }
+.atalhoTextos span { font-size: var(--fs-sm); color: var(--text-secondary); }
+
+.listaCriticas { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+
+.linhaCritica {
+  width: 100%;
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 8px 4px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.linhaCritica:hover { background: var(--surface-2); }
+.linhaCritica strong { font-size: var(--fs-lg); font-weight: 800; }
+.criticaNome { font-weight: 650; color: var(--text-strong); }
+.criticaRotulo { grid-column: 1 / -1; font-size: var(--fs-xs); color: var(--text-secondary); text-transform: capitalize; }
+
+.barraNota { grid-column: 1 / -1; height: 8px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+.barraNota span { display: block; height: 100%; border-radius: inherit; }
+
+.avisoParcial {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-warning);
+  background: var(--bg-warning);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+.avisoParcial svg { color: var(--text-warning); flex-shrink: 0; }
+
+fieldset.cardHorario { margin: 0; min-width: 0; }

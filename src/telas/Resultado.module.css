@@ -254,3 +254,125 @@
   flex-direction: column;
   gap: 12px;
 }
+
+
+/* ==========================================================================
+   Repaginação: anel, revisão antes de concluir e seções da pior para a melhor
+   ========================================================================== */
+.cardNotaGeral { align-items: center; text-align: center; }
+.tituloIaa { font-size: var(--fs-lg); font-weight: 700; color: var(--text-strong); }
+.descricaoFaixa { color: var(--text-secondary); font-size: var(--fs-sm); max-width: 420px; text-align: center; }
+.gridContagem { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; width: 100%; }
+
+.cardRevisao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+}
+
+.cardRevisaoAviso { border-color: var(--border-warning); background: var(--bg-warning); }
+.tituloCard { display: flex; align-items: center; gap: 8px; font-size: var(--fs-md); font-weight: 700; color: var(--text-strong); }
+.textoCard { font-size: var(--fs-sm); line-height: 1.5; color: var(--text-primary); text-align: left; }
+.checagem { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-sm); color: var(--text-primary); }
+.checagem strong { display: inline-block; min-width: 2.2em; color: var(--text-strong); }
+
+.listaSecoes { display: flex; flex-direction: column; gap: 8px; }
+
+.secaoResultado {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+
+.secaoResultado > summary {
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 12px;
+  min-height: 64px;
+  padding: 12px 14px;
+  cursor: pointer;
+}
+
+.secaoResultado > summary::-webkit-details-marker { display: none; }
+.secaoResultado > summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-md); }
+.secaoResultado[open] > summary { border-bottom: 1px solid var(--border); }
+
+.secaoNome { font-weight: 700; color: var(--text-strong); text-align: left; }
+.secaoNota { font-size: var(--fs-lg); font-weight: 800; }
+.secaoRotulo { grid-column: 1 / -1; font-size: var(--fs-xs); color: var(--text-secondary); text-align: left; }
+.verMais { color: var(--accent-text); }
+
+.barraNota { grid-column: 1 / -1; height: 8px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+.barraNota span { display: block; height: 100%; border-radius: inherit; }
+
+.listaNc { list-style: none; }
+
+.itemNc {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+}
+
+.itemNc:first-child { border-top: 0; }
+
+.miniatura {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-3);
+  color: var(--text-muted);
+}
+
+.miniatura img { width: 100%; height: 100%; object-fit: cover; }
+
+.linkItem {
+  padding: 4px 0;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: var(--text-strong);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.obsNc { margin-top: 2px; font-size: var(--fs-xs); color: var(--text-secondary); text-align: left; }
+.semNc { padding: 12px 14px; font-size: var(--fs-sm); color: var(--text-secondary); text-align: left; }
+
+.secaoSemNota {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-strong);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.interpretacao { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+
+.tabelaFaixas { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); text-align: left; }
+.tabelaFaixas th, .tabelaFaixas td { padding: 8px 6px; border-top: 1px solid var(--border); vertical-align: top; color: var(--text-primary); }
+.tabelaFaixas th { color: var(--text-secondary); font-weight: 650; }
+.tabelaFaixas tr[aria-current="true"] td { font-weight: 650; }
+.tabelaDot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }

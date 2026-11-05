@@ -399,3 +399,117 @@
   letter-spacing: 0.2px;
 }
 
+
+/* ==========================================================================
+   Repaginação: lista compacta de seções e busca de itens
+   ========================================================================== */
+.busca { position: relative; }
+.busca svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+.busca input { padding-left: 40px; }
+
+.resultadosBusca {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  overflow: hidden;
+}
+
+.resultadosBusca ul { list-style: none; }
+.resultadosTitulo { padding: 12px 16px; font-size: var(--fs-sm); font-weight: 700; color: var(--text-strong); border-bottom: 1px solid var(--border); }
+
+.linhaBusca {
+  width: 100%;
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px 16px;
+  border: 0;
+  border-top: 1px solid var(--border);
+  background: none;
+  color: var(--text-strong);
+  font: inherit;
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+
+.resultadosBusca li:first-child .linhaBusca { border-top: 0; }
+.linhaBusca:hover { background: var(--surface-2); }
+.linhaBusca small { display: block; margin-top: 2px; font-size: var(--fs-xs); color: var(--text-secondary); }
+
+.totalAvaliados { margin: 16px 0 12px; font-size: var(--fs-sm); color: var(--text-secondary); }
+.totalAvaliados strong { color: var(--text-strong); }
+
+.listaSecoes {
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 900px) { .listaSecoes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.linhaSecao {
+  width: 100%;
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 12px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.linhaSecao:hover { border-color: var(--border-stronger); }
+.linhaSecao:focus-visible, .linhaBusca:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.linhaSecaoConcluida { border-color: var(--border-success); }
+
+.linhaSecaoNome { font-weight: 700; color: var(--text-strong); }
+
+.linhaSecaoLado {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.linhaSecaoLado strong { font-size: var(--fs-lg); font-weight: 800; }
+.semNota { font-size: var(--fs-xs); color: var(--text-secondary); }
+
+.linhaSecaoDetalhe {
+  grid-column: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+}
+
+.estado_ok { color: var(--text-success); border-color: var(--border-success); background: var(--bg-success); }
+.estado_andamento { color: var(--accent-text); border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+
+.linhaSecaoBarra { grid-column: 1 / -1; height: 6px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+.linhaSecaoBarra span { display: block; height: 100%; border-radius: inherit; background: var(--accent); }

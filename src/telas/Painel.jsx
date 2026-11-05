@@ -1,12 +1,12 @@
 import { useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconShieldCheck, IconArrowRight, IconSearch } from '@tabler/icons-react';
+import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconShieldCheck, IconArrowRight, IconSearch, IconBuilding } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
 import CartaoVistoria from '../componentes/CartaoVistoria';
 import ModalConflito from '../componentes/ModalConflito';
 import { lerArquivoImportacao } from '../dados/exportacao';
-import { resumoProgresso } from '../dados/checklist';
+import { resumoProgresso, TODOS_ITENS, ITENS_TECNICOS, SECOES } from '../dados/checklist';
 import styles from './Painel.module.css';
 
 const LIMITE_PARA_BUSCA = 6;
@@ -45,6 +45,9 @@ export default function Painel() {
   }, [vistorias, busca, filtro]);
 
   const progressoUltima = ultimaEmAndamento ? resumoProgresso(ultimaEmAndamento.respostas) : null;
+  const proximoItem = progressoUltima && progressoUltima.proximoIndice >= 0 ? TODOS_ITENS[progressoUltima.proximoIndice] : null;
+  const secaoProximo = proximoItem ? SECOES.find(s => s.id === proximoItem.secaoId) : null;
+  const temVistorias = vistorias.length > 0;
 
   function handleDragOver(e) {
     e.preventDefault();
@@ -123,9 +126,13 @@ export default function Painel() {
     <div className="app-shell">
       <main className="tela-body" style={{ padding: '24px 20px' }}>
         <header className={styles.header}>
-          <div>
-            <span className={styles.eyebrow}>Diagnóstico NBR 9050 · UFCA</span>
-            <h1 className={styles.titulo}>Vistorias</h1>
+          <div className={styles.marcaTitulo}>
+            {/* Marca provisória até a logo oficial do app */}
+            <span className={styles.marca} aria-hidden="true"><IconBuilding size={26} /></span>
+            <div>
+              <span className={styles.eyebrow}>Diagnóstico NBR 9050 · UFCA</span>
+              <h1 className={styles.titulo}>Vistorias</h1>
+            </div>
           </div>
           <div className={styles.headerAcoes}>
             <button type="button" className={styles.btnSobre} onClick={() => navigate('/sobre')}>
@@ -157,11 +164,19 @@ export default function Painel() {
             <p id="continuar-titulo" className="label-secao">Continuar de onde parou</p>
             <h2 className={styles.continuarNome}>{ultimaEmAndamento.nome}</h2>
             <div className={styles.continuarProgresso}>
-              <div className="progresso-track" style={{ flex: 1 }}>
+              <div className="progresso-track" style={{ flex: 1 }} aria-hidden="true">
                 <div className="progresso-fill" style={{ width: `${progressoUltima.pct}%` }} />
               </div>
-              <span>{progressoUltima.respondidos} de {progressoUltima.total}</span>
+              <span>{progressoUltima.respondidos} de {progressoUltima.total} itens</span>
             </div>
+            {proximoItem && (
+              <p className={styles.proximo}>
+                <span className={styles.proximoRotulo}>
+                  Próximo: {secaoProximo?.nome}{proximoItem.tipo === 'tecnico' ? ` · item ${ITENS_TECNICOS.indexOf(proximoItem) + 1}` : ' · triagem'}
+                </span>
+                <span className={styles.proximoPergunta}>{proximoItem.pergunta}</span>
+              </p>
+            )}
             <button
               type="button"
               className={`btn-nav primario ${styles.btnContinuar}`}
@@ -176,16 +191,23 @@ export default function Painel() {
           </section>
         )}
 
-        <div className={styles.acoes}>
-          <button className={`cartao ${styles.btnNova}`} onClick={() => navigate('/nova')}>
-            <div className={styles.iconePlus}>
-              <IconPlus size={28} aria-hidden="true" />
-            </div>
-            <div>
-              <p className={styles.novaLabel}>Nova vistoria</p>
-              <p className={styles.novaDesc}>Cadastrar a instituição e iniciar o diagnóstico</p>
-            </div>
-          </button>
+        <div className={`${styles.acoes} ${temVistorias ? styles.acoesCompactas : ''}`}>
+          {temVistorias ? (
+            <button type="button" className={styles.btnNovaCompacto} onClick={() => navigate('/nova')}>
+              <IconPlus size={20} aria-hidden="true" />
+              <span>Nova vistoria</span>
+            </button>
+          ) : (
+            <button className={`cartao ${styles.btnNova}`} onClick={() => navigate('/nova')}>
+              <div className={styles.iconePlus}>
+                <IconPlus size={28} aria-hidden="true" />
+              </div>
+              <div>
+                <p className={styles.novaLabel}>Nova vistoria</p>
+                <p className={styles.novaDesc}>Cadastrar a instituição e iniciar o diagnóstico</p>
+              </div>
+            </button>
+          )}
 
           <button
             type="button"

@@ -24,18 +24,21 @@ test.beforeEach(async ({ page }, info) => {
 async function criarVistoria(page, nome = 'Escola de Teste') {
   await page.goto('/nova');
   await page.waitForLoadState('networkidle');
-  await page.fill('input[placeholder*="Ex: Universidade Federal do Cariri"]', nome);
-  await page.fill('input[placeholder*="Ex: Av. Tenente Raimundo Rocha"]', 'Rua de Teste, 1');
-  await page.fill('input[placeholder*="Ex: Juazeiro do Norte"]', 'Crato, CE');
-  await page.fill('input[placeholder*="Nome do avaliador 1"]', 'Avaliador');
+  // Etapa 1: instituição
+  await page.getByLabel(/Nome da escola/).fill(nome);
+  await page.getByLabel('Endereço').fill('Rua de Teste, 1');
+  await page.getByLabel('Cidade / UF').fill('Crato, CE');
   await page.locator('button[aria-haspopup="listbox"]').first().click();
   await page.locator('div[role="option"]:has-text("Estadual")').click();
   await page.locator('button[aria-haspopup="listbox"]').nth(1).click();
   await page.locator('div[role="option"]:has-text("Ensino Médio")').click();
   await page.locator('h2:has-text("Ficha da Instituição")').click();
+  await page.getByRole('button', { name: /Próximo: equipe e data/ }).click();
+  // Etapa 2: equipe e data
+  await page.getByLabel(/Avaliador 1/).fill('Avaliador');
   await page.click('button:has-text("Salvar Ficha e Acessar Vistoria")');
   await page.waitForURL(/\/vistoria\//);
-  await expect(page.locator(`input[value="${nome}"]`).first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: nome })).toBeVisible();
   // A gravação é assíncrona: aguarda antes de navegar com recarga de página
   await page.waitForTimeout(800);
   return page.url().split('/vistoria/')[1];
@@ -56,8 +59,11 @@ test('recarregar a tela da vistoria mantém a tela e os dados da ficha', async (
 
   await criarVistoria(page);
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  await page.getByRole('tab', { name: 'Ficha' }).click();
   await page.reload();
 
+  // A aba fica na URL: recarregar volta à Ficha com os dados
+  await expect(page.getByRole('tab', { name: 'Ficha' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('input[value="Escola de Teste"]').first()).toBeVisible();
   expect(erros).toEqual([]);
 });
@@ -367,4 +373,24 @@ test('ajustes de tamanho do texto e de avanço ficam salvos e valem no app', asy
   await expect(page.getByRole('radio', { name: 'Máximo' })).toBeChecked();
   await expect(page.getByRole('switch', { name: 'Avançar ao responder' })).toBeChecked();
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).fontSize)).toBe('24px');
+});
+
+test('nova vistoria valida a etapa 1 e mostra os erros junto dos campos', async ({ page }) => {
+  await page.goto('/nova');
+  await page.getByRole('button', { name: /Próximo: equipe e data/ }).click();
+  const resumo = page.getByRole('alert');
+  await expect(resumo).toContainText('Corrija 3 campos');
+  await expect(page.getByLabel(/Nome da escola/)).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.getByRole('heading', { name: 'Ficha da Instituição' })).toBeVisible();
+});
+
+test('painel da vistoria em abas e relatórios com botões de verdade', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await expect(page.getByRole('tab', { name: 'Resumo' })).toHaveAttribute('aria-selected', 'true');
+  await page.getByRole('tab', { name: 'Resumo' }).press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'Ficha' })).toHaveAttribute('aria-selected', 'true');
+  await page.getByRole('tab', { name: 'Relatórios' }).click();
+  await expect(page.getByRole('button', { name: /Relatório em PDF/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Planilha/ })).toBeVisible();
+  expect(page.url()).toContain(`/vistoria/${id}?aba=relatorios`);
 });

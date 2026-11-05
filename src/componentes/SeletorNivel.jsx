@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 import { IconChevronDown, IconCheck } from '@tabler/icons-react';
 import styles from './SeletorNivel.module.css';
 
@@ -30,8 +30,10 @@ export default function SeletorNivel({
   multi = false,
   placeholder = 'Selecione uma opção',
   required = false,
+  erro = '',
 }) {
   const [aberto, setAberto] = useState(false);
+  const idBase = useId();
   const containerRef = useRef(null);
 
   // Lista padrão conforme o modo se opções não forem fornecidas explicitamente
@@ -119,7 +121,7 @@ export default function SeletorNivel({
 
   return (
     <div className={styles.wrapper} ref={containerRef}>
-      {label && <label className="label-secao">{label}</label>}
+      {label && <span id={`${idBase}-rotulo`} className="label-secao">{label}</span>}
 
       <button
         type="button"
@@ -127,9 +129,11 @@ export default function SeletorNivel({
         onClick={() => setAberto(prev => !prev)}
         aria-haspopup="listbox"
         aria-expanded={aberto}
+        aria-labelledby={label ? `${idBase}-rotulo ${idBase}-valor` : undefined}
+        aria-describedby={erro ? `${idBase}-erro` : undefined}
         title={textoBotao || undefined}
       >
-        <span className={temValor ? styles.valorTexto : styles.placeholder}>
+        <span id={`${idBase}-valor`} className={temValor ? styles.valorTexto : styles.placeholder}>
           {textoBotao || '\u00A0'}
         </span>
 
@@ -143,26 +147,35 @@ export default function SeletorNivel({
           />
         </div>
 
-        {/* Input invisível para acionar a validação HTML5 do navegador */}
-        {required && (
-          <input
-            type="text"
-            required={required}
-            value={temValor ? 'selecionado' : ''}
-            onChange={() => {}}
-            tabIndex={-1}
-            style={{
-              opacity: 0,
-              width: 0,
-              height: 0,
-              position: 'absolute',
-              bottom: 0,
-              left: '50%',
-              pointerEvents: 'none'
-            }}
-          />
-        )}
       </button>
+
+      {/* Input invisível para acionar a validação HTML5 do navegador */}
+      {required && (
+        <input
+          type="text"
+          required={required}
+          value={temValor ? 'selecionado' : ''}
+          onChange={() => {}}
+          tabIndex={-1}
+          aria-hidden="true"
+          style={{
+            opacity: 0,
+            width: 0,
+            height: 0,
+            minHeight: 0,
+            padding: 0,
+            border: 0,
+            position: 'absolute',
+            bottom: 0,
+            left: '50%',
+            pointerEvents: 'none'
+          }}
+        />
+      )}
+
+      {erro && (
+        <span id={`${idBase}-erro`} className={styles.erro}>{erro}</span>
+      )}
 
       {aberto && (
         <div

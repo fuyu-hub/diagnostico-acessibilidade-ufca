@@ -217,3 +217,11 @@
   color: #ffffff;
   border-color: var(--accent);
 }
+
+.erro {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-danger);
+}

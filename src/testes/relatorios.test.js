@@ -97,6 +97,21 @@ describe('Relatórios e Exportação (Escopo 4)', () => {
     expect(resultado.nomeArquivo.toLowerCase()).toContain('campus crato');
   });
 
+  it('4b. PDF inclui as fotos além da primeira em "Fotos adicionais"', async () => {
+    // PNG 1×1 válido
+    const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+    const comFotos = {
+      id: 'v-pdf-fotos', nome: 'Escola com fotos', cidade: 'Crato',
+      respostas: { 1: { valor: 'nao-conforme', obs: 'Degrau', fotos: [png, png, png], foto: png } },
+    };
+    const { doc } = await gerarPdfVistoria(comFotos);
+    expect(doc.output()).toContain('FOTOS ADICIONAIS');
+
+    const umaFoto = { ...comFotos, respostas: { 1: { valor: 'nao-conforme', fotos: [png], foto: png } } };
+    const r2 = await gerarPdfVistoria(umaFoto);
+    expect(r2.doc.output()).not.toContain('FOTOS ADICIONAIS');
+  });
+
   it('5. Formata tamanho de bytes adequadamente para o usuário', async () => {
     const { formatarTamanhoBytes } = await import('../utilitarios/imagem.js');
     expect(formatarTamanhoBytes(0)).toBe('0 B');

@@ -122,9 +122,6 @@ export function extrairDadosInstituicao(vistoria) {
   if (inst.numPavimentos || vistoria.numPavimentos) {
     opcionais.push({ label: 'Número de Pavimentos', valor: String(inst.numPavimentos || vistoria.numPavimentos) });
   }
-  if (inst.anoConstrucao || vistoria.anoConstrucao) {
-    opcionais.push({ label: 'Ano de Construção', valor: String(inst.anoConstrucao || vistoria.anoConstrucao) });
-  }
   if (inst.horarioInicio || vistoria.horarioInicio) {
     opcionais.push({ label: 'Horário de Início', valor: String(inst.horarioInicio || vistoria.horarioInicio) });
   }

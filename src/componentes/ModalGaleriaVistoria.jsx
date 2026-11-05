@@ -4,6 +4,7 @@ import {
   IconX, IconPhoto, IconNotes
 } from '@tabler/icons-react';
 import { TODOS_ITENS } from '../dados/checklist';
+import { listarFotos, ehFotoExibivel } from '../dados/fotos.js';
 import { useTravaScroll } from '../utilitarios/travaScroll';
 import { useFocusTrap } from '../utilitarios/focusTrap';
 import ModalVisualizarFoto from './ModalVisualizarFoto';
@@ -43,25 +44,29 @@ export default function ModalGaleriaVistoria({
 
   const respostas = vistoria.respostas || {};
 
-  // Extrai itens com foto OU com observação (desconsidera anotações automáticas de triagem)
+  // Um registro por foto (um item pode ter várias) e um para itens só com observação.
+  // Anotações automáticas de triagem ficam de fora.
   const itensGaleria = TODOS_ITENS.reduce((acc, item, idx) => {
     const resp = respostas[item.id];
-    const temFoto = resp?.foto && typeof resp.foto === 'string' && resp.foto.startsWith('data:image');
+    const fotos = listarFotos(resp).filter(ehFotoExibivel);
     const obsTexto = typeof resp?.obs === 'string' ? resp.obs.trim() : '';
     const ehObsAutomatica = obsTexto.startsWith('Triagem #') || obsTexto.startsWith('Triagem:');
     const temObs = obsTexto.length > 0 && !ehObsAutomatica;
+    const base = {
+      item,
+      indiceGlobal: idx + 1,
+      resposta: resp?.valor || '',
+      observacao: temObs ? obsTexto : '',
+      temObs,
+      totalFotos: fotos.length,
+    };
 
-    if (temFoto || temObs) {
-      acc.push({
-        item,
-        indiceGlobal: idx + 1,
-        resposta: resp?.valor || '',
-        observacao: temObs ? obsTexto : '',
-        foto: temFoto ? resp.foto : null,
-        temFoto,
-        temObs,
-        apenasObs: !temFoto && temObs,
+    if (fotos.length) {
+      fotos.forEach((foto, indiceFoto) => {
+        acc.push({ ...base, chave: `${item.id}-${indiceFoto}`, foto, indiceFoto, temFoto: true, apenasObs: false });
       });
+    } else if (temObs) {
+      acc.push({ ...base, chave: `${item.id}-obs`, foto: null, indiceFoto: null, temFoto: false, apenasObs: true });
     }
     return acc;
   }, []);
@@ -77,7 +82,7 @@ export default function ModalGaleriaVistoria({
   });
 
   const totalFotos = itensGaleria.filter((e) => e.temFoto).length;
-  const totalObs = itensGaleria.filter((e) => e.temObs).length;
+  const totalObs = new Set(itensGaleria.filter((e) => e.temObs).map((e) => e.item.id)).size;
   const totalNc = itensGaleria.filter((e) => e.resposta === 'nao-conforme' || e.resposta === 'nao').length;
   const totalConf = itensGaleria.filter((e) => e.resposta === 'conforme' || e.resposta === 'sim').length;
 
@@ -103,7 +108,7 @@ export default function ModalGaleriaVistoria({
 
   return (
     <>
-      <div className={styles.overlay} onClick={onFechar} role="dialog" aria-modal="true">
+      <div className={styles.overlay} onClick={onFechar} role="dialog" aria-modal="true" aria-labelledby="titulo-galeria">
         <div ref={modalRef} className={styles.modal} onClick={(e) => e.stopPropagation()}>
           {/* Cabeçalho */}
           <div className={styles.header}>
@@ -113,11 +118,9 @@ export default function ModalGaleriaVistoria({
                   <IconPhoto size={22} color="var(--accent)" />
                 </div>
                 <div>
-                  <h2 className={styles.titulo}>Galeria da Vistoria</h2>
+                  <h2 id="titulo-galeria" className={styles.titulo}>Galeria da Vistoria</h2>
                   <p className={styles.subtitulo}>
-                    {itensGaleria.length === 1
-                      ? '1 registro de campo (fotos e anotações)'
-                      : `${itensGaleria.length} registros de campo (fotos e anotações)`}
+                    {totalFotos === 1 ? '1 foto' : `${totalFotos} fotos`} · {totalObs === 1 ? '1 observação' : `${totalObs} observações`}
                   </p>
                 </div>
               </div>
@@ -136,10 +139,11 @@ export default function ModalGaleriaVistoria({
 
           {/* Filtros centralizados, sem a palavra 'filtrar' (clique para ativar/desativar) */}
           {itensGaleria.length > 0 && (
-            <div className={styles.barraFiltros}>
+            <div className={styles.barraFiltros} role="group" aria-label="Filtrar registros">
               <button
                 type="button"
                 className={`${styles.btnFiltro} ${filtro === 'fotos' ? styles.filtroAtivo : ''}`}
+                aria-pressed={filtro === 'fotos'}
                 onClick={() => alternarFiltro('fotos')}
               >
                 Fotos ({totalFotos})
@@ -148,6 +152,7 @@ export default function ModalGaleriaVistoria({
                 <button
                   type="button"
                   className={`${styles.btnFiltro} ${filtro === 'obs' ? styles.filtroAtivo : ''}`}
+                  aria-pressed={filtro === 'obs'}
                   onClick={() => alternarFiltro('obs')}
                 >
                   Obs ({totalObs})
@@ -156,6 +161,7 @@ export default function ModalGaleriaVistoria({
               <button
                 type="button"
                 className={`${styles.btnFiltro} ${filtro === 'nao-conforme' ? styles.filtroAtivo : ''}`}
+                aria-pressed={filtro === 'nao-conforme'}
                 onClick={() => alternarFiltro('nao-conforme')}
               >
                 NC ({totalNc})
@@ -163,6 +169,7 @@ export default function ModalGaleriaVistoria({
               <button
                 type="button"
                 className={`${styles.btnFiltro} ${filtro === 'conforme' ? styles.filtroAtivo : ''}`}
+                aria-pressed={filtro === 'conforme'}
                 onClick={() => alternarFiltro('conforme')}
               >
                 C ({totalConf})
@@ -195,10 +202,10 @@ export default function ModalGaleriaVistoria({
                   if (entry.temFoto) {
                     return (
                       <div
-                        key={entry.item.id}
+                        key={entry.chave}
                         role="button"
                         tabIndex={0}
-                        aria-label={`Ver registro do item #${entry.item.id}, ${entry.resposta || 'sem resposta'}`}
+                        aria-label={`Ver foto${entry.totalFotos > 1 ? ` ${entry.indiceFoto + 1} de ${entry.totalFotos}` : ''} do item #${entry.item.id}, ${entry.resposta || 'sem resposta'}`}
                         className={`${styles.card} ${styles.cardFoto}`}
                         onClick={() => setItemSelecionado(entry)}
                         onKeyDown={(e) => {
@@ -218,7 +225,9 @@ export default function ModalGaleriaVistoria({
                           />
 
                           {/* Tag de número no canto superior esquerdo */}
-                          <span className={styles.tagNumero}>#{entry.item.id}</span>
+                          <span className={styles.tagNumero}>
+                            #{entry.item.id}{entry.totalFotos > 1 ? ` · ${entry.indiceFoto + 1}/${entry.totalFotos}` : ''}
+                          </span>
 
                           {/* Tag abreviada com sigla (C ou NC) no canto superior direito */}
                           <span className={`${styles.tagSigla} ${tag.classe}`}>
@@ -239,7 +248,7 @@ export default function ModalGaleriaVistoria({
                   // Card especial para item SÓ COM OBSERVAÇÃO
                   return (
                     <div
-                      key={entry.item.id}
+                      key={entry.chave}
                       role="button"
                       tabIndex={0}
                       aria-label={`Ver observação do item #${entry.item.id}`}
@@ -287,11 +296,11 @@ export default function ModalGaleriaVistoria({
           pergunta={itemSelecionado.item.pergunta}
           resultado={itemSelecionado.resposta}
           observacao={itemSelecionado.observacao}
-          nomeArquivo={`foto_item_${itemSelecionado.item.id}`}
+          nomeArquivo={`foto_item_${itemSelecionado.item.id}${itemSelecionado.indiceFoto ? `_${itemSelecionado.indiceFoto + 1}` : ''}`}
           onIrParaItem={() => handleIrParaItem(itemSelecionado.indiceGlobal)}
           onFechar={() => setItemSelecionado(null)}
-          onExcluir={onExcluirFoto ? () => {
-            onExcluirFoto(itemSelecionado.item.id);
+          onExcluir={onExcluirFoto && itemSelecionado.temFoto ? () => {
+            onExcluirFoto(itemSelecionado.item.id, itemSelecionado.indiceFoto ?? 0);
             setItemSelecionado(null);
           } : null}
         />

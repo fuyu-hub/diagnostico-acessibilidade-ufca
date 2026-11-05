@@ -3,6 +3,7 @@ import autoTable from 'jspdf-autotable';
 import { ITENS_TECNICOS, SECOES } from '../dados/checklist.js';
 import { calcularIndiceItens } from '../dados/classificacao.js';
 import { campo, formatarData, classificarResposta, agruparItens, extrairDadosInstituicao } from './vistoriaComum.js';
+import { listarFotos } from '../dados/fotos.js';
 
 /* =========================================================================
  * Relatório técnico de vistoria — PDF A4, fundo branco, texto preto.
@@ -243,7 +244,6 @@ function desenharCapa(doc, vistoria, dados) {
       ['Nível de ensino', campo(dados, 'nivel')],
       ['Nº de alunos', campo(dados, 'alunos')],
       ['Nº de pavimentos', campo(dados, 'pavimento')],
-      ['Ano de construção', campo(dados, ['ano', 'constru'], 'constru')],
     ]],
     ['Vistoria', [
       ['Início', inicio, true],
@@ -608,6 +608,59 @@ function desenharObservacoes(doc, itens, respostas) {
   });
 }
 
+// ---------- Fotos adicionais (2ª foto em diante de cada item) ----------
+// A tabela de itens mostra a primeira foto; aqui entram as demais, duas por linha.
+function desenharFotosAdicionais(doc, itens, fotosExtras, numeroSecao) {
+  const comExtras = itens.filter(({ item }) => (fotosExtras.get(item.id) || []).length);
+  if (!comExtras.length) return;
+
+  const gap = 6;
+  const largura = (LARGURA - gap) / 2;
+  const alturaMax = 70;
+  let y = (doc.lastAutoTable?.finalY ?? M.topo) + 14;
+  if (y > Y_MAX - 60) { doc.addPage(); y = M.topo; }
+  y = tituloSecao(doc, numeroSecao, 'Fotos adicionais', y);
+
+  for (const { item, numero } of comExtras) {
+    const fotos = fotosExtras.get(item.id);
+    const total = fotos.length + 1;
+    doc.setFont(FONTE, 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...PRETO);
+    const titulo = doc.splitTextToSize(`${numero}. ${item.pergunta}`, LARGURA);
+    if (y + titulo.length * 3.8 + alturaMax > Y_MAX) { doc.addPage(); y = M.topo; }
+    doc.text(titulo, M.esq, y, { lineHeightFactor: 1.3 });
+    y += titulo.length * 3.8 + 2;
+
+    for (let i = 0; i < fotos.length; i += 2) {
+      const par = fotos.slice(i, i + 2);
+      const alturas = par.map(f => Math.min(alturaMax, f.w && f.h ? largura * (f.h / f.w) : alturaMax));
+      const alturaLinha = Math.max(...alturas) + 6;
+      if (y + alturaLinha > Y_MAX) { doc.addPage(); y = M.topo; }
+      par.forEach((f, j) => {
+        const esc = f.w && f.h ? Math.min(largura / f.w, alturas[j] / f.h) : 1;
+        const w = f.w && f.h ? f.w * esc : largura;
+        const h = f.w && f.h ? f.h * esc : alturas[j];
+        const x = M.esq + j * (largura + gap) + (largura - w) / 2;
+        try {
+          doc.addImage(f.url, f.formato, x, y, w, h, undefined, 'FAST');
+          doc.setDrawColor(...CINZA_LINHA);
+          doc.setLineWidth(0.2);
+          doc.rect(x, y, w, h, 'S');
+        } catch (e) {
+          console.warn('Falha ao inserir foto adicional no PDF:', e);
+        }
+        doc.setFont(FONTE, 'normal');
+        doc.setFontSize(7.5);
+        doc.setTextColor(...CINZA_TEXTO);
+        doc.text(`Foto ${i + j + 2} de ${total}`, M.esq + j * (largura + gap), y + h + 3.5);
+      });
+      y += alturaLinha;
+    }
+    y += 4;
+  }
+}
+
 // ---------- Numeração e rodapé (a partir da 2ª folha) ----------
 function numerarPaginas(doc, nomeInst) {
   const total = doc.getNumberOfPages();
@@ -652,9 +705,17 @@ export async function gerarRelatorioPdf(vistoria, { observacoes = 'coluna' } = {
 
   // Fotos são preparadas antes, porque os hooks da tabela são síncronos
   const fotos = new Map();
+  const fotosExtras = new Map();
   for (const { item } of itens) {
-    const foto = await prepararFoto(doc, (respostas[item.id] || {}).foto);
+    const lista = listarFotos(respostas[item.id]);
+    const foto = await prepararFoto(doc, lista[0]);
     if (foto) fotos.set(item.id, foto);
+    const extras = [];
+    for (const dataUrl of lista.slice(1)) {
+      const extra = await prepararFoto(doc, dataUrl);
+      if (extra) extras.push(extra);
+    }
+    if (extras.length) fotosExtras.set(item.id, extras);
   }
 
   desenharCapa(doc, vistoria, dados);
@@ -662,6 +723,7 @@ export async function gerarRelatorioPdf(vistoria, { observacoes = 'coluna' } = {
   desenharIaa(doc, grupos, respostas);
   desenharItens(doc, grupos, respostas, fotos, observacoes !== 'apendice');
   if (observacoes === 'apendice') desenharObservacoes(doc, itens, respostas);
+  desenharFotosAdicionais(doc, itens, fotosExtras, observacoes === 'apendice' ? 4 : 3);
   numerarPaginas(doc, nomeInst);
 
   const nomeSanitizado = (vistoria.nome || nomeInst || 'Sem Nome').trim().replace(/[\\/:*?"<>|]/g, '-');
