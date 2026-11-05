@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   IconVolume, IconVolumeOff, IconCheck, IconX, IconMinus, IconInfoCircle,
-  IconShieldCheck, IconDownload, IconUpload, IconPalette, IconChevronRight
+  IconShieldCheck, IconDownload, IconUpload, IconPalette, IconChevronRight,
+  IconListCheck, IconPlayerPlayFilled, IconPlayerStopFilled,
 } from '@tabler/icons-react';
 import Topbar from '../componentes/Topbar';
 import ModalConflito from '../componentes/ModalConflito';
@@ -23,7 +24,65 @@ import {
   obterAltoContraste,
   definirAltoContraste,
 } from '../utilitarios/tema';
+import {
+  usePreferencias,
+  definirPreferencia,
+  TAMANHOS_TEXTO,
+  VELOCIDADES_VOZ,
+} from '../utilitarios/preferencias';
+import { useLeituraVoz, vozSuportada, vozPortugues } from '../utilitarios/leituraVoz';
 import styles from './Ajustes.module.css';
+
+/** Interruptor (liga/desliga) com rótulo e descrição ligados ao controle. */
+function Interruptor({ id, titulo, descricao, ativo, onMudar }) {
+  return (
+    <div className={styles.linhaAjuste}>
+      <div className={styles.secaoInfo}>
+        <span id={`${id}-rotulo`} className={styles.rotuloOpcao}>{titulo}</span>
+        {descricao && <p id={`${id}-desc`} className={styles.secaoDesc}>{descricao}</p>}
+      </div>
+      <label className={styles.switchLabel}>
+        <input
+          type="checkbox"
+          role="switch"
+          className={styles.switchInput}
+          checked={ativo}
+          onChange={e => onMudar(e.target.checked)}
+          aria-labelledby={`${id}-rotulo`}
+          aria-describedby={descricao ? `${id}-desc` : undefined}
+        />
+        <span className={styles.slider} />
+      </label>
+    </div>
+  );
+}
+
+/** Escolha única em botões (rádios nativos), como o tema. */
+function GrupoOpcoes({ nome, titulo, descricao, opcoes, valor, onMudar }) {
+  return (
+    <div className={styles.blocoGrupo}>
+      <fieldset className={styles.grupo}>
+        <legend className={styles.rotuloOpcao}>{titulo}</legend>
+        {descricao && <p className={styles.secaoDesc}>{descricao}</p>}
+        <div className={styles.opcoesTema}>
+          {opcoes.map(opcao => (
+            <label key={opcao.valor} className={`chip ${styles.opcaoTema} ${valor === opcao.valor ? 'ativo' : ''}`}>
+              <input
+                type="radio"
+                name={nome}
+                className="sr-only"
+                value={opcao.valor}
+                checked={valor === opcao.valor}
+                onChange={() => onMudar(opcao.valor)}
+              />
+              {opcao.rotulo}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    </div>
+  );
+}
 
 export default function Ajustes() {
   const [somAtivo, setSomAtivo] = useState(isSomHabilitado);
@@ -31,6 +90,34 @@ export default function Ajustes() {
   const navigate = useNavigate();
   const [tema, setTema] = useState(obterPreferenciaTema);
   const [altoContraste, setAltoContraste] = useState(obterAltoContraste);
+  const prefs = usePreferencias();
+  const voz = useLeituraVoz();
+  const [nomeVoz, setNomeVoz] = useState(() => vozPortugues()?.name || null);
+
+  // As vozes do aparelho podem chegar depois da abertura da tela
+  useEffect(() => {
+    if (!vozSuportada()) return;
+    const atualizar = () => setNomeVoz(vozPortugues()?.name || null);
+    window.speechSynthesis.addEventListener?.('voiceschanged', atualizar);
+    // Em alguns navegadores a lista já chegou e o evento não se repete
+    const t = setTimeout(atualizar, 300);
+    return () => {
+      clearTimeout(t);
+      window.speechSynthesis.removeEventListener?.('voiceschanged', atualizar);
+    };
+  }, []);
+
+  function testarVoz() {
+    if (voz.ativo) {
+      voz.parar();
+      return;
+    }
+    voz.iniciar([{
+      chave: 'teste',
+      rotulo: 'Teste',
+      texto: 'Esta é a leitura em voz alta do diagnóstico de acessibilidade. A largura livre mínima da calçada é de um metro e vinte.',
+    }]);
+  }
 
   const {
     vistorias,
@@ -137,55 +224,122 @@ export default function Ajustes() {
     <div className="app-shell">
       <Topbar titulo="Ajustes" voltar="/" />
 
-      <div className="tela-body" style={{ padding: '24px 20px 48px' }}>
+      <main className="tela-body" style={{ padding: '24px 20px 48px' }}>
         <div className={styles.container}>
           {/* Card de Aparência */}
           <section className={styles.secaoCard}>
             <div className={styles.secaoInfo}>
-              <h3 className={styles.secaoTitulo}>
+              <h2 className={styles.secaoTitulo}>
                 <IconPalette size={20} color="var(--accent)" aria-hidden="true" />
-                <span>Aparência</span>
-              </h3>
-              <p className={styles.secaoDesc}>No modo automático, o app acompanha o tema do sistema.</p>
+                <span>Aparência e leitura</span>
+              </h2>
             </div>
 
-            <div className={styles.opcoesTema} role="radiogroup" aria-label="Tema do aplicativo">
-              {PREFERENCIAS_TEMA.map(opcao => (
-                <label key={opcao.valor} className={`chip ${styles.opcaoTema} ${tema === opcao.valor ? 'ativo' : ''}`}>
-                  <input
-                    type="radio"
-                    name="tema"
-                    className="sr-only"
-                    value={opcao.valor}
-                    checked={tema === opcao.valor}
-                    onChange={() => {
-                      setTema(opcao.valor);
-                      definirPreferenciaTema(opcao.valor);
-                    }}
-                  />
-                  {opcao.rotulo}
-                </label>
-              ))}
-            </div>
+            <GrupoOpcoes
+              nome="tema"
+              titulo="Tema"
+              descricao="No modo automático, o app acompanha o tema do sistema."
+              opcoes={PREFERENCIAS_TEMA}
+              valor={tema}
+              onMudar={v => {
+                setTema(v);
+                definirPreferenciaTema(v);
+              }}
+            />
 
-            <div className={styles.secaoHeader}>
+            <Interruptor
+              id="alto-contraste"
+              titulo="Alto contraste"
+              descricao="Reforça bordas e textos, útil sob luz forte."
+              ativo={altoContraste}
+              onMudar={v => {
+                setAltoContraste(v);
+                definirAltoContraste(v);
+              }}
+            />
+
+            <GrupoOpcoes
+              nome="tamanho-texto"
+              titulo="Tamanho do texto"
+              descricao="No Máximo, a tela de perguntas passa a rolar para nada ficar cortado."
+              opcoes={TAMANHOS_TEXTO}
+              valor={prefs.tamanhoTexto}
+              onMudar={v => definirPreferencia('tamanhoTexto', Number(v))}
+            />
+
+            <Interruptor
+              id="reduzir-movimento"
+              titulo="Reduzir movimento"
+              descricao="Desliga animações e transições."
+              ativo={prefs.reduzirMovimento}
+              onMudar={v => definirPreferencia('reduzirMovimento', v)}
+            />
+          </section>
+
+          {/* Card do Checklist */}
+          <section className={styles.secaoCard}>
+            <div className={styles.secaoInfo}>
+              <h2 className={styles.secaoTitulo}>
+                <IconListCheck size={20} color="var(--accent)" aria-hidden="true" />
+                <span>Checklist</span>
+              </h2>
+            </div>
+            <Interruptor
+              id="avancar"
+              titulo="Avançar ao responder"
+              descricao="Vai ao próximo item depois de Conforme ou Não se aplica, com a opção Desfazer. Em Não conforme, abre a observação e as fotos."
+              ativo={prefs.avancarAoResponder}
+              onMudar={v => definirPreferencia('avancarAoResponder', v)}
+            />
+            <Interruptor
+              id="vibracao"
+              titulo="Vibração"
+              descricao="Vibra levemente ao responder (celular)."
+              ativo={prefs.vibracao}
+              onMudar={v => definirPreferencia('vibracao', v)}
+            />
+          </section>
+
+          {/* Card de Leitura em voz alta */}
+          <section className={styles.secaoCard}>
+            <div className={styles.secaoInfo}>
+              <h2 className={styles.secaoTitulo}>
+                <IconVolume size={20} color="var(--accent)" aria-hidden="true" />
+                <span>Leitura em voz alta</span>
+              </h2>
+              <p className={styles.secaoDesc}>
+                O botão Ouvir lê a pergunta, a descrição da ilustração, como medir e a referência, com a voz do próprio aparelho.
+              </p>
+            </div>
+            <Interruptor
+              id="ler-ao-abrir"
+              titulo="Ler o item ao abrir"
+              descricao="Começa a leitura sempre que um item é aberto."
+              ativo={prefs.lerAoAbrir}
+              onMudar={v => definirPreferencia('lerAoAbrir', v)}
+            />
+            <GrupoOpcoes
+              nome="velocidade-voz"
+              titulo="Velocidade"
+              opcoes={VELOCIDADES_VOZ}
+              valor={prefs.velocidadeVoz}
+              onMudar={v => definirPreferencia('velocidadeVoz', Number(v))}
+            />
+            <div className={styles.linhaAjuste}>
               <div className={styles.secaoInfo}>
-                <span className={styles.rotuloOpcao}>Alto contraste</span>
-                <p className={styles.secaoDesc}>Reforça bordas e textos, útil sob luz forte.</p>
+                <span className={styles.rotuloOpcao}>Voz</span>
+                <p className={styles.secaoDesc} aria-live="polite">
+                  {!vozSuportada()
+                    ? 'Este navegador não oferece leitura em voz alta.'
+                    : nomeVoz || 'Sem voz em português instalada: será usada a voz padrão do aparelho.'}
+                </p>
               </div>
-              <label className={styles.switchLabel}>
-                <input
-                  type="checkbox"
-                  className={styles.switchInput}
-                  checked={altoContraste}
-                  onChange={e => {
-                    setAltoContraste(e.target.checked);
-                    definirAltoContraste(e.target.checked);
-                  }}
-                  aria-label="Ativar ou desativar alto contraste"
-                />
-                <span className={styles.slider} />
-              </label>
+              {vozSuportada() && (
+                <button type="button" className={styles.btnSecundario} onClick={testarVoz} aria-pressed={voz.ativo}>
+                  {voz.ativo ? <IconPlayerStopFilled size={18} aria-hidden="true" /> : <IconPlayerPlayFilled size={18} aria-hidden="true" />}
+                  {voz.ativo ? 'Parar' : 'Testar'}
+                </button>
+              )}
             </div>
           </section>
 
@@ -193,14 +347,14 @@ export default function Ajustes() {
           <section className={styles.secaoCard}>
             <div className={styles.secaoHeader}>
               <div className={styles.secaoInfo}>
-                <h3 className={styles.secaoTitulo}>
+                <h2 className={styles.secaoTitulo}>
                   {somAtivo ? (
                     <IconVolume size={20} color="var(--accent)" />
                   ) : (
                     <IconVolumeOff size={20} color="var(--text-muted)" />
                   )}
                   <span>Efeitos Sonoros</span>
-                </h3>
+                </h2>
                 <p className={styles.secaoDesc}>
                   Sons interativos com retorno auditivo imediato ao selecionar Conforme, Não Conforme e Não se Aplica.
                 </p>
@@ -209,10 +363,11 @@ export default function Ajustes() {
               <label className={styles.switchLabel}>
                 <input
                   type="checkbox"
+                  role="switch"
                   className={styles.switchInput}
                   checked={somAtivo}
                   onChange={handleToggleSom}
-                  aria-label="Ativar ou desativar efeitos sonoros"
+                  aria-label="Efeitos sonoros"
                 />
                 <span className={styles.slider} />
               </label>
@@ -262,10 +417,10 @@ export default function Ajustes() {
           <section className={styles.secaoCard}>
             <div className={styles.secaoHeader}>
               <div className={styles.secaoInfo}>
-                <h3 className={styles.secaoTitulo}>
+                <h2 className={styles.secaoTitulo}>
                   <IconShieldCheck size={20} color="var(--accent)" />
                   <span>Backup das Vistorias</span>
-                </h3>
+                </h2>
                 <p className={styles.secaoDesc}>
                   Salve uma cópia das vistorias no seu dispositivo ou restaure um backup anterior.
                 </p>
@@ -342,7 +497,7 @@ export default function Ajustes() {
             <IconChevronRight size={18} aria-hidden="true" />
           </button>
         </div>
-      </div>
+      </main>
 
       <ModalConflito
         aberto={conflitosFila.length > 0 && indiceConflito < conflitosFila.length}

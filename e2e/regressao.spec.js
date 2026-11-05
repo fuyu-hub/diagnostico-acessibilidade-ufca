@@ -10,7 +10,12 @@ const n = id => dados.itens.findIndex(i => i.id === id) + 1;
 test.beforeEach(async ({ page }, info) => {
   // Os testes conferem o próprio item depois de responder: sem avançar sozinho, exceto no teste do avanço
   if (!info.title.includes('avança')) {
-    await page.addInitScript(() => localStorage.setItem('nbr9050_preferencias', JSON.stringify({ avancarAoResponder: false })));
+    // Só no primeiro carregamento: recarregar a página mantém o que o teste mudou
+    await page.addInitScript(() => {
+      if (!localStorage.getItem('nbr9050_preferencias')) {
+        localStorage.setItem('nbr9050_preferencias', JSON.stringify({ avancarAoResponder: false }));
+      }
+    });
   }
   if (info.title.includes('popup')) return;
   await page.addInitScript(() => localStorage.setItem('ufca:boasVindas:v1', 'visto'));
@@ -347,4 +352,19 @@ test('ilustração abre em tela cheia com zoom pelos botões e fecha com Esc', a
   await expect(visualizador.getByRole('toolbar', { name: 'Zoom' })).toContainText('125%');
   await page.keyboard.press('Escape');
   await expect(visualizador).toBeHidden();
+});
+
+test('ajustes de tamanho do texto e de avanço ficam salvos e valem no app', async ({ page }) => {
+  await page.goto('/ajustes');
+  await page.getByRole('radio', { name: 'Máximo' }).check({ force: true });
+  await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).fontSize)).toBe('24px');
+
+  const avancar = page.getByRole('switch', { name: 'Avançar ao responder' });
+  await expect(avancar).not.toBeChecked();
+  await avancar.check({ force: true });
+
+  await page.reload();
+  await expect(page.getByRole('radio', { name: 'Máximo' })).toBeChecked();
+  await expect(page.getByRole('switch', { name: 'Avançar ao responder' })).toBeChecked();
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).fontSize)).toBe('24px');
 });
