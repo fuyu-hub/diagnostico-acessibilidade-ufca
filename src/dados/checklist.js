@@ -1,5 +1,6 @@
 // Dados carregados do JSON gerado via planilha NBR 9050
 import dados from './checklist.json';
+import { listarFotos } from './fotos.js';
 
 export const SECOES = dados.secoes;
 export const TODOS_ITENS = dados.itens;
@@ -67,7 +68,7 @@ export function dependentesEmCascata(triagem) {
 export function dependentesComDados(triagem, respostas = {}) {
   return dependentesEmCascata(triagem).map(dep => dep.id).filter(id => {
     const resp = respostas[id];
-    return resp && ((resp.valor && resp.valor !== 'nao-aplica') || resp.obs || resp.foto);
+    return resp && ((resp.valor && resp.valor !== 'nao-aplica') || resp.obs || listarFotos(resp).length > 0);
   });
 }
 
@@ -84,7 +85,7 @@ export function dependentesParaLimpar(triagem, respostas = {}) {
   for (const depId of triagem?.dependentes || []) {
     const resp = respostas[depId];
     const automatica = resp?.automatico ||
-      (triagemNegativa && resp?.valor === 'nao-aplica' && !resp.obs && !resp.foto);
+      (triagemNegativa && resp?.valor === 'nao-aplica' && !resp.obs && listarFotos(resp).length === 0);
     if (automatica) {
       limpar.push(depId, ...dependentesParaLimpar(ITENS_POR_ID[depId], respostas));
     }

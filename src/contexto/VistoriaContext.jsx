@@ -27,6 +27,7 @@ import {
 import { gravarLote } from '../dados/gravacao.js';
 import { resolverConflito } from '../dados/conflito.js';
 import { calcularStatusVistoria } from '../dados/checklist.js';
+import { listarFotos, camposFotos } from '../dados/fotos.js';
 import { useNotificacao } from './NotificacaoContext.jsx';
 import ModalErroCota from '../componentes/ModalErroCota.jsx';
 
@@ -52,7 +53,7 @@ function enriquecerParaUI(canonica) {
     respostasLegadas[k] = {
       valor,
       obs: d.observacao || '',
-      foto: d.foto || null,
+      ...camposFotos(listarFotos(d)),
       resposta: d.resposta,
       observacao: d.observacao || '',
       ...extrairMarcaTriagem(d),
@@ -97,12 +98,12 @@ function converterUIParaCanonica(vistoriaUI) {
     const valorBruto = typeof item === 'object' ? (item.resposta || item.valor) : item;
     const resposta = normalizarValorResposta(valorBruto);
     const obs = typeof item === 'object' ? (item.observacao || item.obs || '') : '';
-    const foto = typeof item === 'object' ? (item.foto || null) : null;
+    const fotos = listarFotos(item);
 
     dadosVistoria[String(k)] = {
       resposta,
       observacao: typeof obs === 'string' ? obs : String(obs),
-      foto: foto || null,
+      ...camposFotos(fotos),
       ...extrairMarcaTriagem(item),
     };
   }
@@ -499,17 +500,17 @@ export function VistoriaProvider({ children }) {
 
         if (!resposta) {
           // Limpa a resposta
-          dadosAtuais[idStr] = { resposta: null, observacao: '', foto: null };
+          dadosAtuais[idStr] = { resposta: null, observacao: '', ...camposFotos([]) };
         } else {
           const valorBruto = typeof resposta === 'object' ? (resposta.resposta || resposta.valor) : resposta;
           const respostaNorm = normalizarValorResposta(valorBruto);
           const obs = typeof resposta === 'object' ? (resposta.observacao || resposta.obs || '') : '';
-          const foto = typeof resposta === 'object' ? (resposta.foto || null) : null;
+          const fotos = listarFotos(resposta);
 
           dadosAtuais[idStr] = {
             resposta: respostaNorm,
             observacao: obs,
-            foto,
+            ...camposFotos(fotos),
             ...extrairMarcaTriagem(resposta),
           };
         }

@@ -15,6 +15,7 @@ import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/S
 import ModalExcluirVistoria from '../componentes/ModalExcluirVistoria';
 import ModalGaleriaVistoria from '../componentes/ModalGaleriaVistoria';
 import styles from './DashboardVistoria.module.css';
+import { listarFotos, camposFotos } from '../dados/fotos.js';
 
 export default function DashboardVistoria() {
   const { id } = useParams();
@@ -67,7 +68,8 @@ function ConteudoVistoria({ id, vistoria }) {
     
     const respostaAtual = vistoria.respostas ? vistoria.respostas[itemId] : vistoria.dadosVistoria?.[itemId];
     if (respostaAtual) {
-      responderItem(vistoria.id || id, itemId, { ...respostaAtual, foto: null });
+      // A galeria mostra a primeira foto do item: é ela que sai da lista
+      responderItem(vistoria.id || id, itemId, { ...respostaAtual, ...camposFotos(listarFotos(respostaAtual).slice(1)) });
       mostrarToast('Foto removida com sucesso', 'sucesso');
     }
   }

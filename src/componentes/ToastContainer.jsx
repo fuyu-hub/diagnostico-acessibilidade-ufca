@@ -22,6 +22,18 @@ export default function ToastContainer({ toasts, onRemover }) {
               {toast.tipo !== 'sucesso' && toast.tipo !== 'erro' && <IconInfoCircle size={20} />}
             </div>
             <div className={styles.mensagem}>{toast.mensagem}</div>
+            {toast.acao && (
+              <button
+                type="button"
+                className={styles.btnAcao}
+                onClick={() => {
+                  onRemover(toast.id);
+                  toast.acao.fn();
+                }}
+              >
+                {toast.acao.rotulo}
+              </button>
+            )}
             <button
               type="button"
               className={styles.btnFechar}

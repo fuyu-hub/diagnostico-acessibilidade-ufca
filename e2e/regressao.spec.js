@@ -8,6 +8,10 @@ const n = id => dados.itens.findIndex(i => i.id === id) + 1;
 
 // O popup de primeiro acesso tem teste próprio; nos demais, ele já foi visto
 test.beforeEach(async ({ page }, info) => {
+  // Os testes conferem o próprio item depois de responder: sem avançar sozinho, exceto no teste do avanço
+  if (!info.title.includes('avança')) {
+    await page.addInitScript(() => localStorage.setItem('nbr9050_preferencias', JSON.stringify({ avancarAoResponder: false })));
+  }
   if (info.title.includes('popup')) return;
   await page.addInitScript(() => localStorage.setItem('ufca:boasVindas:v1', 'visto'));
 });
@@ -274,7 +278,8 @@ test('foto grande é reduzida ao ser anexada', async ({ page }) => {
     ctx.fillRect(0, 0, 4000, 3000);
     return canvas.toDataURL('image/png').split(',')[1];
   });
-  await page.locator('input[type="file"]').first().setInputFiles({
+  await page.getByRole('button', { name: /Foto e obs/ }).click();
+  await page.getByRole('dialog', { name: 'Observação e fotos' }).locator('input[type="file"]').first().setInputFiles({
     name: 'grande.png',
     mimeType: 'image/png',
     buffer: Buffer.from(png, 'base64'),
@@ -296,4 +301,50 @@ test('item exibe a imagem aprovada com descrição acessível', async ({ page })
   const imagem = page.getByRole('img', { name: /Corredor em perspectiva/ });
   await expect(imagem).toHaveAttribute('src', '/imagens/corredor_largura.svg');
   await expect.poll(() => imagem.evaluate(e => e.naturalWidth)).toBeGreaterThan(0);
+});
+
+test('responder avança ao próximo item e Desfazer volta e limpa a resposta', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await page.goto(`/checklist/${id}/item/${n(2)}`);
+  await radio(page, 'Conforme').click();
+  await expect(page).toHaveURL(new RegExp(`/item/${n(2) + 1}$`));
+  await page.getByRole('button', { name: 'Desfazer' }).click();
+  await expect(page).toHaveURL(new RegExp(`/item/${n(2)}$`));
+  await expect(radio(page, 'Conforme')).toHaveAttribute('aria-checked', 'false');
+});
+
+test('não conforme fica no item, abre a evidência e guarda várias fotos', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await page.goto(`/checklist/${id}/item/${n(2)}`);
+  await radio(page, 'Não conforme').click();
+  const folha = page.getByRole('dialog', { name: 'Observação e fotos' });
+  await expect(folha).toBeVisible();
+  await expect(page).toHaveURL(new RegExp(`/item/${n(2)}$`));
+
+  const png = await page.evaluate(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 150;
+    canvas.getContext('2d').fillRect(0, 0, 200, 150);
+    return canvas.toDataURL('image/png').split(',')[1];
+  });
+  const arquivo = nome => ({ name: nome, mimeType: 'image/png', buffer: Buffer.from(png, 'base64') });
+  await folha.locator('input[type="file"]').first().setInputFiles([arquivo('a.png'), arquivo('b.png')]);
+  await expect(folha.getByRole('button', { name: /Ampliar foto/ })).toHaveCount(2);
+
+  await expect.poll(async () => (await lerResposta(page, id, 2))?.fotos?.length ?? 0).toBe(2);
+  const resposta = await lerResposta(page, id, 2);
+  expect(resposta.foto).toBe(resposta.fotos[0]);
+});
+
+test('ilustração abre em tela cheia com zoom pelos botões e fecha com Esc', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await page.goto(`/checklist/${id}/item/${n(42)}`);
+  await page.getByRole('button', { name: /Ampliar/ }).click();
+  const visualizador = page.getByRole('dialog', { name: /Corredor|Corredores/ });
+  await expect(visualizador).toBeVisible();
+  await visualizador.getByRole('button', { name: 'Aumentar zoom' }).click();
+  await expect(visualizador.getByRole('toolbar', { name: 'Zoom' })).toContainText('125%');
+  await page.keyboard.press('Escape');
+  await expect(visualizador).toBeHidden();
 });

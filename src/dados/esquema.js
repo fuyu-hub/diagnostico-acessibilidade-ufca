@@ -4,6 +4,7 @@ export const RespostaCriterio = z.object({
   resposta: z.enum(['conforme', 'nao_conforme', 'nao_aplica']).nullable(),
   observacao: z.string().default(''),
   foto: z.string().nullable().optional(),
+  fotos: z.array(z.string()).optional(),
   automatico: z.boolean().optional(),
   origemTriagem: z.number().int().optional(),
 });

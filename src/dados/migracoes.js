@@ -1,4 +1,5 @@
 import { Vistoria } from './esquema.js';
+import { listarFotos, camposFotos } from './fotos.js';
 
 /**
  * Gera UUID v4 seguro com fallback
@@ -117,7 +118,7 @@ export function converterLegadoParaCanonica(legada) {
     const valorBruto = typeof item === 'object' ? (item.resposta || item.valor) : item;
     const respostaNormalizada = normalizarValorResposta(valorBruto);
     const obs = typeof item === 'object' ? (item.observacao || item.obs || '') : '';
-    const foto = typeof item === 'object' ? (item.foto || null) : null;
+    const fotos = listarFotos(item);
 
     if (respostaNormalizada !== null) {
       totalRespondidos++;
@@ -126,7 +127,7 @@ export function converterLegadoParaCanonica(legada) {
     dadosVistoria[String(chaveAtualizada)] = {
       resposta: respostaNormalizada,
       observacao: typeof obs === 'string' ? obs : String(obs),
-      foto: foto || null,
+      ...camposFotos(fotos),
       ...extrairMarcaTriagem(item),
     };
   }

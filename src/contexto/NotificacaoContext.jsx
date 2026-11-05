@@ -10,12 +10,15 @@ export function NotificacaoProvider({ children }) {
 
   const toastIdRef = useRef(0);
 
-  const mostrarToast = useCallback((mensagem, tipo = 'info', duracao = 4000) => {
+  // acao (opcional): { rotulo, fn } — um botão no aviso, como "Desfazer"
+  const mostrarToast = useCallback((mensagem, tipo = 'info', duracao = 4000, acao = null) => {
     const id = ++toastIdRef.current;
-    setToasts((prev) => [...prev, { id, mensagem, tipo }]);
+    // Um aviso com ação substitui o anterior com ação, para não acumular "Desfazer" antigos
+    setToasts((prev) => [...prev.filter((t) => !(acao && t.acao)), { id, mensagem, tipo, acao }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, duracao);
+    return id;
   }, []);
 
   const removerToast = useCallback((id) => {
