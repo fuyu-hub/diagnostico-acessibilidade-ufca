@@ -170,7 +170,7 @@ test('erro em uma tela mostra saída em vez de tela branca', async ({ page }) =>
   await expect(page.getByRole('heading', { name: 'Vistorias' })).toBeVisible();
 });
 
-test('popup aparece no primeiro acesso, some depois e o Sobre continua disponível', async ({ page }) => {
+test('popup aparece no primeiro acesso, some depois e o Sobre continua acessível', async ({ page }) => {
   await page.goto('/');
 
   const popup = page.getByRole('dialog', { name: 'Boas-vindas ao Diagnóstico NBR 9050' });
@@ -183,8 +183,7 @@ test('popup aparece no primeiro acesso, some depois e o Sobre continua disponív
   await expect(popup).toBeHidden();
 
   await page.getByRole('button', { name: 'Sobre' }).click();
-  await expect(page.getByRole('heading', { name: 'Como o IAA é calculado' })).toBeVisible();
-  await expect(page.getByText('Samuel Sousa Santos')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Em construção' })).toBeVisible();
 });
 
 test('tema: padrão segue o sistema, a escolha manual prevalece e persiste', async ({ page }) => {

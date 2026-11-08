@@ -23,11 +23,9 @@ import FolhaInferior from '../componentes/FolhaInferior';
 import VisualizadorImagem from '../componentes/VisualizadorImagem';
 import ModalVisualizarFoto from '../componentes/ModalVisualizarFoto';
 import Topbar from '../componentes/Topbar';
+import { escolherIlustracao, useDuasColunas } from '../dados/ilustracoes.js';
 import styles from './ItemChecklist.module.css';
 
-// Todas as ilustrações têm viewBox 1376×768 (desenhos/gerar.mjs)
-const LARGURA_ILUSTRACAO = 1376;
-const ALTURA_ILUSTRACAO = 768;
 // Abaixo desta altura, a ilustração vira um botão "Ver ilustração" para tudo caber na tela
 const ALTURA_MINIMA_FIGURA = 120;
 
@@ -64,6 +62,7 @@ export default function ItemChecklist() {
   const { mostrarConfirmacao, mostrarToast } = useNotificacao();
   const prefs = usePreferencias();
   const voz = useLeituraVoz();
+  const duasColunas = useDuasColunas();
 
   const vistoria = getVistoria(id);
   const itemIdx = parseInt(n, 10) - 1;
@@ -421,7 +420,9 @@ export default function ItemChecklist() {
   const posicaoTriagem = TODOS_ITENS.findIndex(i => i.id === origemTriagemId) + 1;
 
   const descricaoImagem = item.imagem ? (DESCRICOES_IMAGENS[item.imagem] || item.subgrupo || 'Referência NBR 9050') : '';
-  const imagemSrc = item.imagem ? `/imagens/${item.imagem}` : null;
+  // Quadrada no celular e em pé; deitada nas telas de duas colunas (src/dados/ilustracoes.js)
+  const ilustracao = escolherIlustracao(item.imagem, duasColunas);
+  const imagemSrc = ilustracao?.src || null;
   const totalEvidencias = fotos.length + (obs ? 1 : 0);
   const semEvidencia = valorAtual === 'nao-conforme' && !obs && fotos.length === 0;
   const perguntaLonga = item.pergunta.length > 150 ? styles.longa : '';
@@ -512,7 +513,10 @@ export default function ItemChecklist() {
         </button>
       </header>
 
-      <main className={styles.principal}>
+      <main
+        className={`${styles.principal} ${imagemSrc ? styles.comImagem : ''}`}
+        style={imagemSrc ? { '--proporcao-figura': ilustracao.altura / ilustracao.largura } : undefined}
+      >
         <div className={styles.blocoPergunta}>
           {ehTriagem && (
             <span className={styles.faixaTriagem}>
@@ -780,8 +784,8 @@ export default function ItemChecklist() {
         src={imagemSrc}
         titulo={item.subgrupo}
         descricao={descricaoImagem}
-        larguraBase={LARGURA_ILUSTRACAO}
-        alturaBase={ALTURA_ILUSTRACAO}
+        larguraBase={ilustracao?.largura}
+        alturaBase={ilustracao?.altura}
         voz={voz}
         trechosLeitura={descricaoImagem ? [{ chave: 'figura', rotulo: 'Ilustração', texto: `Ilustração: ${descricaoImagem}` }] : []}
         onFechar={() => setAmpliada(false)}

@@ -90,7 +90,8 @@ export default function VisualizadorImagem({ aberto, src, titulo, descricao, lar
     const palco = palcoRef.current;
     const img = palco?.querySelector('img');
     const iniciar = () => {
-      if (!larguraBase && img?.naturalWidth > 0) base.current = { w: img.naturalWidth, h: img.naturalHeight };
+      if (larguraBase && alturaBase) base.current = { w: larguraBase, h: alturaBase };
+      else if (img?.naturalWidth > 0) base.current = { w: img.naturalWidth, h: img.naturalHeight };
       vistaInicial();
     };
     if (img?.complete) setTimeout(iniciar, 0);
@@ -98,7 +99,7 @@ export default function VisualizadorImagem({ aberto, src, titulo, descricao, lar
     const ro = new ResizeObserver(() => vistaInicial());
     if (palco) ro.observe(palco);
     return () => ro.disconnect();
-  }, [aberto, src, larguraBase, vistaInicial]);
+  }, [aberto, src, larguraBase, alturaBase, vistaInicial]);
 
   // Gestos: arrastar com um dedo/mouse, pinça com dois, toque duplo alterna o zoom
   useEffect(() => {

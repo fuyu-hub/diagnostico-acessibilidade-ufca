@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   IconVolume, IconVolumeOff, IconCheck, IconX, IconMinus, IconInfoCircle,
   IconShieldCheck, IconDownload, IconUpload, IconPalette, IconChevronRight,
-  IconListCheck, IconPlayerPlayFilled, IconPlayerStopFilled,
+  IconListCheck, IconPlayerPlayFilled, IconPlayerStopFilled, IconDeviceMobile, IconRefresh,
 } from '@tabler/icons-react';
 import Topbar from '../componentes/Topbar';
 import ModalConflito from '../componentes/ModalConflito';
@@ -31,6 +31,8 @@ import {
   VELOCIDADES_VOZ,
 } from '../utilitarios/preferencias';
 import { useLeituraVoz, vozSuportada, vozPortugues } from '../utilitarios/leituraVoz';
+import { useAplicativo, instalarAplicativo, atualizarAgora, ehIOS } from '../utilitarios/aplicativo';
+import { VERSAO_APP } from '../utilitarios/versaoApp';
 import styles from './Ajustes.module.css';
 
 /** Interruptor (liga/desliga) com rótulo e descrição ligados ao controle. */
@@ -91,6 +93,7 @@ export default function Ajustes() {
   const [tema, setTema] = useState(obterPreferenciaTema);
   const [altoContraste, setAltoContraste] = useState(obterAltoContraste);
   const prefs = usePreferencias();
+  const app = useAplicativo();
   const voz = useLeituraVoz();
   const [nomeVoz, setNomeVoz] = useState(() => vozPortugues()?.name || null);
 
@@ -410,6 +413,56 @@ export default function Ajustes() {
                   <IconMinus size={18} /> Não se aplica
                 </button>
               </div>
+            </div>
+          </section>
+
+          {/* Card do aplicativo: instalar e atualizar, sem avisos que interrompem */}
+          <section className={styles.secaoCard} aria-labelledby="titulo-aplicativo">
+            <div className={styles.secaoHeader}>
+              <div className={styles.secaoInfo}>
+                <h2 id="titulo-aplicativo" className={styles.secaoTitulo}>
+                  <IconDeviceMobile size={20} color="var(--accent)" aria-hidden="true" />
+                  <span>Aplicativo</span>
+                </h2>
+                <p className={styles.secaoDesc}>
+                  Versão {VERSAO_APP}. {app.instalado
+                    ? 'Instalado neste aparelho: abre pelo ícone e funciona sem internet.'
+                    : 'Instale para abrir pelo ícone, em tela cheia, e usar sem internet.'}
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {app.versaoPronta && (
+                <button type="button" className={styles.btnBackup} onClick={() => atualizarAgora()}>
+                  <IconRefresh size={20} aria-hidden="true" />
+                  <span>Nova versão pronta · Atualizar agora</span>
+                </button>
+              )}
+              {!app.instalado && app.podeInstalar && (
+                <button
+                  type="button"
+                  className={styles.btnBackup}
+                  onClick={async () => {
+                    if (await instalarAplicativo()) mostrarToast('App instalado. Ele aparece junto dos outros apps.', 'sucesso');
+                  }}
+                >
+                  <IconDownload size={20} aria-hidden="true" />
+                  <span>Instalar o app</span>
+                </button>
+              )}
+              {!app.instalado && !app.podeInstalar && (
+                <p className={styles.secaoDesc}>
+                  {ehIOS()
+                    ? 'No iPhone ou iPad: toque em Compartilhar e depois em "Adicionar à Tela de Início".'
+                    : 'Para instalar, use a opção "Instalar app" ou "Adicionar à tela inicial" no menu do navegador.'}
+                </p>
+              )}
+              {!app.versaoPronta && (
+                <p className={styles.secaoDesc}>
+                  Versões novas são baixadas sozinhas e aplicadas quando você sai das perguntas. Nada é apagado.
+                </p>
+              )}
             </div>
           </section>
 

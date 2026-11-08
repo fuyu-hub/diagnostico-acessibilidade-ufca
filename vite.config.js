@@ -12,23 +12,24 @@ export default defineConfig({
     VitePWA({
       // A versão nova espera o momento seguro: quem a aplica é o componente AtualizacaoApp
       registerType: 'prompt',
-      includeAssets: ['favicon.svg', 'icons.svg', 'imagens/*.{png,svg}', 'modelo_planilha.xlsx'],
+      includeAssets: ['favicon.svg', 'icons.svg', 'apple-touch-icon.png', 'imagens/*.{png,svg}', 'modelo_planilha.xlsx'],
       manifest: {
         name: 'Diagnóstico de Acessibilidade — NBR 9050',
-        short_name: 'NBR 9050',
+        short_name: 'Diagnóstico 9050',
         description: 'Checklist e diagnóstico de acessibilidade em instituições com base na NBR 9050:2020',
         theme_color: '#0a0a0a',
         background_color: '#0a0a0a',
         display: 'standalone',
         orientation: 'any',
         start_url: '/',
+        scope: '/',
+        lang: 'pt-BR',
+        categories: ['education', 'productivity', 'utilities'],
         icons: [
-          {
-            src: '/favicon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
-            purpose: 'any maskable',
-          },
+          { src: '/icone-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: '/icone-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: '/icone-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
         ],
       },
       workbox: {

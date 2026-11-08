@@ -1,12 +1,13 @@
 import { useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconShieldCheck, IconArrowRight, IconSearch, IconBuilding } from '@tabler/icons-react';
+import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconShieldCheck, IconArrowRight, IconSearch, IconBuilding, IconDownload } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
 import CartaoVistoria from '../componentes/CartaoVistoria';
 import ModalConflito from '../componentes/ModalConflito';
 import { lerArquivoImportacao } from '../dados/exportacao';
 import { resumoProgresso } from '../dados/checklist';
+import { useAplicativo, instalarAplicativo } from '../utilitarios/aplicativo';
 import styles from './Painel.module.css';
 
 const LIMITE_PARA_BUSCA = 6;
@@ -19,6 +20,7 @@ const GRUPOS = [
 const normalizar = texto => String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
 export default function Painel() {
+  const app = useAplicativo();
   const { vistorias, carregando, importarConteudoJson, aplicarResolucaoConflito, ultimoBackup } = useVistoria();
   const { mostrarToast, mostrarAlerta } = useNotificacao();
   const navigate = useNavigate();
@@ -132,6 +134,13 @@ export default function Painel() {
             </div>
           </div>
           <div className={styles.headerAcoes}>
+            {/* Oferta discreta: só aparece quando o navegador permite instalar */}
+            {app.podeInstalar && !app.instalado && (
+              <button type="button" className={styles.btnSobre} onClick={() => instalarAplicativo()}>
+                <IconDownload size={20} aria-hidden="true" />
+                <span>Instalar</span>
+              </button>
+            )}
             <button type="button" className={styles.btnSobre} onClick={() => navigate('/sobre')}>
               <IconInfoCircle size={20} aria-hidden="true" />
               <span>Sobre</span>

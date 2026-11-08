@@ -90,6 +90,31 @@
   cursor: pointer;
 }
 
+/* Com ilustração: a pergunta fica no topo, com margem que cresce até 32 px
+   em telas altas; a ilustração ocupa só o seu quadro e fica centralizada no
+   espaço que sobra abaixo da pergunta. */
+.principal.comImagem {
+  --altura-figura: calc((min(100vw, 760px) - 2 * var(--sp-4)) * var(--proporcao-figura, 0.5581));
+  grid-template-rows: auto minmax(48px, 1fr) auto auto;
+}
+
+.comImagem .blocoPergunta { padding-top: clamp(var(--sp-1), calc((100dvh - 640px) / 5), 32px); }
+
+/* Margem leve entre a ilustração e os botões de apoio */
+.comImagem .areaFigura { align-items: center; padding-bottom: var(--sp-3); }
+
+/* O quadro acompanha o desenho: no máximo a altura dele, largura pela proporção */
+.comImagem .figura {
+  flex: none;
+  height: min(100%, var(--altura-figura));
+  aspect-ratio: 1 / var(--proporcao-figura, 0.5581);
+  max-width: 100%;
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+.comImagem .figura img { width: 100%; height: 100%; border-radius: 0; }
+
 /* ---------- Pergunta ---------- */
 .blocoPergunta {
   grid-area: pergunta;
@@ -482,7 +507,10 @@
       "figura respostas";
     column-gap: var(--sp-2);
   }
-  .areaFigura { padding: var(--sp-4) 0 var(--sp-2) var(--sp-4); }
+  .areaFigura { padding: var(--sp-4) 0 var(--sp-2) var(--sp-4); align-items: center; }
+  .principal.comImagem { grid-template-rows: auto 1fr auto auto; }
+  .comImagem .blocoPergunta { padding-top: var(--sp-4); }
+  .comImagem .figura { height: auto; width: 100%; max-height: 100%; }
   .blocoPergunta { padding-top: var(--sp-4); }
   .grupoRespostas { grid-template-columns: minmax(0, 1fr); }
   .btnResposta {
@@ -501,7 +529,8 @@
 
 /* ---------- Texto a 150%: volta a rolar ---------- */
 :global(html[data-texto="150"]) .tela { height: auto; min-height: 100dvh; overflow: visible; }
-:global(html[data-texto="150"]) .principal { grid-template-rows: auto minmax(240px, 50dvh) auto auto; }
+:global(html[data-texto="150"]) .principal,
+:global(html[data-texto="150"]) .principal.comImagem { grid-template-rows: auto minmax(240px, 50dvh) auto auto; }
 
 /* ==========================================================================
    Folhas (orientações e evidência)
@@ -638,3 +667,6 @@
 /* Input de arquivo acessível por teclado, mas invisível: o rótulo é o alvo */
 .inputArquivo { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
+
+/* Pouco espaço: a ilustração vira o botão "Ver ilustração", na largura toda */
+.comImagem .figuraPequena { aspect-ratio: auto; width: 100%; background: var(--surface-1); }

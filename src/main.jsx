@@ -8,9 +8,11 @@ import './estilos/global.css';
 import App from './App.jsx';
 import { iniciarTema } from './utilitarios/tema.js';
 import { aplicarPreferencias } from './utilitarios/preferencias.js';
+import { iniciarAplicativo } from './utilitarios/aplicativo.js';
 
 iniciarTema();
 aplicarPreferencias();
+iniciarAplicativo();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
