@@ -133,6 +133,7 @@ export default function ModalVisualizarFoto({
                 className={styles.btnExcluir}
                 onClick={onExcluir}
                 title="Excluir esta foto"
+                aria-label="Excluir esta foto"
               >
                 <IconTrash size={18} />
               </button>

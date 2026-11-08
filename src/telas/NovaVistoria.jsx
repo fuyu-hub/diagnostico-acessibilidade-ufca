@@ -18,7 +18,6 @@ export default function NovaVistoria() {
     nivelEnsino: [],
     numAlunos: '',
     numPavimentos: '',
-    anoConstrucao: '',
     data: new Date().toISOString().split('T')[0],
     dataTermino: '',
     horarioInicio: '',
@@ -144,7 +143,7 @@ export default function NovaVistoria() {
                 />
               </div>
 
-              <div className="form-grid-3">
+              <div className="form-grid-2">
                 <div>
                   <label className="label-secao">Número de alunos (aprox.)</label>
                   <input
@@ -162,16 +161,6 @@ export default function NovaVistoria() {
                     placeholder="Ex: 3"
                     value={form.numPavimentos}
                     onChange={e => set('numPavimentos', e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <label className="label-secao">Ano de construção</label>
-                  <input
-                    type="text"
-                    placeholder="Ex: 2006"
-                    value={form.anoConstrucao}
-                    onChange={e => set('anoConstrucao', e.target.value)}
                   />
                 </div>
               </div>

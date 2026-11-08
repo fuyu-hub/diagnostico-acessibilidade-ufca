@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconShieldCheck, IconArrowRight, IconSearch } from '@tabler/icons-react';
+import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconShieldCheck, IconArrowRight, IconSearch, IconBuilding } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
 import CartaoVistoria from '../componentes/CartaoVistoria';
@@ -123,9 +123,13 @@ export default function Painel() {
     <div className="app-shell">
       <main className="tela-body" style={{ padding: '24px 20px' }}>
         <header className={styles.header}>
-          <div>
-            <span className={styles.eyebrow}>Diagnóstico NBR 9050 · UFCA</span>
-            <h1 className={styles.titulo}>Vistorias</h1>
+          <div className={styles.marcaTitulo}>
+            {/* Marca provisória até a logo oficial do app */}
+            <span className={styles.marca} aria-hidden="true"><IconBuilding size={26} /></span>
+            <div>
+              <span className={styles.eyebrow}>Diagnóstico NBR 9050 · UFCA</span>
+              <h1 className={styles.titulo}>Vistorias</h1>
+            </div>
           </div>
           <div className={styles.headerAcoes}>
             <button type="button" className={styles.btnSobre} onClick={() => navigate('/sobre')}>

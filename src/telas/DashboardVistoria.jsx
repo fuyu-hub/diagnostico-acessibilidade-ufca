@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   IconMapPin, IconCalendar, IconUserPlus, IconTrash,
   IconArrowRight, IconListCheck, IconFileTypePdf, IconTable,
@@ -8,13 +8,27 @@ import {
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
-import { TODOS_ITENS, ITENS_TECNICOS } from '../dados/checklist';
+import { TODOS_ITENS, ITENS_TECNICOS, SECOES, ITENS_POR_SECAO } from '../dados/checklist';
+import { listarFotos, camposFotos } from '../dados/fotos.js';
 import { calcularIndiceItens } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
 import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/SeletorNivel';
 import ModalExcluirVistoria from '../componentes/ModalExcluirVistoria';
 import ModalGaleriaVistoria from '../componentes/ModalGaleriaVistoria';
 import styles from './DashboardVistoria.module.css';
+
+const ABAS = [
+  { id: 'resumo', rotulo: 'Resumo' },
+  { id: 'ficha', rotulo: 'Ficha' },
+  { id: 'relatorios', rotulo: 'Relatórios' },
+];
+
+// Cartões de exportação são divs clicáveis: Enter e Espaço também acionam
+function teclaAcionar(fn) {
+  return (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); }
+  };
+}
 
 export default function DashboardVistoria() {
   const { id } = useParams();
@@ -47,18 +61,34 @@ export default function DashboardVistoria() {
 
 function ConteudoVistoria({ id, vistoria }) {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { atualizarVistoria, removerVistoria, exportarVistoria, responderItem } = useVistoria();
   const { mostrarToast, mostrarConfirmacao } = useNotificacao();
 
+  const aba = ABAS.some(a => a.id === searchParams.get('aba')) ? searchParams.get('aba') : 'resumo';
   const [modalExcluirAberto, setModalExcluirAberto] = useState(false);
   const [modalGaleriaAberto, setModalGaleriaAberto] = useState(false);
   const [gerandoPlanilha, setGerandoPlanilha] = useState(false);
   const [gerandoPdf, setGerandoPdf] = useState(false);
 
-  async function handleExcluirFotoGaleria(itemId) {
+  function trocarAba(nova, focar = false) {
+    setSearchParams(nova === 'resumo' ? {} : { aba: nova }, { replace: true });
+    if (focar) setTimeout(() => document.getElementById(`aba-${nova}`)?.focus(), 0);
+  }
+
+  function teclasAbas(e) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+    e.preventDefault();
+    const i = ABAS.findIndex(a => a.id === aba);
+    const proxima = e.key === 'Home' ? 0 : e.key === 'End' ? ABAS.length - 1
+      : (i + (e.key === 'ArrowRight' ? 1 : -1) + ABAS.length) % ABAS.length;
+    trocarAba(ABAS[proxima].id, true);
+  }
+
+  async function handleExcluirFotoGaleria(itemId, indiceFoto = 0) {
     const confirmado = await mostrarConfirmacao({
       titulo: 'Remover Foto',
-      mensagem: 'Tem certeza que deseja remover a foto deste item? A ação não poderá ser desfeita.',
+      mensagem: 'Tem certeza que deseja remover esta foto do item? A ação não poderá ser desfeita.',
       textoConfirmar: 'Remover foto',
       textoCancelar: 'Cancelar',
       perigo: true,
@@ -67,7 +97,8 @@ function ConteudoVistoria({ id, vistoria }) {
     
     const respostaAtual = vistoria.respostas ? vistoria.respostas[itemId] : vistoria.dadosVistoria?.[itemId];
     if (respostaAtual) {
-      responderItem(vistoria.id || id, itemId, { ...respostaAtual, foto: null });
+      const restantes = listarFotos(respostaAtual).filter((_, i) => i !== indiceFoto);
+      responderItem(vistoria.id || id, itemId, { ...respostaAtual, ...camposFotos(restantes) });
       mostrarToast('Foto removida com sucesso', 'sucesso');
     }
   }
@@ -95,7 +126,6 @@ function ConteudoVistoria({ id, vistoria }) {
             : ['Fundamental'],
     numAlunos: vistoria?.numAlunos || '',
     numPavimentos: vistoria?.numPavimentos || '1',
-    anoConstrucao: vistoria?.anoConstrucao || '',
     data: vistoria?.data || '',
     dataTermino: vistoria?.dataTermino || '',
     horarioInicio: vistoria?.horarioInicio || '',
@@ -128,6 +158,13 @@ function ConteudoVistoria({ id, vistoria }) {
   const primeiroPendenteIdx = primeiroPendente ? TODOS_ITENS.findIndex(i => i.id === primeiroPendente.id) : -1;
   const temPendente = primeiroPendenteIdx !== -1;
   const ativa = Object.keys(respostas).length > 0;
+
+  // Seções com nota, da pior para a melhor (as 3 que mais precisam de atenção)
+  const secoesCriticas = SECOES
+    .map(s => ({ s, ind: calcularIndiceItens((ITENS_POR_SECAO[s.id] || []).filter(i => i.tipo === 'tecnico'), respostas) }))
+    .filter(x => x.ind.total > 0)
+    .sort((a, b) => a.ind.nota - b.ind.nota)
+    .slice(0, 3);
 
   function setCampo(campo, valor) {
     setForm(prev => ({ ...prev, [campo]: valor }));
@@ -173,6 +210,44 @@ function ConteudoVistoria({ id, vistoria }) {
     setTimeout(() => setSalvoFeedback(false), 3000);
   }
 
+  async function baixarBackup() {
+    try {
+      await exportarVistoria(vistoria.id);
+    } catch (err) {
+      console.error('Erro ao exportar:', err);
+    }
+  }
+
+  async function baixarPdf() {
+    if (gerandoPdf) return;
+    setGerandoPdf(true);
+    try {
+      const { gerarPdfVistoria } = await import('../relatorios/geradorPdf');
+      await gerarPdfVistoria(vistoria);
+      mostrarToast('Relatório PDF baixado com sucesso!', 'sucesso');
+    } catch (err) {
+      console.error('Erro ao gerar PDF:', err);
+      mostrarToast('Não foi possível gerar o relatório PDF.', 'erro');
+    } finally {
+      setGerandoPdf(false);
+    }
+  }
+
+  async function baixarPlanilha() {
+    if (gerandoPlanilha) return;
+    setGerandoPlanilha(true);
+    try {
+      const { gerarPlanilhaVistoria } = await import('../relatorios/geradorExcel');
+      await gerarPlanilhaVistoria(vistoria);
+      mostrarToast('Planilha Excel baixada com sucesso!', 'sucesso');
+    } catch (err) {
+      console.error('Erro ao gerar planilha:', err);
+      mostrarToast('Não foi possível gerar a planilha.', 'erro');
+    } finally {
+      setGerandoPlanilha(false);
+    }
+  }
+
   function handleContinuar() {
     if (temPendente) {
       navigate(`/checklist/${id}/item/${primeiroPendenteIdx + 1}`);
@@ -215,9 +290,27 @@ function ConteudoVistoria({ id, vistoria }) {
             </div>
           </div>
 
+          <div className={styles.abas} role="tablist" aria-label="Partes do painel" onKeyDown={teclasAbas}>
+            {ABAS.map(a => (
+              <button
+                key={a.id}
+                id={`aba-${a.id}`}
+                type="button"
+                role="tab"
+                aria-selected={aba === a.id}
+                aria-controls="painel-aba"
+                tabIndex={aba === a.id ? 0 : -1}
+                onClick={() => trocarAba(a.id)}
+              >
+                {a.rotulo}
+              </button>
+            ))}
+          </div>
 
+          <div id="painel-aba" role="tabpanel" aria-labelledby={`aba-${aba}`} className={styles.painelAba}>
 
           {/* Card de Métricas do Dashboard */}
+          {aba === 'resumo' && (
           <section className={styles.cardDashboard}>
             <div>
               <div className={styles.progressoHeader}>
@@ -297,8 +390,30 @@ function ConteudoVistoria({ id, vistoria }) {
               )}
             </div>
           </section>
+          )}
+
+          {aba === 'resumo' && secoesCriticas.length > 0 && (
+            <section className={styles.cardDashboard} aria-labelledby="titulo-criticas">
+              <h3 id="titulo-criticas" className={styles.secaoTitulo}>Seções que mais precisam de atenção</h3>
+              <ul className={styles.listaCriticas}>
+                {secoesCriticas.map(({ s, ind }) => (
+                  <li key={s.id}>
+                    <button type="button" className={styles.linhaCritica} onClick={() => navigate(`/checklist/${id}/itens?secao=${s.id}`)}>
+                      <span className={styles.criticaNome}>{s.nome}</span>
+                      <strong style={{ color: ind.classificacao.corNota || ind.classificacao.cor }}>{ind.classificacao.notaFormatada}</strong>
+                      <span className={styles.barraNota} aria-hidden="true">
+                        <span style={{ width: `${ind.nota * 10}%`, background: ind.classificacao.cor }} />
+                      </span>
+                      <span className={styles.criticaRotulo}>{ind.classificacao.rotulo.toLowerCase()}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {/* Card de Parâmetros e Ficha Completa da Instituição */}
+          {aba === 'ficha' && (
           <section className={styles.cardParametros}>
             <div>
               <h3 className={styles.secaoTitulo}>Ficha da Instituição</h3>
@@ -369,7 +484,7 @@ function ConteudoVistoria({ id, vistoria }) {
                 />
               </div>
 
-              <div className="form-grid-3" style={{ marginBottom: 20 }}>
+              <div className="form-grid-2" style={{ marginBottom: 20 }}>
                 <div>
                   <label className="label-secao">Número de alunos (aprox.)</label>
                   <input
@@ -387,16 +502,6 @@ function ConteudoVistoria({ id, vistoria }) {
                     placeholder="Ex: 3"
                     value={form.numPavimentos}
                     onChange={e => setCampo('numPavimentos', e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <label className="label-secao">Ano de construção</label>
-                  <input
-                    type="text"
-                    placeholder="Ex: 2006"
-                    value={form.anoConstrucao}
-                    onChange={e => setCampo('anoConstrucao', e.target.value)}
                   />
                 </div>
               </div>
@@ -528,8 +633,10 @@ function ConteudoVistoria({ id, vistoria }) {
               </div>
             </form>
           </section>
+          )}
 
           {/* Card de Exportação / Relatórios / Backup */}
+          {aba === 'relatorios' && (
           <section className={styles.cardExportacao}>
             <div>
               <h3 className={styles.secaoTitulo}>Exportar e Relatórios</h3>
@@ -541,13 +648,8 @@ function ConteudoVistoria({ id, vistoria }) {
             <div className={styles.gridExportacao}>
               <div
                 className={styles.itemExportacaoAtivo}
-                onClick={async () => {
-                  try {
-                    await exportarVistoria(vistoria.id);
-                  } catch (err) {
-                    console.error('Erro ao exportar:', err);
-                  }
-                }}
+                onClick={baixarBackup}
+                onKeyDown={teclaAcionar(baixarBackup)}
                 role="button"
                 tabIndex={0}
                 title="Clique para baixar o backup desta vistoria"
@@ -565,20 +667,8 @@ function ConteudoVistoria({ id, vistoria }) {
 
               <div 
                 className={styles.itemExportacaoAtivo}
-                onClick={async () => {
-                  if (gerandoPdf) return;
-                  setGerandoPdf(true);
-                  try {
-                    const { gerarPdfVistoria } = await import('../relatorios/geradorPdf');
-                    await gerarPdfVistoria(vistoria);
-                    mostrarToast('Relatório PDF baixado com sucesso!', 'sucesso');
-                  } catch (err) {
-                    console.error('Erro ao gerar PDF:', err);
-                    mostrarToast('Não foi possível gerar o relatório PDF.', 'erro');
-                  } finally {
-                    setGerandoPdf(false);
-                  }
-                }}
+                onClick={baixarPdf}
+                onKeyDown={teclaAcionar(baixarPdf)}
                 role="button"
                 tabIndex={0}
               >
@@ -596,20 +686,8 @@ function ConteudoVistoria({ id, vistoria }) {
 
               <div 
                 className={styles.itemExportacaoAtivo}
-                onClick={async () => {
-                  if (gerandoPlanilha) return;
-                  setGerandoPlanilha(true);
-                  try {
-                    const { gerarPlanilhaVistoria } = await import('../relatorios/geradorExcel');
-                    await gerarPlanilhaVistoria(vistoria);
-                    mostrarToast('Planilha Excel baixada com sucesso!', 'sucesso');
-                  } catch (err) {
-                    console.error('Erro ao gerar planilha:', err);
-                    mostrarToast('Não foi possível gerar a planilha.', 'erro');
-                  } finally {
-                    setGerandoPlanilha(false);
-                  }
-                }}
+                onClick={baixarPlanilha}
+                onKeyDown={teclaAcionar(baixarPlanilha)}
                 role="button"
                 tabIndex={0}
                 title="Clique para gerar a planilha executiva em Excel"
@@ -627,8 +705,10 @@ function ConteudoVistoria({ id, vistoria }) {
               </div>
             </div>
           </section>
+          )}
 
           {/* Zona de Perigo / Excluir Vistoria */}
+          {aba === 'ficha' && (
           <section className={styles.cardZonaPerigo}>
             <div className={styles.perigoConteudo}>
               <div className={styles.perigoInfo}>
@@ -649,6 +729,8 @@ function ConteudoVistoria({ id, vistoria }) {
               </button>
             </div>
           </section>
+          )}
+          </div>
         </div>
       </div>
 
