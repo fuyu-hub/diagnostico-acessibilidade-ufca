@@ -3,8 +3,11 @@ import { useSyncExternalStore } from 'react';
 /**
  * Estado do app instalável (PWA): instalação e versão nova pronta.
  * O navegador não mostra mais o próprio aviso de instalação: o app oferece
- * "Instalar" só em Ajustes e num botão discreto do Início, quando é possível.
+ * "Instalar" em Ajustes e numa notificação do Início, quando é possível.
  */
+
+const CHAVE_OFERTA_INSTALACAO = 'ufca:ofertaInstalacao';
+const INTERVALO_OFERTA = 7 * 24 * 60 * 60 * 1000;
 
 let estado = {
   podeInstalar: false,
@@ -61,6 +64,18 @@ export async function instalarAplicativo() {
   await pedido.prompt();
   const { outcome } = await pedido.userChoice;
   return outcome === 'accepted';
+}
+
+/** Diz se a notificação de instalar pode aparecer agora e registra a oferta (no máximo uma por semana). */
+export function reservarOfertaInstalacao() {
+  try {
+    const ultima = Number(localStorage.getItem(CHAVE_OFERTA_INSTALACAO)) || 0;
+    if (Date.now() - ultima < INTERVALO_OFERTA) return false;
+    localStorage.setItem(CHAVE_OFERTA_INSTALACAO, String(Date.now()));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /** Registra que há versão nova baixada e como aplicá-la agora. */

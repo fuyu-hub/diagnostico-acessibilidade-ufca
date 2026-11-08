@@ -8,12 +8,12 @@ const n = id => dados.itens.findIndex(i => i.id === id) + 1;
 
 // O popup de primeiro acesso tem teste próprio; nos demais, ele já foi visto
 test.beforeEach(async ({ page }, info) => {
-  // Os testes conferem o próprio item depois de responder: sem avançar sozinho, exceto no teste do avanço
-  if (!info.title.includes('avança')) {
+  // O padrão é não avançar sozinho: só o teste do avanço liga a opção
+  if (info.title.includes('avança')) {
     // Só no primeiro carregamento: recarregar a página mantém o que o teste mudou
     await page.addInitScript(() => {
       if (!localStorage.getItem('nbr9050_preferencias')) {
-        localStorage.setItem('nbr9050_preferencias', JSON.stringify({ avancarAoResponder: false }));
+        localStorage.setItem('nbr9050_preferencias', JSON.stringify({ avancarAoResponder: true }));
       }
     });
   }
@@ -83,12 +83,12 @@ test('triagem positiva desfaz o N/A automático, inclusive depois de recarregar'
 test('triagem negativa alcança os itens de triagens aninhadas, e a positiva os libera', async ({ page }) => {
   const id = await criarVistoria(page);
 
-  await responder(page, id, 1004, 'Não');
+  await responder(page, id, 1002,'Não');
   await page.goto(`/checklist/${id}/item/${n(12)}`);
   await expect(page.getByText('Definido pela Pergunta de Triagem')).toBeVisible();
   await expect(radio(page, 'Não se aplica')).toHaveAttribute('aria-checked', 'true');
 
-  await responder(page, id, 1004, 'Sim');
+  await responder(page, id, 1002,'Sim');
   await page.goto(`/checklist/${id}/item/${n(12)}`);
   await expect(radio(page, 'Não se aplica')).toHaveAttribute('aria-checked', 'false');
 });
@@ -310,14 +310,37 @@ test('item exibe a imagem aprovada com descrição acessível', async ({ page })
   await expect.poll(() => imagem.evaluate(e => e.naturalWidth)).toBeGreaterThan(0);
 });
 
-test('responder avança ao próximo item e Desfazer volta e limpa a resposta', async ({ page }) => {
+test('com a opção ligada, responder avança ao próximo item sem aviso de Desfazer', async ({ page }) => {
   const id = await criarVistoria(page);
   await page.goto(`/checklist/${id}/item/${n(2)}`);
   await radio(page, 'Conforme').click();
   await expect(page).toHaveURL(new RegExp(`/item/${n(2) + 1}$`));
-  await page.getByRole('button', { name: 'Desfazer' }).click();
+  await expect(page.getByRole('button', { name: 'Desfazer' })).toHaveCount(0);
+});
+
+test('corrimãos externos saem só sem escada e sem rampa, e voltam se uma existir', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await responder(page, id, 1002, 'Não');
+  await page.goto(`/checklist/${id}/item/${n(24)}`);
+  await expect(radio(page, 'Não se aplica')).toHaveAttribute('aria-checked', 'false');
+
+  await responder(page, id, 1003, 'Não');
+  await page.goto(`/checklist/${id}/item/${n(24)}`);
+  await expect(radio(page, 'Não se aplica')).toHaveAttribute('aria-checked', 'true');
+
+  await responder(page, id, 1003, 'Sim');
+  await page.goto(`/checklist/${id}/item/${n(24)}`);
+  await expect(radio(page, 'Não se aplica')).toHaveAttribute('aria-checked', 'false');
+});
+
+test('não se aplica fica no item, sem abrir a evidência nem mostrar Desfazer', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await page.goto(`/checklist/${id}/item/${n(2)}`);
+  await radio(page, 'Não se aplica').click();
+  await expect(radio(page, 'Não se aplica')).toHaveAttribute('aria-checked', 'true');
   await expect(page).toHaveURL(new RegExp(`/item/${n(2)}$`));
-  await expect(radio(page, 'Conforme')).toHaveAttribute('aria-checked', 'false');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Desfazer' })).toHaveCount(0);
 });
 
 test('não conforme fica no item, abre a evidência e guarda várias fotos', async ({ page }) => {
@@ -342,18 +365,6 @@ test('não conforme fica no item, abre a evidência e guarda várias fotos', asy
   await expect.poll(async () => (await lerResposta(page, id, 2))?.fotos?.length ?? 0).toBe(2);
   const resposta = await lerResposta(page, id, 2);
   expect(resposta.foto).toBe(resposta.fotos[0]);
-});
-
-test('ilustração abre em tela cheia com zoom pelos botões e fecha com Esc', async ({ page }) => {
-  const id = await criarVistoria(page);
-  await page.goto(`/checklist/${id}/item/${n(42)}`);
-  await page.getByRole('button', { name: /Ampliar/ }).click();
-  const visualizador = page.getByRole('dialog', { name: /Corredor|Corredores/ });
-  await expect(visualizador).toBeVisible();
-  await visualizador.getByRole('button', { name: 'Aumentar zoom' }).click();
-  await expect(visualizador.getByRole('toolbar', { name: 'Zoom' })).toContainText('125%');
-  await page.keyboard.press('Escape');
-  await expect(visualizador).toBeHidden();
 });
 
 test('ajustes de tamanho do texto e de avanço ficam salvos e valem no app', async ({ page }) => {

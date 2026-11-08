@@ -71,23 +71,39 @@ describe('Reversão do N/A por triagem', () => {
   });
 
   it('8. Desce pelas triagens aninhadas', () => {
-    const externa = ITENS_POR_ID[1004];
-    const aninhada = ITENS_POR_ID[1002];
+    const externa = TODOS_ITENS.find(i => i.dependentes?.some(d => ITENS_POR_ID[d].tipo === 'triagem'));
+    const aninhada = ITENS_POR_ID[externa.dependentes.find(d => ITENS_POR_ID[d].tipo === 'triagem')];
     const neto = aninhada.dependentes[0];
-    expect(externa.dependentes).toContain(1002);
 
     const respostas = {
-      1004: { valor: 'nao-conforme' },
-      1002: { valor: 'nao-aplica', automatico: true, origemTriagem: 1004 },
-      [neto]: { valor: 'nao-aplica', automatico: true, origemTriagem: 1002 },
+      [externa.id]: { valor: 'nao-conforme' },
+      [aninhada.id]: { valor: 'nao-aplica', automatico: true, origemTriagem: externa.id },
+      [neto]: { valor: 'nao-aplica', automatico: true, origemTriagem: aninhada.id },
     };
-    expect(dependentesParaLimpar(externa, respostas)).toEqual([1002, neto]);
+    expect(dependentesParaLimpar(externa, respostas)).toEqual([aninhada.id, neto]);
   });
 
   it('10. A cascata alcança os netos e aponta a triagem que controla cada item', () => {
-    const cascata = dependentesEmCascata(ITENS_POR_ID[1004]);
-    expect(cascata).toContainEqual({ id: 1002, origemTriagem: 1004 });
-    expect(cascata).toContainEqual({ id: ITENS_POR_ID[1002].dependentes[0], origemTriagem: 1002 });
+    const externa = TODOS_ITENS.find(i => i.dependentes?.some(d => ITENS_POR_ID[d].tipo === 'triagem'));
+    const aninhada = ITENS_POR_ID[externa.dependentes.find(d => ITENS_POR_ID[d].tipo === 'triagem')];
+    const cascata = dependentesEmCascata(externa);
+    expect(cascata).toContainEqual({ id: aninhada.id, origemTriagem: externa.id });
+    expect(cascata).toContainEqual({ id: aninhada.dependentes[0], origemTriagem: aninhada.id });
+  });
+
+  it('10b. Corrimãos externos só saem quando escada e rampa são negativas, e voltam se uma passar a existir', () => {
+    const escada = ITENS_POR_ID[1002];
+    const ids = alvo => dependentesEmCascata(alvo, { 1003: { valor: alvo.id === 1002 ? 'nao' : 'sim' } }).map(d => d.id);
+    expect(ids(escada)).toEqual(expect.arrayContaining([1026, 23, 24, 29]));
+    expect(dependentesEmCascata(escada, { 1003: { valor: 'sim' } }).map(d => d.id)).not.toContain(24);
+    expect(dependentesEmCascata(escada, {}).map(d => d.id)).not.toContain(24);
+
+    const respostas = {
+      1002: { valor: 'sim' },
+      24: { valor: 'nao-aplica', automatico: true, origemTriagem: 1003 },
+      25: { valor: 'nao-aplica' },
+    };
+    expect(dependentesParaLimpar(escada, respostas)).toEqual([24]);
   });
 
   it('11. Nenhuma triagem do checklist repete itens na cascata ou aponta item inexistente', () => {

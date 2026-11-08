@@ -57,19 +57,20 @@ describe('Fotos', () => {
 });
 
 describe('Triagem', () => {
-  const externa = ITENS_POR_ID[1004];
-  const neto = ITENS_POR_ID[1002].dependentes[0];
+  const externa = TODOS_ITENS.find(i => i.dependentes?.some(d => ITENS_POR_ID[d].tipo === 'triagem'));
+  const aninhada = ITENS_POR_ID[externa.dependentes.find(d => ITENS_POR_ID[d].tipo === 'triagem')];
+  const [neto, comObs, comFoto] = aninhada.dependentes;
 
   it('9. Aponta respostas, observações e fotos que a triagem apagaria, inclusive em triagens aninhadas', () => {
     expect(dependentesComDados(externa, {
       [neto]: { valor: 'conforme' },
-      24: { valor: 'nao-aplica', obs: 'Sem acesso' },
-      25: { valor: 'nao-aplica', foto: 'data:image/webp;base64,AA' },
-    })).toEqual(expect.arrayContaining([neto, 24, 25]));
+      [comObs]: { valor: 'nao-aplica', obs: 'Sem acesso' },
+      [comFoto]: { valor: 'nao-aplica', foto: 'data:image/webp;base64,AA' },
+    })).toEqual(expect.arrayContaining([neto, comObs, comFoto]));
   });
 
   it('10. N/A sem observação nem foto não exige confirmação', () => {
-    expect(dependentesComDados(externa, { 24: { valor: 'nao-aplica', obs: '', foto: null } })).toEqual([]);
+    expect(dependentesComDados(externa, { [comObs]: { valor: 'nao-aplica', obs: '', foto: null } })).toEqual([]);
   });
 });
 

@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   IconCheck, IconX, IconMinus, IconBulb, IconRuler2, IconBook,
   IconCamera, IconTrash, IconListCheck, IconFilter, IconChevronLeft, IconChevronRight,
-  IconPhoto, IconAlertCircle, IconZoomIn, IconVolume, IconPlayerStopFilled,
-  IconPlayerPauseFilled, IconPlayerPlayFilled, 
+  IconPhoto, IconAlertCircle, IconVolume, IconPlayerStopFilled,
+  IconPlayerPauseFilled, IconPlayerPlayFilled, IconHelpCircle,
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
@@ -20,14 +20,10 @@ import { vibrarResposta, vibrarSuave } from '../utilitarios/haptico';
 import { usePreferencias, movimentoReduzido } from '../utilitarios/preferencias.js';
 import { useLeituraVoz, textoFalavel } from '../utilitarios/leituraVoz.js';
 import FolhaInferior from '../componentes/FolhaInferior';
-import VisualizadorImagem from '../componentes/VisualizadorImagem';
 import ModalVisualizarFoto from '../componentes/ModalVisualizarFoto';
 import Topbar from '../componentes/Topbar';
 import { escolherIlustracao, useDuasColunas } from '../dados/ilustracoes.js';
 import styles from './ItemChecklist.module.css';
-
-// Abaixo desta altura, a ilustração vira um botão "Ver ilustração" para tudo caber na tela
-const ALTURA_MINIMA_FIGURA = 120;
 
 const OPCOES_TECNICO = [
   { valor: 'conforme',     label: 'Conforme',      Icone: IconCheck, tecla: '1' },
@@ -74,15 +70,12 @@ export default function ItemChecklist() {
   const [folha, setFolha] = useState(null); // 'apoio' | 'evidencia'
   const [abaApoio, setAbaApoio] = useState('como');
   const [evidenciaAposNC, setEvidenciaAposNC] = useState(false);
-  const [ampliada, setAmpliada] = useState(false);
   const [fotoAberta, setFotoAberta] = useState(null);
   const [mensagemAria, setMensagemAria] = useState('');
   const [salvoVisivel, setSalvoVisivel] = useState(false);
-  const [figuraPequena, setFiguraPequena] = useState(false);
 
   const timerAvanco = useRef(null);
   const timerSalvo = useRef(null);
-  const figuraRef = useRef(null);
   const perguntaRef = useRef(null);
   const btnEvidenciaRef = useRef(null);
 
@@ -94,14 +87,16 @@ export default function ItemChecklist() {
   const numItemTecnico = item && !ehTriagem ? ITENS_TECNICOS.findIndex(i => i.id === item.id) + 1 : null;
   const nomeItem = ehTriagem ? 'Triagem' : `Item ${numItemTecnico}`;
   const secao = SECOES.find(s => s.id === item?.secaoId);
-  const dependentes = useMemo(() => (ehTriagem ? dependentesEmCascata(item) : []), [ehTriagem, item]);
+  const dependentes = useMemo(
+    () => (ehTriagem ? dependentesEmCascata(item, vistoria?.respostas) : []),
+    [ehTriagem, item, vistoria?.respostas],
+  );
 
   // Ao trocar de item: carrega observação e fotos, fecha painéis, para a leitura e põe o foco na pergunta
   useEffect(() => {
     setObs(ehObsAutomatica(respostaAtual?.obs) ? '' : (respostaAtual?.obs || ''));
     setFotos(listarFotos(respostaAtual));
     setFolha(null);
-    setAmpliada(false);
     setFotoAberta(null);
     setEvidenciaAposNC(false);
     voz.parar();
@@ -115,14 +110,13 @@ export default function ItemChecklist() {
     clearTimeout(timerSalvo.current);
   }, []);
 
-  // A ilustração encolhe com o espaço livre; muito pequena, vira um botão
+  // Baixa antes as ilustrações vizinhas, para a próxima aparecer sem espera
   useEffect(() => {
-    const el = figuraRef.current;
-    if (!el || typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver(() => setFiguraPequena(el.clientHeight < ALTURA_MINIMA_FIGURA));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [item?.id, vistoria?.id]);
+    [itemIdx + 1, itemIdx + 2, itemIdx - 1].forEach(i => {
+      const vizinha = escolherIlustracao(TODOS_ITENS[i]?.imagem, duasColunas);
+      if (vizinha) new Image().src = vizinha.src;
+    });
+  }, [itemIdx, duasColunas]);
 
   // ---------- Leitura em voz alta ----------
   const trechosLeitura = useMemo(() => {
@@ -134,7 +128,7 @@ export default function ItemChecklist() {
     if (ehTriagem && dependentes.length) {
       t.push({ chave: 'efeito', rotulo: 'Efeito', texto: `Se a resposta for Não ou Não se aplica, ${dependentes.length} ${dependentes.length === 1 ? 'item passa' : 'itens passam'} a Não se aplica.` });
     }
-    if (item.comoAveriguar) t.push({ chave: 'como', rotulo: 'Como medir', texto: `Como medir. ${textoFalavel(item.comoAveriguar)}` });
+    if (item.comoAveriguar) t.push({ chave: 'como', rotulo: 'Como verificar', texto: `Como verificar. ${textoFalavel(item.comoAveriguar)}` });
     if (item.referencia) t.push({ chave: 'referencia', rotulo: 'Referência', texto: `Referência: ${textoFalavel(item.referencia)}` });
     if (valorAtual) t.push({ chave: 'resposta', rotulo: 'Resposta', texto: `Resposta registrada: ${ROTULO_VALOR[valorAtual]}.` });
     return t;
@@ -182,32 +176,10 @@ export default function ItemChecklist() {
     marcarSalvo();
   }
 
-  /** Estado do item e dos itens abaixo dele, para o "Desfazer". */
-  function capturar() {
-    const ids = [item.id, ...dependentes.map(d => d.id)];
-    return ids.map(i => [i, vistoria?.respostas?.[i] ? { ...vistoria.respostas[i] } : null]);
-  }
-
-  function restaurar(instantaneo) {
-    for (const [i, r] of instantaneo) {
-      if (!r) {
-        responderItem(id, i, null);
-        continue;
-      }
-      responderItem(id, i, {
-        valor: r.valor || null,
-        obs: r.obs || '',
-        fotos: listarFotos(r),
-        automatico: r.automatico,
-        origemTriagem: r.origemTriagem,
-      });
-    }
-  }
-
   function aplicarDependencias(valor) {
     if (!item?.dependentes?.length) return null;
     if (valor === 'nao' || valor === 'nao-aplica') {
-      dependentesEmCascata(item).forEach(({ id: depId, origemTriagem }) => {
+      dependentesEmCascata(item, vistoria?.respostas).forEach(({ id: depId, origemTriagem }) => {
         responderItem(id, depId, { valor: 'nao-aplica', obs: '', fotos: [], automatico: true, origemTriagem });
       });
       if (valor === 'nao' && item.acaoSeNao === 'gatilho_nc_dependentes_na') {
@@ -253,7 +225,6 @@ export default function ItemChecklist() {
       }
     }
 
-    const instantaneo = capturar();
     tocarSomResposta(valor);
     vibrarResposta(valor);
     const forcado = aplicarDependencias(valor);
@@ -262,13 +233,6 @@ export default function ItemChecklist() {
     marcarSalvo();
 
     const rotulo = ROTULO_VALOR[final] || final;
-    const posicao = itemIdx + 1;
-    const desfazer = () => {
-      clearTimeout(timerAvanco.current);
-      restaurar(instantaneo);
-      navigate(`/checklist/${id}/item/${posicao}`);
-      setMensagemAria('Resposta desfeita.');
-    };
 
     // Não conforme: fica no item e abre a evidência (observação e fotos)
     if (final === 'nao-conforme') {
@@ -278,16 +242,11 @@ export default function ItemChecklist() {
       return;
     }
 
-    const aviso = () => mostrarToast(`${nomeItem}: ${rotulo}.`, 'sucesso', 6000, { rotulo: 'Desfazer', fn: desfazer });
     if (prefs.avancarAoResponder) {
       setMensagemAria(`${nomeItem}: ${rotulo}. Indo para o próximo item.`);
-      timerAvanco.current = setTimeout(() => {
-        irPara(itemIdx + 2);
-        aviso();
-      }, movimentoReduzido() ? 250 : 600);
+      timerAvanco.current = setTimeout(() => irPara(itemIdx + 2), movimentoReduzido() ? 250 : 600);
     } else {
       setMensagemAria(`${nomeItem}: ${rotulo}.`);
-      aviso();
     }
   }
 
@@ -340,10 +299,10 @@ export default function ItemChecklist() {
   }
 
   // ---------- Atalhos de teclado (WCAG 2.1.1) ----------
-  // 1/C, 2/N, 3/A respondem; ← → navegam; O ouve; Z amplia
+  // 1/C, 2/N, 3/A respondem; ← → navegam; O ouve
   useEffect(() => {
     function teclas(e) {
-      if (!vistoria || !item || folha || ampliada || fotoAberta !== null) return;
+      if (!vistoria || !item || folha || fotoAberta !== null) return;
       if (document.querySelector('[role="alertdialog"], [role="dialog"]')) return;
       const tag = e.target.tagName?.toLowerCase();
       if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
@@ -362,9 +321,6 @@ export default function ItemChecklist() {
       } else if (k === 'o') {
         e.preventDefault();
         alternarLeitura();
-      } else if (k === 'z' && item.imagem) {
-        e.preventDefault();
-        setAmpliada(true);
       }
     }
     window.addEventListener('keydown', teclas);
@@ -438,7 +394,7 @@ export default function ItemChecklist() {
     norma: item.referencia ? `${item.referencia}. Consulte o texto da norma no item indicado.` : 'Este item não tem referência normativa cadastrada.',
   };
   const ABAS_APOIO = [
-    { id: 'como', rotulo: 'Como medir', Icone: IconRuler2 },
+    { id: 'como', rotulo: 'Como verificar', Icone: IconRuler2 },
     { id: 'dica', rotulo: 'Dica', Icone: IconBulb },
     { id: 'norma', rotulo: 'Norma', Icone: IconBook },
   ];
@@ -454,15 +410,8 @@ export default function ItemChecklist() {
 
   // ---------- Peças da tela ----------
   const figura = imagemSrc ? (
-    <div className={`${styles.figura} ${figuraPequena ? styles.figuraPequena : ''} ${lendo('figura')}`}>
+    <div className={`${styles.figura} ${lendo('figura')}`}>
       <img src={imagemSrc} alt={descricaoImagem} draggable="false" />
-      <button type="button" className={styles.ampliar} onClick={() => setAmpliada(true)} aria-keyshortcuts="Z">
-        <span className={styles.lupa}>
-          <IconZoomIn size={18} aria-hidden="true" />
-          {figuraPequena ? 'Ver ilustração' : 'Ampliar'}
-          <span className="sr-only"> a ilustração</span>
-        </span>
-      </button>
     </div>
   ) : ehTriagem ? (
     <section className={`${styles.painelTexto} ${lendo('efeito')}`} tabIndex={0} aria-labelledby="titulo-efeito-triagem">
@@ -487,7 +436,7 @@ export default function ItemChecklist() {
     </section>
   ) : (
     <section className={`${styles.painelTexto} ${lendo('como')}`} tabIndex={0} aria-labelledby="titulo-como-medir">
-      <h2 id="titulo-como-medir"><IconRuler2 size={16} aria-hidden="true" /> Como medir</h2>
+      <h2 id="titulo-como-medir"><IconRuler2 size={16} aria-hidden="true" /> Como verificar</h2>
       <p>{textosApoio.como}</p>
       {item.dica && (<><h2><IconBulb size={16} aria-hidden="true" /> Dica</h2><p>{item.dica}</p></>)}
     </section>
@@ -543,9 +492,9 @@ export default function ItemChecklist() {
           )}
         </div>
 
-        <div className={styles.areaFigura} ref={figuraRef}>
+        <div className={styles.areaFigura}>
           {figura}
-          {voz.ativo && !ampliada && (
+          {voz.ativo && (
             <div className={styles.playerVoz} role="region" aria-label="Leitura em voz alta">
               <span className={styles.playerEstado}>
                 {voz.pausado ? 'Pausado' : 'Lendo'}: <span>{voz.trechoAtual?.rotulo}</span> ({voz.indice + 1} de {voz.trechos.length})
@@ -582,8 +531,8 @@ export default function ItemChecklist() {
             <span>{voz.ativo ? 'Parar' : 'Ouvir'}</span>
           </button>
           <button type="button" className={`${styles.btnApoio} ${lendo('como')}`} onClick={() => setFolha('apoio')} aria-haspopup="dialog">
-            <IconRuler2 size={20} aria-hidden="true" />
-            <span>Como medir</span>
+            <IconHelpCircle size={20} aria-hidden="true" />
+            <span>Orientações</span>
           </button>
           <button
             type="button"
@@ -778,18 +727,6 @@ export default function ItemChecklist() {
           <p className={styles.ajuda}>Evite fotografar pessoas, principalmente crianças.</p>
         </div>
       </FolhaInferior>
-
-      <VisualizadorImagem
-        aberto={ampliada}
-        src={imagemSrc}
-        titulo={item.subgrupo}
-        descricao={descricaoImagem}
-        larguraBase={ilustracao?.largura}
-        alturaBase={ilustracao?.altura}
-        voz={voz}
-        trechosLeitura={descricaoImagem ? [{ chave: 'figura', rotulo: 'Ilustração', texto: `Ilustração: ${descricaoImagem}` }] : []}
-        onFechar={() => setAmpliada(false)}
-      />
 
       {fotoAberta !== null && ehFotoExibivel(fotos[fotoAberta]) && (
         <ModalVisualizarFoto

@@ -19,7 +19,7 @@ ${conteudo}
 const tt = (x, y, s, o = {}) => texto(x, y, s, { tam: T, anc: 'start', ...o });
 const ta = (x, y, s, o = {}) => texto(x, y, s, { tam: A, peso: 500, anc: 'start', ...o });
 const tb = (x, y, s, o = {}) => texto(x, y, s, { tam: A, peso: 700, anc: 'start', ...o });
-const ret = (x, y, l, a, fill, extra = '') => `<rect x="${x}" y="${y}" width="${l}" height="${a}" fill="${fill}" stroke="${C.linha}" stroke-width="2.5" ${extra}/>`;
+const ret = (x, y, l, a, fill, extra = '') => `<rect x="${x}" y="${y}" width="${l}" height="${a}" fill="${fill}" stroke="${C.linha}" ${extra.includes('stroke-width') ? '' : 'stroke-width="2.5"'} ${extra}/>`;
 const linha = (x1, y1, x2, y2, l = 2.5, cor = C.linha, extra = '') => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${cor}" stroke-width="${l}" ${extra}/>`;
 const chamada = (de, x, y) => linha(de.x.toFixed(1), de.y.toFixed(1), x, y) + `<circle cx="${de.x.toFixed(1)}" cy="${de.y.toFixed(1)}" r="6" fill="${C.linha}"/>`;
 const vertical = (x, y, s, tam = T, peso = 700) => `<text x="${x}" y="${y}" font-size="${tam}" font-weight="${peso}" text-anchor="middle" fill="${C.cota}" paint-order="stroke" stroke="#fff" stroke-width="6" stroke-linejoin="round" transform="rotate(-90 ${x} ${y})">${s}</text>`;

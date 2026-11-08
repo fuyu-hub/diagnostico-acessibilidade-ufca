@@ -207,39 +207,6 @@
   background: #ffffff;
 }
 
-/* O botão cobre toda a ilustração: tocar em qualquer ponto amplia */
-.ampliar {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: var(--sp-2);
-  border: 0;
-  background: none;
-  font: inherit;
-  cursor: zoom-in;
-}
-
-.ampliar:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; border-radius: var(--radius-md); }
-
-.lupa {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 36px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.78);
-  color: #ffffff;
-  font-size: var(--fs-xs);
-  font-weight: 700;
-}
-
-.figuraPequena img { display: none; }
-.figuraPequena .ampliar { align-items: center; justify-content: center; cursor: pointer; }
-.figuraPequena .lupa { background: transparent; color: var(--accent-text); font-size: var(--fs-sm); }
-
 .painelTexto {
   flex: 1;
   min-height: 0;
@@ -426,7 +393,7 @@
 /* Marcado: cor + ponto (não depende só da cor) */
 .sel_conforme, .sel_sim { background: var(--bg-success); border-color: var(--text-success); color: var(--text-success); }
 .sel_nao_conforme, .sel_nao { background: var(--bg-danger); border-color: var(--text-danger); color: var(--text-danger); }
-.sel_nao_aplica { background: var(--bg-na); border-color: var(--text-na); color: var(--text-na); }
+.sel_nao_aplica { background: var(--bg-warning); border-color: var(--text-warning); color: var(--text-warning); }
 
 .sel_conforme::after, .sel_sim::after, .sel_nao_conforme::after, .sel_nao::after, .sel_nao_aplica::after {
   content: "";
@@ -666,7 +633,3 @@
 
 /* Input de arquivo acessível por teclado, mas invisível: o rótulo é o alvo */
 .inputArquivo { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-
-
-/* Pouco espaço: a ilustração vira o botão "Ver ilustração", na largura toda */
-.comImagem .figuraPequena { aspect-ratio: auto; width: 100%; background: var(--surface-1); }

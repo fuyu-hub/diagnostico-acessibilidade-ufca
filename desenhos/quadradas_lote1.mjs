@@ -29,7 +29,7 @@ ${conteudo}
 // Atalhos de texto: título/medida (38) e apoio (30)
 const tt = (x, y, s, o = {}) => texto(x, y, s, { tam: T, anc: 'start', ...o });
 const ta = (x, y, s, o = {}) => texto(x, y, s, { tam: A, peso: 500, anc: 'start', ...o });
-const ret = (x, y, l, a, fill, extra = '') => `<rect x="${x}" y="${y}" width="${l}" height="${a}" fill="${fill}" stroke="${C.linha}" stroke-width="2.5" ${extra}/>`;
+const ret = (x, y, l, a, fill, extra = '') => `<rect x="${x}" y="${y}" width="${l}" height="${a}" fill="${fill}" stroke="${C.linha}" ${extra.includes('stroke-width') ? '' : 'stroke-width="2.5"'} ${extra}/>`;
 const linha = (x1, y1, x2, y2, l = 2.5, cor = C.linha, extra = '') => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${cor}" stroke-width="${l}" ${extra}/>`;
 const tracejada = (x1, y1, x2, y2) => linha(x1, y1, x2, y2, 2.5, C.linha, 'stroke-dasharray="10 8"');
 // Texto girado (cotas verticais)

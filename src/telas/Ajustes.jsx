@@ -290,7 +290,7 @@ export default function Ajustes() {
             <Interruptor
               id="avancar"
               titulo="Avançar ao responder"
-              descricao="Vai ao próximo item depois de Conforme ou Não se aplica, com a opção Desfazer. Em Não conforme, abre a observação e as fotos."
+              descricao="Vai ao próximo item depois de Conforme ou Não se aplica. Em Não conforme, abre a observação e as fotos."
               ativo={prefs.avancarAoResponder}
               onMudar={v => definirPreferencia('avancarAoResponder', v)}
             />
@@ -311,7 +311,7 @@ export default function Ajustes() {
                 <span>Leitura em voz alta</span>
               </h2>
               <p className={styles.secaoDesc}>
-                O botão Ouvir lê a pergunta, a descrição da ilustração, como medir e a referência, com a voz do próprio aparelho.
+                O botão Ouvir lê a pergunta, a descrição da ilustração, como verificar e a referência, com a voz do próprio aparelho.
               </p>
             </div>
             <Interruptor

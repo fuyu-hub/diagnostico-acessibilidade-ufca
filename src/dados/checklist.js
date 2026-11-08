@@ -50,14 +50,26 @@ export function resumoProgresso(respostas = {}) {
   };
 }
 
+const VALORES_NEGATIVOS = ['nao', 'nao-conforme', 'nao-aplica'];
+
+// Itens ligados a mais de uma triagem (dependeDe em lista): os corrimãos de escada e rampa externas
+const itensConjuntos = triagemId => TODOS_ITENS.filter(i => Array.isArray(i.dependeDe) && i.dependeDe.includes(triagemId));
+
+/** Itens ligados a várias triagens que saem junto com esta: só quando todas as outras já são negativas. */
+function conjuntosQueFecham(triagem, respostas) {
+  return itensConjuntos(triagem?.id)
+    .filter(i => i.dependeDe.every(id => id === triagem.id || VALORES_NEGATIVOS.includes(respostas[id]?.valor)))
+    .map(i => i.id);
+}
+
 /**
  * Todos os itens abaixo de uma triagem, incluindo os de triagens aninhadas,
  * cada um com a triagem que o controla diretamente.
  */
-export function dependentesEmCascata(triagem) {
-  return (triagem?.dependentes || []).flatMap(depId => [
+export function dependentesEmCascata(triagem, respostas = {}) {
+  return [...(triagem?.dependentes || []), ...conjuntosQueFecham(triagem, respostas)].flatMap(depId => [
     { id: depId, origemTriagem: triagem.id },
-    ...dependentesEmCascata(ITENS_POR_ID[depId]),
+    ...dependentesEmCascata(ITENS_POR_ID[depId], respostas),
   ]);
 }
 
@@ -66,7 +78,7 @@ export function dependentesEmCascata(triagem) {
  * Um N/A sem observação nem foto não conta: o resultado da cascata seria o mesmo.
  */
 export function dependentesComDados(triagem, respostas = {}) {
-  return dependentesEmCascata(triagem).map(dep => dep.id).filter(id => {
+  return dependentesEmCascata(triagem, respostas).map(dep => dep.id).filter(id => {
     const resp = respostas[id];
     return resp && ((resp.valor && resp.valor !== 'nao-aplica') || resp.obs || listarFotos(resp).length > 0);
   });
@@ -79,13 +91,15 @@ export function dependentesComDados(triagem, respostas = {}) {
  */
 export function dependentesParaLimpar(triagem, respostas = {}) {
   const valorTriagem = respostas[triagem?.id]?.valor;
-  const triagemNegativa = ['nao', 'nao-conforme', 'nao-aplica'].includes(valorTriagem);
+  const triagemNegativa = VALORES_NEGATIVOS.includes(valorTriagem);
+  const diretos = triagem?.dependentes || [];
+  const conjuntos = itensConjuntos(triagem?.id).map(i => i.id);
   const limpar = [];
 
-  for (const depId of triagem?.dependentes || []) {
+  for (const depId of [...diretos, ...conjuntos]) {
     const resp = respostas[depId];
     const automatica = resp?.automatico ||
-      (triagemNegativa && resp?.valor === 'nao-aplica' && !resp.obs && listarFotos(resp).length === 0);
+      (triagemNegativa && diretos.includes(depId) && resp?.valor === 'nao-aplica' && !resp.obs && listarFotos(resp).length === 0);
     if (automatica) {
       limpar.push(depId, ...dependentesParaLimpar(ITENS_POR_ID[depId], respostas));
     }

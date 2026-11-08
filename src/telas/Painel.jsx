@@ -1,13 +1,13 @@
-import { useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconShieldCheck, IconArrowRight, IconSearch, IconBuilding, IconDownload } from '@tabler/icons-react';
+import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconArrowRight, IconSearch, IconBuilding } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
 import CartaoVistoria from '../componentes/CartaoVistoria';
 import ModalConflito from '../componentes/ModalConflito';
 import { lerArquivoImportacao } from '../dados/exportacao';
 import { resumoProgresso } from '../dados/checklist';
-import { useAplicativo, instalarAplicativo } from '../utilitarios/aplicativo';
+import { useAplicativo, instalarAplicativo, reservarOfertaInstalacao } from '../utilitarios/aplicativo';
 import styles from './Painel.module.css';
 
 const LIMITE_PARA_BUSCA = 6;
@@ -21,7 +21,7 @@ const normalizar = texto => String(texto || '').normalize('NFD').replace(/[\u030
 
 export default function Painel() {
   const app = useAplicativo();
-  const { vistorias, carregando, importarConteudoJson, aplicarResolucaoConflito, ultimoBackup } = useVistoria();
+  const { vistorias, carregando, importarConteudoJson, aplicarResolucaoConflito } = useVistoria();
   const { mostrarToast, mostrarAlerta } = useNotificacao();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
@@ -47,6 +47,19 @@ export default function Painel() {
   }, [vistorias, busca, filtro]);
 
   const progressoUltima = ultimaEmAndamento ? resumoProgresso(ultimaEmAndamento.respostas) : null;
+
+  // Oferta de instalação como notificação; não aparece por cima das boas-vindas
+  useEffect(() => {
+    if (!app.podeInstalar || app.instalado) return;
+    if (document.body.classList.contains('modal-aberto')) return;
+    if (!reservarOfertaInstalacao()) return;
+    mostrarToast('Instale o app para usar mesmo sem internet.', 'info', 12000, {
+      rotulo: 'Instalar',
+      fn: async () => {
+        if (await instalarAplicativo()) mostrarToast('App instalado. Ele aparece junto dos outros apps.', 'sucesso');
+      },
+    });
+  }, [app.podeInstalar, app.instalado, mostrarToast]);
 
   function handleDragOver(e) {
     e.preventDefault();
@@ -129,22 +142,11 @@ export default function Painel() {
             {/* Marca provisória até a logo oficial do app */}
             <span className={styles.marca} aria-hidden="true"><IconBuilding size={26} /></span>
             <div>
-              <span className={styles.eyebrow}>Diagnóstico NBR 9050 · UFCA</span>
+              <span className={styles.eyebrow}>Acessibilidade</span>
               <h1 className={styles.titulo}>Vistorias</h1>
             </div>
           </div>
           <div className={styles.headerAcoes}>
-            {/* Oferta discreta: só aparece quando o navegador permite instalar */}
-            {app.podeInstalar && !app.instalado && (
-              <button type="button" className={styles.btnSobre} onClick={() => instalarAplicativo()}>
-                <IconDownload size={20} aria-hidden="true" />
-                <span>Instalar</span>
-              </button>
-            )}
-            <button type="button" className={styles.btnSobre} onClick={() => navigate('/sobre')}>
-              <IconInfoCircle size={20} aria-hidden="true" />
-              <span>Sobre</span>
-            </button>
             <button
               type="button"
               className={styles.btnSettings}
@@ -214,18 +216,6 @@ export default function Painel() {
           </button>
         </div>
 
-        {/* Lembrete preventivo de backup (§3.1/B4) */}
-        {vistorias.length > 0 && (!ultimoBackup || (Date.now() - new Date(ultimoBackup).getTime()) > 7 * 24 * 60 * 60 * 1000) && (
-          <div role="status" className={styles.avisoBackup}>
-            <IconShieldCheck size={18} color="var(--accent)" aria-hidden="true" />
-            <span>
-              {ultimoBackup
-                ? 'Mais de 7 dias sem backup.'
-                : 'Sem backup: os dados estão só neste aparelho.'}
-            </span>
-            <button type="button" onClick={() => navigate('/ajustes')}>Fazer backup</button>
-          </div>
-        )}
 
         {carregando ? (
           <div className={styles.vazio} style={{ marginTop: 24 }}>
@@ -291,6 +281,12 @@ export default function Painel() {
           </div>
         )}
       </main>
+
+      <footer className={styles.rodape}>
+        <button type="button" className={styles.btnSobre} aria-label="Sobre" title="Sobre" onClick={() => navigate('/sobre')}>
+          <IconInfoCircle size={22} aria-hidden="true" />
+        </button>
+      </footer>
 
       <ModalConflito
         aberto={conflitosFila.length > 0 && indiceConflito < conflitosFila.length}
