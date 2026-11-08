@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { IconMapPin, IconArrowRight, IconListCheck, IconTrash } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { resumoProgresso } from '../dados/checklist';
 import ModalExcluirVistoria from './ModalExcluirVistoria';
+import { useNavegacao } from '../utilitarios/navegacao';
 import styles from './CartaoVistoria.module.css';
 
-export default function CartaoVistoria({ vistoria }) {
-  const navigate = useNavigate();
+// semContinuar: a tela inicial já oferece "Continuar" para esta vistoria, no destaque do topo
+export default function CartaoVistoria({ vistoria, semContinuar = false }) {
+  const { navegar } = useNavegacao();
   const { removerVistoria, exportarVistoria } = useVistoria();
   const respostas = vistoria.respostas || {};
   const { total, respondidos, pct, proximoIndice: primeiroPendenteIdx } = resumoProgresso(respostas);
@@ -16,21 +17,21 @@ export default function CartaoVistoria({ vistoria }) {
 
   function handleAbrirDashboard(e) {
     e?.stopPropagation();
-    navigate(`/vistoria/${vistoria.id}`);
+    navegar(`/vistoria/${vistoria.id}`);
   }
 
   function handleContinuar(e) {
     e?.stopPropagation();
     if (temPendente) {
-      navigate(`/checklist/${vistoria.id}/item/${primeiroPendenteIdx + 1}`);
+      navegar(`/checklist/${vistoria.id}/item/${primeiroPendenteIdx + 1}`);
     } else {
-      navigate(`/checklist/${vistoria.id}/resultado`);
+      navegar(`/checklist/${vistoria.id}/resultado`);
     }
   }
 
   function handleVerSecoes(e) {
     e?.stopPropagation();
-    navigate(`/checklist/${vistoria.id}/itens`);
+    navegar(`/checklist/${vistoria.id}/itens`);
   }
 
   const [modalAberto, setModalAberto] = useState(false);
@@ -109,7 +110,7 @@ export default function CartaoVistoria({ vistoria }) {
           <IconListCheck size={16} /> Seções
         </button>
 
-        <button
+        {!semContinuar && <button
           type="button"
           className={`btn-nav ${ativa ? 'primario' : ''} ${styles.btnContinuar}`}
           onClick={handleContinuar}
@@ -121,7 +122,7 @@ export default function CartaoVistoria({ vistoria }) {
               ? 'Continuar'
               : 'Ver Resultado'}
           <IconArrowRight size={16} />
-        </button>
+        </button>}
       </div>
 
       <ModalExcluirVistoria

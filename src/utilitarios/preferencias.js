@@ -7,6 +7,7 @@ export const PREFERENCIAS_PADRAO = Object.freeze({
   tamanhoTexto: 100,          // 100 | 115 | 130 | 150 (%)
   reduzirMovimento: false,
   avancarAoResponder: false,  // após Conforme ou N/A, vai ao próximo item
+  atalhosTeclado: true,       // teclas de uma letra na tela de pergunta (WCAG 2.1.4)
   vibracao: true,
   lerAoAbrir: false,          // leitura em voz alta ao abrir cada item
   velocidadeVoz: 1,           // 0.8 | 1 | 1.25

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconArrowRight, IconSearch, IconBuilding } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
@@ -8,6 +7,7 @@ import ModalConflito from '../componentes/ModalConflito';
 import { lerArquivoImportacao } from '../dados/exportacao';
 import { resumoProgresso } from '../dados/checklist';
 import { useAplicativo, instalarAplicativo, reservarOfertaInstalacao } from '../utilitarios/aplicativo';
+import { useNavegacao } from '../utilitarios/navegacao';
 import styles from './Painel.module.css';
 
 const LIMITE_PARA_BUSCA = 6;
@@ -23,7 +23,7 @@ export default function Painel() {
   const app = useAplicativo();
   const { vistorias, carregando, importarConteudoJson, aplicarResolucaoConflito } = useVistoria();
   const { mostrarToast, mostrarAlerta } = useNotificacao();
-  const navigate = useNavigate();
+  const { navegar } = useNavegacao();
   const fileInputRef = useRef(null);
 
   const [conflitosFila, setConflitosFila] = useState([]);
@@ -152,7 +152,7 @@ export default function Painel() {
               className={styles.btnSettings}
               aria-label="Ajustes"
               title="Ajustes"
-              onClick={() => navigate('/ajustes')}
+              onClick={() => navegar('/ajustes')}
             >
               <IconSettings size={22} aria-hidden="true" />
             </button>
@@ -180,7 +180,7 @@ export default function Painel() {
             <button
               type="button"
               className={`btn-nav primario ${styles.btnContinuar}`}
-              onClick={() => navigate(
+              onClick={() => navegar(
                 progressoUltima.proximoIndice >= 0
                   ? `/checklist/${ultimaEmAndamento.id}/item/${progressoUltima.proximoIndice + 1}`
                   : `/checklist/${ultimaEmAndamento.id}/resultado`
@@ -192,7 +192,7 @@ export default function Painel() {
         )}
 
         <div className={styles.acoes}>
-          <button className={`cartao ${styles.btnNova}`} onClick={() => navigate('/nova')}>
+          <button className={`cartao ${styles.btnNova}`} onClick={() => navegar('/nova')}>
             <div className={styles.iconePlus}>
               <IconPlus size={28} aria-hidden="true" />
             </div>
@@ -272,7 +272,7 @@ export default function Painel() {
                   <h2 className="label-secao">{rotulo}</h2>
                   <div className={styles.gridVistorias}>
                     {doGrupo.map(v => (
-                      <CartaoVistoria key={v.id || v.vistoriaId} vistoria={v} />
+                      <CartaoVistoria key={v.id || v.vistoriaId} vistoria={v} semContinuar={v === ultimaEmAndamento} />
                     ))}
                   </div>
                 </section>
@@ -283,7 +283,7 @@ export default function Painel() {
       </main>
 
       <footer className={styles.rodape}>
-        <button type="button" className={styles.btnSobre} aria-label="Sobre" title="Sobre" onClick={() => navigate('/sobre')}>
+        <button type="button" className={styles.btnSobre} aria-label="Sobre" title="Sobre" onClick={() => navegar('/sobre')}>
           <IconInfoCircle size={22} aria-hidden="true" />
         </button>
       </footer>

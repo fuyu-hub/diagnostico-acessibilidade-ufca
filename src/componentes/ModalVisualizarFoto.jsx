@@ -3,6 +3,7 @@ import { IconX, IconDownload, IconArrowRight, IconNotes, IconTrash } from '@tabl
 import { baixarImagemJpg } from '../utilitarios/imagem';
 import { useTravaScroll } from '../utilitarios/travaScroll';
 import { useFocusTrap } from '../utilitarios/focusTrap';
+import { useFecharComVoltar } from '../utilitarios/navegacao';
 import styles from './ModalVisualizarFoto.module.css';
 
 export default function ModalVisualizarFoto({
@@ -27,6 +28,7 @@ export default function ModalVisualizarFoto({
 
   useTravaScroll(aberto);
   useFocusTrap(aberto, modalRef);
+  useFecharComVoltar(aberto, onFechar);
 
   useEffect(() => {
     function handleKeyDown(e) {

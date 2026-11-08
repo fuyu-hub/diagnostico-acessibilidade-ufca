@@ -135,7 +135,7 @@
 
   --bg-warning: rgba(217, 119, 6, 0.10);
   --border-warning: rgba(217, 119, 6, 0.35);
-  --text-warning: #b45309;
+  --text-warning: #92400e;
 
   /* Não se aplica (N/A) neutro e elegante no claro */
   --bg-na: rgba(100, 116, 139, 0.08);
@@ -150,7 +150,7 @@
   --iaa-critico-dot: #ef4444;
 
   --iaa-insuficiente: #c2410c;
-  --iaa-insuficiente-nota: #ea580c;
+  --iaa-insuficiente-nota: #c2410c;
   --iaa-insuficiente-bg: rgba(249, 115, 22, 0.09);
   --iaa-insuficiente-border: rgba(249, 115, 22, 0.28);
   --iaa-insuficiente-dot: #f97316;

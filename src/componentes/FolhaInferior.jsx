@@ -2,6 +2,7 @@ import { useEffect, useId, useRef } from 'react';
 import { IconX } from '@tabler/icons-react';
 import { useTravaScroll } from '../utilitarios/travaScroll';
 import { useFocusTrap } from '../utilitarios/focusTrap';
+import { useFecharComVoltar } from '../utilitarios/navegacao';
 import styles from './FolhaInferior.module.css';
 
 /**
@@ -14,6 +15,7 @@ export default function FolhaInferior({ aberto, titulo, onFechar, children, roda
 
   useTravaScroll(aberto);
   useFocusTrap(aberto, ref);
+  useFecharComVoltar(aberto, onFechar);
 
   useEffect(() => {
     if (!aberto) return;

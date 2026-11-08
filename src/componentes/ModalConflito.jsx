@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { IconAlertTriangle, IconReplace, IconCopy, IconGitMerge, IconX } from '@tabler/icons-react';
 import { useTravaScroll } from '../utilitarios/travaScroll';
 import { useFocusTrap } from '../utilitarios/focusTrap';
+import { useFecharComVoltar } from '../utilitarios/navegacao';
 import styles from './ModalConflito.module.css';
 
 /**
@@ -20,6 +21,7 @@ export default function ModalConflito({
 
   useTravaScroll(aberto);
   useFocusTrap(aberto, modalRef);
+  useFecharComVoltar(aberto, onCancelarLote);
 
   useEffect(() => {
     function handleKeyDown(e) {

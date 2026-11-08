@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   IconVolume, IconVolumeOff, IconCheck, IconX, IconMinus, IconInfoCircle,
   IconShieldCheck, IconDownload, IconUpload, IconPalette, IconChevronRight,
@@ -33,6 +32,7 @@ import {
 import { useLeituraVoz, vozSuportada, vozPortugues } from '../utilitarios/leituraVoz';
 import { useAplicativo, instalarAplicativo, atualizarAgora, ehIOS } from '../utilitarios/aplicativo';
 import { VERSAO_APP } from '../utilitarios/versaoApp';
+import { useNavegacao } from '../utilitarios/navegacao';
 import styles from './Ajustes.module.css';
 
 /** Interruptor (liga/desliga) com rótulo e descrição ligados ao controle. */
@@ -89,7 +89,7 @@ function GrupoOpcoes({ nome, titulo, descricao, opcoes, valor, onMudar }) {
 export default function Ajustes() {
   const [somAtivo, setSomAtivo] = useState(isSomHabilitado);
   const fileInputRef = useRef(null);
-  const navigate = useNavigate();
+  const { navegar } = useNavegacao();
   const [tema, setTema] = useState(obterPreferenciaTema);
   const [altoContraste, setAltoContraste] = useState(obterAltoContraste);
   const prefs = usePreferencias();
@@ -293,6 +293,13 @@ export default function Ajustes() {
               descricao="Vai ao próximo item depois de Conforme ou Não se aplica. Em Não conforme, abre a observação e as fotos."
               ativo={prefs.avancarAoResponder}
               onMudar={v => definirPreferencia('avancarAoResponder', v)}
+            />
+            <Interruptor
+              id="atalhos"
+              titulo="Atalhos de teclado"
+              descricao="Com teclado físico, as teclas 1, 2 e 3 respondem o item e a tecla O ouve o texto."
+              ativo={prefs.atalhosTeclado}
+              onMudar={v => definirPreferencia('atalhosTeclado', v)}
             />
             <Interruptor
               id="vibracao"
@@ -544,7 +551,7 @@ export default function Ajustes() {
             </div>
           </section>
 
-          <button type="button" className={styles.linhaSobre} onClick={() => navigate('/sobre')}>
+          <button type="button" className={styles.linhaSobre} onClick={() => navegar('/sobre')}>
             <IconInfoCircle size={20} aria-hidden="true" />
             <span>Sobre o projeto e a equipe</span>
             <IconChevronRight size={18} aria-hidden="true" />

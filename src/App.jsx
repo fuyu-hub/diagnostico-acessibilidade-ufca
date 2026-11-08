@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { BrowserRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import LimiteErro from './componentes/LimiteErro';
 import { NotificacaoProvider } from './contexto/NotificacaoContext';
 import { VistoriaProvider } from './contexto/VistoriaContext';
@@ -15,13 +15,31 @@ import NaoEncontrada from './telas/NaoEncontrada';
 import ModalBoasVindas from './componentes/ModalBoasVindas';
 import AtualizacaoApp from './componentes/AtualizacaoApp';
 
-// Cada tela abre do topo, em vez de herdar a rolagem da tela anterior
-function RolarAoTopo() {
-  const { pathname } = useLocation();
+// Ao trocar de tela: abre do topo (ao voltar, o navegador restaura a rolagem), atualiza o título
+// da aba e leva o foco ao título da tela, para o leitor de tela anunciar onde a pessoa está.
+function AoTrocarDeTela() {
+  const { pathname, search } = useLocation();
+  const tipo = useNavigationType();
+  const primeira = useRef(true);
+  const secao = new URLSearchParams(search).get('secao');
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (tipo !== 'POP') window.scrollTo(0, 0);
+
+    const titulo = document.querySelector('h1');
+    document.title = titulo?.textContent ? `${titulo.textContent} · Acessibilidade` : 'Acessibilidade';
+
+    if (primeira.current) {
+      primeira.current = false;
+      return;
+    }
+    // O item cuida do próprio foco, na pergunta
+    if (titulo && !pathname.includes('/item/')) {
+      titulo.tabIndex = -1;
+      titulo.focus({ preventScroll: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, secao]);
 
   return null;
 }
@@ -33,7 +51,7 @@ export default function App() {
         <VistoriaProvider>
           <ModalBoasVindas />
           <BrowserRouter>
-            <RolarAoTopo />
+            <AoTrocarDeTela />
             <AtualizacaoApp />
             <Routes>
               <Route path="/" element={<Painel />} />
@@ -43,7 +61,6 @@ export default function App() {
               <Route path="/vistoria/:id" element={<DashboardVistoria />} />
               <Route path="/checklist/:id/itens" element={<ListaItens />} />
               <Route path="/checklist/:id/item/:n" element={<ItemChecklist />} />
-              <Route path="/checklist/:id/resumo-bloco" element={<Resultado />} />
               <Route path="/checklist/:id/resultado" element={<Resultado />} />
               <Route path="*" element={<NaoEncontrada />} />
             </Routes>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import {
   IconMapPin, IconCalendar, IconUserPlus, IconTrash,
   IconArrowRight, IconListCheck, IconFileTypePdf, IconTable,
@@ -8,13 +8,14 @@ import {
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
-import { TODOS_ITENS, ITENS_TECNICOS, SECOES, ITENS_POR_SECAO } from '../dados/checklist';
+import { ITENS_TECNICOS, SECOES, ITENS_POR_SECAO, resumoProgresso } from '../dados/checklist';
 import { listarFotos, camposFotos } from '../dados/fotos.js';
 import { calcularIndiceItens } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
 import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/SeletorNivel';
 import ModalExcluirVistoria from '../componentes/ModalExcluirVistoria';
 import ModalGaleriaVistoria from '../componentes/ModalGaleriaVistoria';
+import { useNavegacao } from '../utilitarios/navegacao';
 import styles from './DashboardVistoria.module.css';
 
 const ABAS = [
@@ -32,7 +33,7 @@ function teclaAcionar(fn) {
 
 export default function DashboardVistoria() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const { navegar } = useNavegacao();
   const { getVistoria, carregando } = useVistoria();
 
   if (carregando) {
@@ -47,8 +48,8 @@ export default function DashboardVistoria() {
         <Topbar titulo="Vistoria não encontrada" voltar="/" />
         <div className="tela-body" style={{ padding: '32px 20px', textAlign: 'center' }}>
           <p style={{ color: 'var(--text-secondary)' }}>A vistoria solicitada não existe ou foi removida.</p>
-          <button className="btn-nav primario" onClick={() => navigate('/')} style={{ marginTop: 20 }}>
-            Voltar ao Painel
+          <button className="btn-nav primario" onClick={() => navegar('/')} style={{ marginTop: 20 }}>
+            Voltar ao Início
           </button>
         </div>
       </div>
@@ -60,7 +61,7 @@ export default function DashboardVistoria() {
 }
 
 function ConteudoVistoria({ id, vistoria }) {
-  const navigate = useNavigate();
+  const { navegar } = useNavegacao();
   const [searchParams, setSearchParams] = useSearchParams();
   const { atualizarVistoria, removerVistoria, exportarVistoria, responderItem } = useVistoria();
   const { mostrarToast, mostrarConfirmacao } = useNotificacao();
@@ -106,7 +107,7 @@ function ConteudoVistoria({ id, vistoria }) {
   function handleConfirmarExclusao() {
     setModalExcluirAberto(false);
     removerVistoria(id);
-    navigate('/');
+    navegar('/');
   }
 
   const [form, setForm] = useState({
@@ -154,15 +155,17 @@ function ConteudoVistoria({ id, vistoria }) {
 
   const indice = calcularIndiceItens(ITENS_TECNICOS, respostas);
 
-  const primeiroPendente = ITENS_TECNICOS.find(item => !respostas[item.id]?.valor);
-  const primeiroPendenteIdx = primeiroPendente ? TODOS_ITENS.findIndex(i => i.id === primeiroPendente.id) : -1;
+  const primeiroPendenteIdx = resumoProgresso(respostas).proximoIndice;
   const temPendente = primeiroPendenteIdx !== -1;
   const ativa = Object.keys(respostas).length > 0;
 
-  // Seções com nota, da pior para a melhor (as 3 que mais precisam de atenção)
+  // Só seções com não conformidade, da pior para a melhor (no máximo 3)
   const secoesCriticas = SECOES
-    .map(s => ({ s, ind: calcularIndiceItens((ITENS_POR_SECAO[s.id] || []).filter(i => i.tipo === 'tecnico'), respostas) }))
-    .filter(x => x.ind.total > 0)
+    .map(s => {
+      const itens = (ITENS_POR_SECAO[s.id] || []).filter(i => i.tipo === 'tecnico');
+      return { s, ind: calcularIndiceItens(itens, respostas), parcial: itens.some(i => !respostas[i.id]?.valor) };
+    })
+    .filter(x => x.ind.nc > 0)
     .sort((a, b) => a.ind.nota - b.ind.nota)
     .slice(0, 3);
 
@@ -213,8 +216,10 @@ function ConteudoVistoria({ id, vistoria }) {
   async function baixarBackup() {
     try {
       await exportarVistoria(vistoria.id);
+      mostrarToast('Backup salvo na pasta Downloads.', 'sucesso', 6000);
     } catch (err) {
       console.error('Erro ao exportar:', err);
+      mostrarToast('Não foi possível fazer o backup.', 'erro');
     }
   }
 
@@ -222,9 +227,10 @@ function ConteudoVistoria({ id, vistoria }) {
     if (gerandoPdf) return;
     setGerandoPdf(true);
     try {
+      mostrarToast('Gerando o relatório em PDF…', 'info', 3000);
       const { gerarPdfVistoria } = await import('../relatorios/geradorPdf');
       await gerarPdfVistoria(vistoria);
-      mostrarToast('Relatório PDF baixado com sucesso!', 'sucesso');
+      mostrarToast('Relatório PDF salvo na pasta Downloads.', 'sucesso', 6000);
     } catch (err) {
       console.error('Erro ao gerar PDF:', err);
       mostrarToast('Não foi possível gerar o relatório PDF.', 'erro');
@@ -237,9 +243,10 @@ function ConteudoVistoria({ id, vistoria }) {
     if (gerandoPlanilha) return;
     setGerandoPlanilha(true);
     try {
+      mostrarToast('Gerando a planilha…', 'info', 3000);
       const { gerarPlanilhaVistoria } = await import('../relatorios/geradorExcel');
       await gerarPlanilhaVistoria(vistoria);
-      mostrarToast('Planilha Excel baixada com sucesso!', 'sucesso');
+      mostrarToast('Planilha salva na pasta Downloads.', 'sucesso', 6000);
     } catch (err) {
       console.error('Erro ao gerar planilha:', err);
       mostrarToast('Não foi possível gerar a planilha.', 'erro');
@@ -250,17 +257,17 @@ function ConteudoVistoria({ id, vistoria }) {
 
   function handleContinuar() {
     if (temPendente) {
-      navigate(`/checklist/${id}/item/${primeiroPendenteIdx + 1}`);
+      navegar(`/checklist/${id}/item/${primeiroPendenteIdx + 1}`);
     } else {
-      navigate(`/checklist/${id}/resultado`);
+      navegar(`/checklist/${id}/resultado`);
     }
   }
 
   return (
     <div className="app-shell">
-      <Topbar titulo="Painel da Vistoria" voltar="/" />
+      <Topbar titulo="Painel da Vistoria" inicio />
 
-      <div className="tela-body" style={{ padding: '24px 20px 48px' }}>
+      <main className="tela-body" style={{ padding: '24px 20px 48px' }}>
         <div className={styles.container}>
           {/* Cabeçalho da Vistoria */}
           <div className={styles.cabecalhoVistoria}>
@@ -360,7 +367,7 @@ function ConteudoVistoria({ id, vistoria }) {
               <button
                 type="button"
                 className={`btn-nav ${styles.btnAcaoSecundario}`}
-                onClick={() => navigate(`/checklist/${id}/itens`)}
+                onClick={() => navegar(`/checklist/${id}/itens`)}
               >
                 <IconListCheck size={18} />
                 Seções
@@ -370,10 +377,10 @@ function ConteudoVistoria({ id, vistoria }) {
                 <button
                   type="button"
                   className={`btn-nav ${styles.btnAcaoSecundario}`}
-                  onClick={() => navigate(`/checklist/${id}/resultado`)}
+                  onClick={() => navegar(`/checklist/${id}/resultado`)}
                 >
                   <IconChartBar size={18} />
-                  Índice
+                  Resultado
                 </button>
               )}
 
@@ -396,15 +403,15 @@ function ConteudoVistoria({ id, vistoria }) {
             <section className={styles.cardDashboard} aria-labelledby="titulo-criticas">
               <h3 id="titulo-criticas" className={styles.secaoTitulo}>Seções que mais precisam de atenção</h3>
               <ul className={styles.listaCriticas}>
-                {secoesCriticas.map(({ s, ind }) => (
+                {secoesCriticas.map(({ s, ind, parcial }) => (
                   <li key={s.id}>
-                    <button type="button" className={styles.linhaCritica} onClick={() => navigate(`/checklist/${id}/itens?secao=${s.id}`)}>
+                    <button type="button" className={styles.linhaCritica} onClick={() => navegar(`/checklist/${id}/itens?secao=${s.id}`)}>
                       <span className={styles.criticaNome}>{s.nome}</span>
                       <strong style={{ color: ind.classificacao.corNota || ind.classificacao.cor }}>{ind.classificacao.notaFormatada}</strong>
                       <span className={styles.barraNota} aria-hidden="true">
                         <span style={{ width: `${ind.nota * 10}%`, background: ind.classificacao.cor }} />
                       </span>
-                      <span className={styles.criticaRotulo}>{ind.classificacao.rotulo.toLowerCase()}</span>
+                      <span className={styles.criticaRotulo}>{ind.classificacao.rotulo.toLowerCase()}{parcial ? ' · parcial' : ''}</span>
                     </button>
                   </li>
                 ))}
@@ -424,8 +431,9 @@ function ConteudoVistoria({ id, vistoria }) {
 
             <form onSubmit={handleSalvar}>
               <div style={{ marginBottom: 16 }}>
-                <label className="label-secao">Nome da escola / instituição *</label>
+                <label className="label-secao" htmlFor="ficha-1">Nome da escola / instituição *</label>
                 <input
+                  id="ficha-1"
                   type="text"
                   placeholder="Ex: Universidade Federal do Cariri - UFCA"
                   value={form.nome}
@@ -436,8 +444,9 @@ function ConteudoVistoria({ id, vistoria }) {
 
               <div className="form-grid-2" style={{ marginBottom: 16 }}>
                 <div className="col-span-2">
-                  <label className="label-secao">Endereço completo</label>
+                  <label className="label-secao" htmlFor="ficha-2">Endereço completo</label>
                   <input
+                  id="ficha-2"
                     type="text"
                     placeholder="Ex: Av. Tenente Raimundo Rocha, 1639"
                     value={form.endereco}
@@ -446,8 +455,9 @@ function ConteudoVistoria({ id, vistoria }) {
                 </div>
 
                 <div>
-                  <label className="label-secao">Bairro</label>
+                  <label className="label-secao" htmlFor="ficha-3">Bairro</label>
                   <input
+                  id="ficha-3"
                     type="text"
                     placeholder="Ex: Cidade Universitária"
                     value={form.bairro}
@@ -456,8 +466,9 @@ function ConteudoVistoria({ id, vistoria }) {
                 </div>
 
                 <div>
-                  <label className="label-secao">Cidade / Município</label>
+                  <label className="label-secao" htmlFor="ficha-4">Cidade / Município</label>
                   <input
+                  id="ficha-4"
                     type="text"
                     placeholder="Ex: Juazeiro do Norte, CE"
                     value={form.cidade}
@@ -486,8 +497,9 @@ function ConteudoVistoria({ id, vistoria }) {
 
               <div className="form-grid-2" style={{ marginBottom: 20 }}>
                 <div>
-                  <label className="label-secao">Número de alunos (aprox.)</label>
+                  <label className="label-secao" htmlFor="ficha-5">Número de alunos (aprox.)</label>
                   <input
+                  id="ficha-5"
                     type="number"
                     placeholder="Ex: 2500"
                     value={form.numAlunos}
@@ -496,8 +508,9 @@ function ConteudoVistoria({ id, vistoria }) {
                 </div>
 
                 <div>
-                  <label className="label-secao">Número de pavimentos</label>
+                  <label className="label-secao" htmlFor="ficha-6">Número de pavimentos</label>
                   <input
+                  id="ficha-6"
                     type="number"
                     placeholder="Ex: 3"
                     value={form.numPavimentos}
@@ -514,20 +527,22 @@ function ConteudoVistoria({ id, vistoria }) {
 
                 <div className={styles.gridHorarios}>
                   {/* Card: Início */}
-                  <div className={styles.cardHorario}>
-                    <label className={styles.cardHorarioTitulo}>Início da Vistoria</label>
+                  <div className={styles.cardHorario} role="group" aria-labelledby="grupo-inicio">
+                    <span id="grupo-inicio" className={styles.cardHorarioTitulo}>Início da Vistoria</span>
                     <div className={styles.cardHorarioInputs}>
                       <div>
-                        <label className="label-secao">Data</label>
+                        <label className="label-secao" htmlFor="ficha-7">Data</label>
                         <input
+                  id="ficha-7"
                           type="date"
                           value={form.data}
                           onChange={e => setCampo('data', e.target.value)}
                         />
                       </div>
                       <div>
-                        <label className="label-secao">Horário</label>
+                        <label className="label-secao" htmlFor="ficha-8">Horário</label>
                         <input
+                  id="ficha-8"
                           type="time"
                           value={form.horarioInicio}
                           onChange={e => setCampo('horarioInicio', e.target.value)}
@@ -537,21 +552,23 @@ function ConteudoVistoria({ id, vistoria }) {
                   </div>
 
                   {/* Card: Término */}
-                  <div className={styles.cardHorario}>
-                    <label className={styles.cardHorarioTitulo}>Término da Vistoria</label>
+                  <div className={styles.cardHorario} role="group" aria-labelledby="grupo-termino">
+                    <span id="grupo-termino" className={styles.cardHorarioTitulo}>Término da Vistoria</span>
                     <div className={styles.cardHorarioInputs}>
                       <div>
-                        <label className="label-secao">Data</label>
+                        <label className="label-secao" htmlFor="ficha-9">Data</label>
                         <input
+                  id="ficha-9"
                           type="date"
                           value={form.dataTermino}
                           onChange={e => setCampo('dataTermino', e.target.value)}
                         />
                       </div>
                       <div>
-                        <label className="label-secao">Horário</label>
+                        <label className="label-secao" htmlFor="ficha-hora-termino">Horário</label>
                         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                           <input
+                            id="ficha-hora-termino"
                             type="time"
                             value={form.horarioTermino}
                             onChange={e => setCampo('horarioTermino', e.target.value)}
@@ -582,12 +599,13 @@ function ConteudoVistoria({ id, vistoria }) {
                 </div>
 
                 <div>
-                  <label className="label-secao">Equipe de Avaliadores</label>
+                  <span className="label-secao">Equipe de Avaliadores</span>
                   {form.avaliadores.map((avaliador, i) => (
                     <div key={i} className={styles.linhaAvaliador}>
                       <input
                         type="text"
                         placeholder={`Nome do avaliador ${i + 1}`}
+                        aria-label={`Nome do avaliador ${i + 1}`}
                         value={avaliador}
                         onChange={e => setAvaliador(i, e.target.value)}
                         style={{ flex: 1 }}
@@ -641,7 +659,7 @@ function ConteudoVistoria({ id, vistoria }) {
             <div>
               <h3 className={styles.secaoTitulo}>Exportar e Relatórios</h3>
               <p className={styles.secaoSubtitulo}>
-                Baixe uma cópia de segurança ou visualize os relatórios desta vistoria.
+                Baixe uma cópia de segurança ou gere os relatórios desta vistoria. Os arquivos vão para a pasta Downloads.
               </p>
             </div>
 
@@ -732,7 +750,7 @@ function ConteudoVistoria({ id, vistoria }) {
           )}
           </div>
         </div>
-      </div>
+      </main>
 
       <ModalExcluirVistoria
         aberto={modalExcluirAberto}

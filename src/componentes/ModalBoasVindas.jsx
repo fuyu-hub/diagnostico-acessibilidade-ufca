@@ -29,6 +29,7 @@ export default function ModalBoasVindas() {
       console.warn('Não foi possível registrar as boas-vindas:', err);
     }
     setAberto(false);
+    setTimeout(() => document.querySelector('h1')?.focus?.(), 0);
   }
 
   useEffect(() => {
@@ -51,7 +52,7 @@ export default function ModalBoasVindas() {
         aria-modal="true"
         aria-labelledby="boas-vindas-titulo"
       >
-        <div className={styles.rolagem}>
+        <div className={styles.rolagem} tabIndex={0} role="region" aria-label="Informações do projeto">
           <span className={styles.eyebrow}>Projeto de extensão · UFCA</span>
           <h2 id="boas-vindas-titulo" className={styles.titulo}>Boas-vindas ao Diagnóstico NBR 9050</h2>
           <ConteudoProjeto />

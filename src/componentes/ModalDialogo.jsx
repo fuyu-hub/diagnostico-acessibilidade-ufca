@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { IconAlertTriangle, IconAlertCircle, IconInfoCircle } from '@tabler/icons-react';
 import { useTravaScroll } from '../utilitarios/travaScroll';
 import { useFocusTrap } from '../utilitarios/focusTrap';
+import { useFecharComVoltar } from '../utilitarios/navegacao';
 import styles from './ModalDialogo.module.css';
 
 export default function ModalDialogo({ dialogo }) {
@@ -9,6 +10,8 @@ export default function ModalDialogo({ dialogo }) {
 
   useTravaScroll(!!dialogo);
   useFocusTrap(!!dialogo, modalRef);
+  // Voltar com uma confirmação aberta equivale a cancelar
+  useFecharComVoltar(!!dialogo, () => (dialogo?.tipo === 'confirmacao' ? dialogo.onCancelar?.() : dialogo?.onConfirmar?.()));
 
   useEffect(() => {
     function handleKeyDown(e) {

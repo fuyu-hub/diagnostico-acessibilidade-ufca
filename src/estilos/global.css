@@ -165,6 +165,19 @@ select {
   padding-right: 44px;
 }
 
+h1:focus { outline: none; }
+
+/* Foco visível também nas partes internas dos campos de data e hora */
+input::-webkit-datetime-edit-day-field:focus,
+input::-webkit-datetime-edit-month-field:focus,
+input::-webkit-datetime-edit-year-field:focus,
+input::-webkit-datetime-edit-hour-field:focus,
+input::-webkit-datetime-edit-minute-field:focus {
+  background: var(--accent);
+  color: #ffffff;
+  outline: none;
+}
+
 input::placeholder, textarea::placeholder {
   color: var(--text-muted);
 }

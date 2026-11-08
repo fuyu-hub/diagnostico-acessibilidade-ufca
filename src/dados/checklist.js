@@ -34,13 +34,20 @@ export const ITENS_TECNICOS = TODOS_ITENS.filter(i => i.tipo === 'tecnico');
 
 export const totalItens = TODOS_ITENS.length;
 
+const NUMERO_TECNICO = new Map(ITENS_TECNICOS.map((item, i) => [item.id, i + 1]));
+
+/** Número que a pessoa vê no item ("Item 6 de 179"); triagens não têm número. */
+export const numeroItem = item => NUMERO_TECNICO.get(item?.id) ?? null;
+
 /**
- * Progresso de uma vistoria e posição, na lista completa, do primeiro item técnico sem resposta (-1 se não houver)
+ * Progresso de uma vistoria e posição, na lista completa, do próximo item sem resposta, triagens incluídas.
+ * Devolve -1 quando não resta item técnico: uma triagem sobrando não impede ver o resultado.
  */
 export function resumoProgresso(respostas = {}) {
   const total = ITENS_TECNICOS.length;
   const respondidos = ITENS_TECNICOS.filter(item => respostas[item.id]?.valor).length;
-  const pendente = ITENS_TECNICOS.find(item => !respostas[item.id]?.valor);
+  const restaTecnico = ITENS_TECNICOS.some(item => !respostas[item.id]?.valor);
+  const pendente = restaTecnico ? TODOS_ITENS.find(item => !respostas[item.id]?.valor) : null;
 
   return {
     total,

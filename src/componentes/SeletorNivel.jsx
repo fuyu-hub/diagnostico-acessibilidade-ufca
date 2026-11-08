@@ -35,6 +35,8 @@ export default function SeletorNivel({
   const [aberto, setAberto] = useState(false);
   const idBase = useId();
   const containerRef = useRef(null);
+  const gatilhoRef = useRef(null);
+  const painelRef = useRef(null);
 
   // Lista padrão conforme o modo se opções não forem fornecidas explicitamente
   const listaOpcoes = opcoes || (multi ? OPCOES_NIVEL_ENSINO : OPCOES_REDE);
@@ -65,6 +67,7 @@ export default function SeletorNivel({
     function handleKeyDown(e) {
       if (e.key === 'Escape') {
         setAberto(false);
+        gatilhoRef.current?.focus();
       }
     }
 
@@ -78,9 +81,23 @@ export default function SeletorNivel({
     };
   }, [aberto]);
 
+  // Ao abrir, o foco entra nas opções
+  useEffect(() => {
+    if (aberto) painelRef.current?.querySelector('[role="option"]')?.focus();
+  }, [aberto]);
+
   function handleSelecionarUnico(id) {
     onChange?.(id);
     setAberto(false);
+    gatilhoRef.current?.focus();
+  }
+
+  function teclasLista(e) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const opcoesDom = [...e.currentTarget.querySelectorAll('[role="option"]')];
+    const passo = e.key === 'ArrowDown' ? 1 : -1;
+    opcoesDom[(opcoesDom.indexOf(document.activeElement) + passo + opcoesDom.length) % opcoesDom.length]?.focus();
   }
 
   function toggleOpcao(id) {
@@ -124,7 +141,9 @@ export default function SeletorNivel({
       {label && <span id={`${idBase}-rotulo`} className="label-secao">{label}</span>}
 
       <button
+        ref={gatilhoRef}
         type="button"
+        aria-invalid={erro ? true : undefined}
         className={`${styles.gatilho} ${aberto ? styles.gatilhoAberto : ''}`}
         onClick={() => setAberto(prev => !prev)}
         aria-haspopup="listbox"
@@ -179,6 +198,7 @@ export default function SeletorNivel({
 
       {aberto && (
         <div
+          ref={painelRef}
           className={styles.painelOpcoes}
           role="listbox"
           aria-multiselectable={multi}
@@ -187,7 +207,7 @@ export default function SeletorNivel({
             <span>{multi ? 'Selecione uma ou mais opções' : 'Selecione uma opção'}</span>
           </div>
 
-          <div className={styles.lista}>
+          <div className={styles.lista} onKeyDown={teclasLista}>
             {listaOpcoes.map(opcao => {
               const selecionado = multi
                 ? listaValores.includes(opcao.id)
@@ -245,7 +265,7 @@ export default function SeletorNivel({
               <button
                 type="button"
                 className={styles.btnConcluir}
-                onClick={() => setAberto(false)}
+                onClick={() => { setAberto(false); gatilhoRef.current?.focus(); }}
               >
                 Concluir seleção
               </button>

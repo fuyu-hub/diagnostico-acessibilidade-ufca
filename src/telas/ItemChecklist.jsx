@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   IconCheck, IconX, IconMinus, IconBulb, IconRuler2, IconBook,
-  IconCamera, IconTrash, IconListCheck, IconFilter, IconChevronLeft, IconChevronRight,
+  IconCamera, IconTrash, IconHome, IconFilter, IconChevronLeft, IconChevronRight,
   IconPhoto, IconAlertCircle, IconVolume, IconPlayerStopFilled,
   IconPlayerPauseFilled, IconPlayerPlayFilled, IconHelpCircle,
 } from '@tabler/icons-react';
@@ -10,7 +10,7 @@ import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
 import DESCRICOES_IMAGENS from '../dados/imagens.json';
 import {
-  TODOS_ITENS, ITENS_TECNICOS, SECOES,
+  TODOS_ITENS, ITENS_TECNICOS, SECOES, numeroItem,
   dependentesComDados, dependentesEmCascata, dependentesParaLimpar,
 } from '../dados/checklist';
 import { listarFotos, ehFotoExibivel } from '../dados/fotos.js';
@@ -23,6 +23,7 @@ import FolhaInferior from '../componentes/FolhaInferior';
 import ModalVisualizarFoto from '../componentes/ModalVisualizarFoto';
 import Topbar from '../componentes/Topbar';
 import { escolherIlustracao, useDuasColunas } from '../dados/ilustracoes.js';
+import { useNavegacao, lembrarItemNaLista } from '../utilitarios/navegacao';
 import styles from './ItemChecklist.module.css';
 
 const OPCOES_TECNICO = [
@@ -53,7 +54,7 @@ function valorExibido(item, valor) {
 
 export default function ItemChecklist() {
   const { id, n } = useParams();
-  const navigate = useNavigate();
+  const { navegar, voltar } = useNavegacao();
   const { getVistoria, responderItem, salvando, carregando } = useVistoria();
   const { mostrarConfirmacao, mostrarToast } = useNotificacao();
   const prefs = usePreferencias();
@@ -73,18 +74,20 @@ export default function ItemChecklist() {
   const [fotoAberta, setFotoAberta] = useState(null);
   const [mensagemAria, setMensagemAria] = useState('');
   const [salvoVisivel, setSalvoVisivel] = useState(false);
+  const [fotoRemovida, setFotoRemovida] = useState(null); // { lista, indice, foto }: para Desfazer
 
   const timerAvanco = useRef(null);
   const timerSalvo = useRef(null);
   const perguntaRef = useRef(null);
   const btnEvidenciaRef = useRef(null);
+  const btnDesfazerFotoRef = useRef(null);
 
   const ehTriagem = item?.tipo === 'triagem';
   const valorAtual = valorExibido(item, respostaAtual?.valor);
   const opcoes = ehTriagem ? OPCOES_TRIAGEM : OPCOES_TECNICO;
   const temAnterior = itemIdx > 0;
   const ehUltimo = itemIdx + 1 === TODOS_ITENS.length;
-  const numItemTecnico = item && !ehTriagem ? ITENS_TECNICOS.findIndex(i => i.id === item.id) + 1 : null;
+  const numItemTecnico = numeroItem(item);
   const nomeItem = ehTriagem ? 'Triagem' : `Item ${numItemTecnico}`;
   const secao = SECOES.find(s => s.id === item?.secaoId);
   const dependentes = useMemo(
@@ -94,6 +97,10 @@ export default function ItemChecklist() {
 
   // Ao trocar de item: carrega observação e fotos, fecha painéis, para a leitura e põe o foco na pergunta
   useEffect(() => {
+    // Uma resposta com avanço automático não pode empurrar para outro item depois de sair deste
+    clearTimeout(timerAvanco.current);
+    if (vistoria?.id && item) lembrarItemNaLista(vistoria.id, item);
+    setFotoRemovida(null);
     setObs(ehObsAutomatica(respostaAtual?.obs) ? '' : (respostaAtual?.obs || ''));
     setFotos(listarFotos(respostaAtual));
     setFolha(null);
@@ -193,9 +200,9 @@ export default function ItemChecklist() {
 
   const irPara = useCallback((posicao1) => {
     vibrarSuave();
-    if (posicao1 > TODOS_ITENS.length) navigate(`/checklist/${id}/resultado`);
-    else navigate(`/checklist/${id}/item/${posicao1}`);
-  }, [id, navigate]);
+    if (posicao1 > TODOS_ITENS.length) navegar(`/checklist/${id}/resultado`);
+    else navegar(`/checklist/${id}/item/${posicao1}`);
+  }, [id, navegar]);
 
   function proximoItem() {
     clearTimeout(timerAvanco.current);
@@ -208,7 +215,7 @@ export default function ItemChecklist() {
   }
 
   async function selecionar(valor) {
-    if (!item) return;
+    if (!item || bloqueadoPorTriagem) return;
     clearTimeout(timerAvanco.current);
 
     if (ehTriagem && (valor === 'nao' || valor === 'nao-aplica')) {
@@ -233,6 +240,10 @@ export default function ItemChecklist() {
     marcarSalvo();
 
     const rotulo = ROTULO_VALOR[final] || final;
+
+    if (valorAtual === 'nao-conforme' && final !== 'nao-conforme' && (obs || fotos.length > 0)) {
+      mostrarToast('A foto e a observação continuam neste item. Para remover, abra Foto e obs.', 'info', 6000);
+    }
 
     // Não conforme: fica no item e abre a evidência (observação e fotos)
     if (final === 'nao-conforme') {
@@ -283,19 +294,35 @@ export default function ItemChecklist() {
     setFotos(lista);
     gravar({ fotos: lista });
     setFotoAberta(null);
-    mostrarToast('Foto removida.', 'info', 6000, {
-      rotulo: 'Desfazer',
-      fn: () => {
-        const devolvida = [...lista.slice(0, indice), removida, ...lista.slice(indice)];
-        setFotos(devolvida);
-        gravar({ fotos: devolvida });
-      },
-    });
+    setFotoRemovida({ lista, indice, foto: removida });
+    setMensagemAria('Foto removida.');
+    setTimeout(() => btnDesfazerFotoRef.current?.focus(), 0);
+  }
+
+  function desfazerRemocaoFoto() {
+    const { lista, indice, foto } = fotoRemovida;
+    const devolvida = [...lista.slice(0, indice), foto, ...lista.slice(indice)];
+    setFotos(devolvida);
+    gravar({ fotos: devolvida });
+    setFotoRemovida(null);
+    setMensagemAria('Foto devolvida.');
   }
 
   function fecharEvidencia() {
     setFolha(null);
     setEvidenciaAposNC(false);
+    setFotoRemovida(null);
+  }
+
+  // Dentro do grupo de respostas, as setas só movem o foco entre as opções (padrão de rádio)
+  function teclasRespostas(e) {
+    const passo = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (!passo) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const radios = [...e.currentTarget.querySelectorAll('[role="radio"]:not(:disabled)')];
+    if (!radios.length) return;
+    radios[(radios.indexOf(document.activeElement) + passo + radios.length) % radios.length].focus();
   }
 
   // ---------- Atalhos de teclado (WCAG 2.1.1) ----------
@@ -309,6 +336,11 @@ export default function ItemChecklist() {
       if (e.altKey || e.ctrlKey || e.metaKey) return;
       const k = e.key.toLowerCase();
       const indice = { 1: 0, c: 0, s: 0, 2: 1, n: 1, 3: 2, a: 2 }[k];
+      if (indice !== undefined || k === 'o') {
+        // Letra solta não responde se o foco estiver em outro controle, nem com os atalhos desligados
+        const emOutroControle = e.target.closest?.('button, a') && !e.target.closest('[role="radiogroup"]');
+        if (!prefs.atalhosTeclado || emOutroControle) return;
+      }
       if (indice !== undefined) {
         e.preventDefault();
         selecionar(opcoes[indice].valor);
@@ -356,9 +388,9 @@ export default function ItemChecklist() {
             type="button"
             className="btn-nav primario"
             style={{ maxWidth: 260 }}
-            onClick={() => navigate(vistoria ? `/checklist/${vistoria.id}/itens` : '/')}
+            onClick={() => navegar(vistoria ? `/checklist/${vistoria.id}/itens` : '/')}
           >
-            {vistoria ? 'Voltar para a lista de itens' : 'Voltar ao Início'}
+            {vistoria ? 'Voltar às seções' : 'Voltar ao Início'}
           </button>
         </div>
       </div>
@@ -374,12 +406,18 @@ export default function ItemChecklist() {
   );
   const origemTriagemId = respostaAtual?.origemTriagem || triagemPai?.id;
   const posicaoTriagem = TODOS_ITENS.findIndex(i => i.id === origemTriagemId) + 1;
+  const triagemOrigem = TODOS_ITENS[posicaoTriagem - 1];
+  // Só bloqueia se der para alterar a triagem (vistorias antigas podem citar uma triagem removida)
+  const bloqueadoPorTriagem = Boolean(foiMarcadoPorTriagem && posicaoTriagem > 0);
 
   const descricaoImagem = item.imagem ? (DESCRICOES_IMAGENS[item.imagem] || item.subgrupo || 'Referência NBR 9050') : '';
   // Quadrada no celular e em pé; deitada nas telas de duas colunas (src/dados/ilustracoes.js)
   const ilustracao = escolherIlustracao(item.imagem, duasColunas);
   const imagemSrc = ilustracao?.src || null;
-  const totalEvidencias = fotos.length + (obs ? 1 : 0);
+  const rotuloEvidencia = [
+    fotos.length ? `${fotos.length} ${fotos.length === 1 ? 'foto' : 'fotos'}` : '',
+    obs ? 'obs.' : '',
+  ].filter(Boolean).join(' + ');
   const semEvidencia = valorAtual === 'nao-conforme' && !obs && fotos.length === 0;
   const perguntaLonga = item.pergunta.length > 150 ? styles.longa : '';
   const toque = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
@@ -421,13 +459,16 @@ export default function ItemChecklist() {
       )}
       {dependentes.length > 0 ? (
         <>
-          <p>Estes <strong>{dependentes.length} {dependentes.length === 1 ? 'item passa' : 'itens passam'}</strong> a <strong>Não se aplica</strong> e saem do cálculo:</p>
-          <ul>
-            {dependentes.map(d => {
-              const dep = TODOS_ITENS.find(i => i.id === d.id);
-              return <li key={d.id}>{dep?.pergunta}</li>;
-            })}
-          </ul>
+          <p><strong>{dependentes.length === 1 ? 'Este item passa' : `Estes ${dependentes.length} itens passam`}</strong> a <strong>Não se aplica</strong> e não contam na nota.</p>
+          <details className={styles.listaDependentes}>
+            <summary>{dependentes.length === 1 ? 'Ver o item' : `Ver os ${dependentes.length} itens`}</summary>
+            <ul>
+              {dependentes.map(d => {
+                const dep = TODOS_ITENS.find(i => i.id === d.id);
+                return <li key={d.id}>{dep?.pergunta}</li>;
+              })}
+            </ul>
+          </details>
         </>
       ) : (
         <p>Nenhum outro item depende desta resposta.</p>
@@ -448,8 +489,8 @@ export default function ItemChecklist() {
         <button
           type="button"
           className={styles.btnIcone}
-          aria-label="Voltar para a lista de itens"
-          onClick={() => navigate(`/checklist/${id}/itens?secao=${item.secaoId || 1}&subgrupo=${encodeURIComponent(item.subgrupo || '')}`)}
+          aria-label="Voltar para a seção"
+          onClick={voltar}
         >
           <IconChevronLeft size={26} />
         </button>
@@ -457,8 +498,8 @@ export default function ItemChecklist() {
           <span className={styles.rotuloSecao}>{secao?.nome}</span>
           <h1 className={styles.tituloSubgrupo}>{item.subgrupo || 'Item'}</h1>
         </div>
-        <button type="button" className={styles.btnTexto} onClick={() => navigate(`/checklist/${id}/itens`)}>
-          <IconListCheck size={20} aria-hidden="true" /> Itens
+        <button type="button" className={styles.btnIcone} aria-label="Ir para o Início" title="Início" onClick={() => navegar('/')}>
+          <IconHome size={22} aria-hidden="true" />
         </button>
       </header>
 
@@ -484,7 +525,7 @@ export default function ItemChecklist() {
           </p>
           {foiMarcadoPorTriagem && (
             <div className={styles.faixaAuto} role="note">
-              <span><IconFilter size={16} aria-hidden="true" /> Definido pela Pergunta de Triagem {origemTriagemId ? `#${origemTriagemId}` : ''}: marcado como Não se aplica.</span>
+              <span><IconFilter size={16} aria-hidden="true" /> Definido pela Pergunta de Triagem{triagemOrigem ? ` sobre ${triagemOrigem.subgrupo}` : ''}: marcado como Não se aplica.</span>
               {posicaoTriagem > 0 && (
                 <button type="button" className={styles.btnPequeno} onClick={() => irPara(posicaoTriagem)}>Alterar</button>
               )}
@@ -543,21 +584,16 @@ export default function ItemChecklist() {
             aria-describedby={semEvidencia ? 'aviso-sem-evidencia' : undefined}
           >
             <IconCamera size={20} aria-hidden="true" />
-            <span>{semEvidencia ? 'Registrar evidência' : 'Foto e obs.'}</span>
-            {totalEvidencias > 0 && (
-              <span className={styles.contador} aria-label={`${fotos.length} ${fotos.length === 1 ? 'foto' : 'fotos'}${obs ? ' e observação' : ''}`}>
-                {totalEvidencias}
-              </span>
-            )}
+            <span>{semEvidencia ? 'Registrar evidência' : (rotuloEvidencia || 'Foto e obs.')}</span>
           </button>
           {semEvidencia && <span id="aviso-sem-evidencia" className="sr-only">Não conformidade sem foto nem observação.</span>}
         </div>
 
         <div className={styles.respostas}>
           {/* Opções em grupo de rádio (WCAG 1.3.1 e 4.1.2) */}
-          <fieldset role="radiogroup" aria-labelledby="rotulo-pergunta-item" className={styles.grupoRespostas}>
-            <legend className="sr-only">Opções de avaliação para o item #{item.id}</legend>
-            {opcoes.map(({ valor, label, Icone, tecla }) => {
+          <fieldset role="radiogroup" aria-labelledby="rotulo-pergunta-item" className={styles.grupoRespostas} onKeyDown={teclasRespostas}>
+            <legend className="sr-only">Opções de avaliação: {ehTriagem ? 'triagem' : `item ${numItemTecnico}`}</legend>
+            {opcoes.map(({ valor, label, Icone, tecla }, indiceOpcao) => {
               const selecionado = valorAtual === valor;
               return (
                 <button
@@ -567,6 +603,8 @@ export default function ItemChecklist() {
                   aria-checked={selecionado}
                   aria-label={`${label}${selecionado ? ' (selecionado)' : ''}`}
                   aria-keyshortcuts={tecla}
+                  tabIndex={selecionado || (!valorAtual && indiceOpcao === 0) ? 0 : -1}
+                  disabled={bloqueadoPorTriagem}
                   data-valor={valor}
                   className={`${styles.btnResposta} ${selecionado ? styles[`sel_${valor.replace('-', '_').replace('-', '_')}`] : ''} ${lendo('resposta') && selecionado ? styles.lendo : ''}`}
                   onClick={() => selecionar(valor)}
@@ -608,10 +646,10 @@ export default function ItemChecklist() {
           type="button"
           className={`${styles.btnNav} ${valorAtual ? styles.btnNavPrimario : ''}`}
           onClick={proximoItem}
-          aria-label={ehUltimo ? 'Concluir e ver resumo do diagnóstico' : 'Ir para o próximo item'}
+          aria-label={ehUltimo ? 'Concluir e ver o resultado' : 'Ir para o próximo item'}
           aria-keyshortcuts="ArrowRight"
         >
-          <span>{ehUltimo ? 'Resumo' : 'Próximo'}</span>
+          <span>{ehUltimo ? 'Resultado' : 'Próximo'}</span>
           <IconChevronRight size={22} aria-hidden="true" />
         </button>
       </nav>
@@ -656,7 +694,7 @@ export default function ItemChecklist() {
         focoInicial="#obs-item-checklist"
         rodape={
           <>
-            <button type="button" className={styles.btnSecundario} onClick={fecharEvidencia}>Concluir</button>
+            <button type="button" className={styles.btnSecundario} onClick={fecharEvidencia}>Voltar ao item</button>
             {evidenciaAposNC && prefs.avancarAoResponder && (
               <button type="button" className={styles.btnPrimario} onClick={() => { fecharEvidencia(); proximoItem(); }}>
                 Salvar e ir ao próximo <IconChevronRight size={18} aria-hidden="true" />
@@ -674,7 +712,7 @@ export default function ItemChecklist() {
         {valorAtual === 'nao-aplica' && (
           <p className={styles.notaPequena}>
             {foiMarcadoPorTriagem
-              ? <>Item classificado como <strong>Não se aplica</strong> automaticamente pela triagem #{origemTriagemId} (fora do cálculo do índice).</>
+              ? <>Item classificado como <strong>Não se aplica</strong> automaticamente pela triagem (fora do cálculo do índice).</>
               : 'Item desconsiderado do cálculo do índice de conformidade (N/A).'}
           </p>
         )}
@@ -724,6 +762,12 @@ export default function ItemChecklist() {
               </label>
             </li>
           </ul>
+          {fotoRemovida && (
+            <p className={styles.fotoRemovida}>
+              Foto removida.
+              <button type="button" ref={btnDesfazerFotoRef} className={styles.btnPequeno} onClick={desfazerRemocaoFoto}>Desfazer</button>
+            </p>
+          )}
           <p className={styles.ajuda}>Evite fotografar pessoas, principalmente crianças.</p>
         </div>
       </FolhaInferior>
@@ -732,7 +776,7 @@ export default function ItemChecklist() {
         <ModalVisualizarFoto
           aberto
           foto={fotos[fotoAberta]}
-          numero={item.id}
+          numero={numItemTecnico ?? ''}
           subgrupo={item.subgrupo || 'Critério NBR'}
           pergunta={item.pergunta}
           resultado={valorAtual}

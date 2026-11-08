@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   IconRefresh, IconArrowLeft,
   IconDashboard, IconAlertTriangle, IconAlertCircle
@@ -8,11 +8,12 @@ import { useVistoria } from '../contexto/VistoriaContext';
 import { SECOES, ITENS_POR_SECAO, ITENS_TECNICOS } from '../dados/checklist';
 import { calcularIndiceItens, FAIXAS_INDICE } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
+import { useNavegacao } from '../utilitarios/navegacao';
 import styles from './Resultado.module.css';
 
 export default function Resultado() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const { navegar } = useNavegacao();
   const { getVistoria, atualizarVistoria, carregando } = useVistoria();
   const vistoria = getVistoria(id);
 
@@ -87,7 +88,7 @@ export default function Resultado() {
             type="button"
             className="btn-nav primario"
             style={{ maxWidth: 260 }}
-            onClick={() => navigate('/')}
+            onClick={() => navegar('/')}
           >
             Voltar ao Início
           </button>
@@ -98,16 +99,16 @@ export default function Resultado() {
 
   return (
     <div className="app-shell">
-      <Topbar titulo="Resultado do Diagnóstico" voltar={`/vistoria/${id}`} />
+      <Topbar titulo="Resultado do Diagnóstico" inicio />
 
-      <div className="tela-body" style={{ padding: '24px 20px 48px' }}>
+      <main className="tela-body" style={{ padding: '24px 20px 48px' }}>
         <div className={styles.container}>
-          <header className={styles.cabecalho}>
-            <h1 className={styles.titulo}>{vistoria.nome}</h1>
+          <div className={styles.cabecalho}>
+            <h2 className={styles.titulo}>{vistoria.nome}</h2>
             <p className={styles.subtitulo}>
               {vistoria.bairro ? `${vistoria.bairro}, ` : ''}{vistoria.cidade || 'Local não informado'} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : 'Data não informada'}
             </p>
-          </header>
+          </div>
 
           {ehParcial && (
             <div
@@ -242,24 +243,24 @@ export default function Resultado() {
           </section>
 
           <div className={styles.botoesWrap}>
-            <button className="btn-nav primario" onClick={() => navigate(`/vistoria/${id}`)}>
+            <button className="btn-nav primario" onClick={() => navegar(`/vistoria/${id}`)}>
               <IconDashboard size={18} /> Painel da Vistoria e Ficha
             </button>
 
-            <button className="btn-nav" onClick={() => navigate(`/checklist/${id}/itens`)}>
-              <IconRefresh size={18} /> Revisar Seções e Itens
+            <button className="btn-nav" onClick={() => navegar(`/checklist/${id}/itens`)}>
+              <IconRefresh size={18} /> Revisar seções
             </button>
 
             <button
               className="btn-nav"
               style={{ border: 'none', color: 'var(--text-secondary)' }}
-              onClick={() => navigate('/')}
+              onClick={() => navegar('/')}
             >
               <IconArrowLeft size={18} /> Voltar ao Início
             </button>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

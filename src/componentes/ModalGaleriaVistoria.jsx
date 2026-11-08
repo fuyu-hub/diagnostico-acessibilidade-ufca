@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   IconX, IconPhoto, IconNotes
 } from '@tabler/icons-react';
-import { TODOS_ITENS } from '../dados/checklist';
+import { TODOS_ITENS, numeroItem } from '../dados/checklist';
 import { listarFotos, ehFotoExibivel } from '../dados/fotos.js';
 import { useTravaScroll } from '../utilitarios/travaScroll';
 import { useFocusTrap } from '../utilitarios/focusTrap';
 import ModalVisualizarFoto from './ModalVisualizarFoto';
+import { useNavegacao, useFecharComVoltar } from '../utilitarios/navegacao';
 import styles from './ModalGaleriaVistoria.module.css';
 
 export default function ModalGaleriaVistoria({
@@ -16,13 +16,14 @@ export default function ModalGaleriaVistoria({
   onFechar,
   onExcluirFoto,
 }) {
-  const navigate = useNavigate();
+  const { navegar } = useNavegacao();
   const [filtro, setFiltro] = useState(null); // null | 'fotos' | 'obs' | 'nao-conforme' | 'conforme'
   const [itemSelecionado, setItemSelecionado] = useState(null);
   const modalRef = useRef(null);
 
   useTravaScroll(aberto);
   useFocusTrap(aberto && !itemSelecionado, modalRef);
+  useFecharComVoltar(aberto, onFechar);
 
   function alternarFiltro(tipo) {
     setFiltro((prev) => (prev === tipo ? null : tipo));
@@ -103,7 +104,7 @@ export default function ModalGaleriaVistoria({
   function handleIrParaItem(indiceGlobal) {
     setItemSelecionado(null);
     onFechar();
-    navigate(`/checklist/${vistoria.id}/item/${indiceGlobal}`);
+    navegar(`/checklist/${vistoria.id}/item/${indiceGlobal}`);
   }
 
   return (
@@ -205,7 +206,7 @@ export default function ModalGaleriaVistoria({
                         key={entry.chave}
                         role="button"
                         tabIndex={0}
-                        aria-label={`Ver foto${entry.totalFotos > 1 ? ` ${entry.indiceFoto + 1} de ${entry.totalFotos}` : ''} do item #${entry.item.id}, ${entry.resposta || 'sem resposta'}`}
+                        aria-label={`Ver foto${entry.totalFotos > 1 ? ` ${entry.indiceFoto + 1} de ${entry.totalFotos}` : ''} do item ${numeroItem(entry.item) ?? 'de triagem'}, ${entry.resposta || 'sem resposta'}`}
                         className={`${styles.card} ${styles.cardFoto}`}
                         onClick={() => setItemSelecionado(entry)}
                         onKeyDown={(e) => {
@@ -220,13 +221,13 @@ export default function ModalGaleriaVistoria({
                         <div className={styles.fotoThumbWrap}>
                           <img
                             src={entry.foto}
-                            alt={`Item ${entry.item.id}`}
+                            alt={`Item ${numeroItem(entry.item) ?? 'de triagem'}`}
                             className={styles.fotoThumb}
                           />
 
                           {/* Tag de número no canto superior esquerdo */}
                           <span className={styles.tagNumero}>
-                            #{entry.item.id}{entry.totalFotos > 1 ? ` · ${entry.indiceFoto + 1}/${entry.totalFotos}` : ''}
+                            {numeroItem(entry.item) ? `#${numeroItem(entry.item)}` : 'Triagem'}{entry.totalFotos > 1 ? ` · ${entry.indiceFoto + 1}/${entry.totalFotos}` : ''}
                           </span>
 
                           {/* Tag abreviada com sigla (C ou NC) no canto superior direito */}
@@ -251,7 +252,7 @@ export default function ModalGaleriaVistoria({
                       key={entry.chave}
                       role="button"
                       tabIndex={0}
-                      aria-label={`Ver observação do item #${entry.item.id}`}
+                      aria-label={`Ver observação do item ${numeroItem(entry.item) ?? 'de triagem'}`}
                       className={`${styles.card} ${styles.cardObservacao}`}
                       onClick={() => setItemSelecionado(entry)}
                       onKeyDown={(e) => {
@@ -264,7 +265,7 @@ export default function ModalGaleriaVistoria({
                     >
                       {/* Topo do card com número e sigla */}
                       <div className={styles.obsCardTopo}>
-                        <span className={styles.tagNumero}>#{entry.item.id}</span>
+                        <span className={styles.tagNumero}>{numeroItem(entry.item) ? `#${numeroItem(entry.item)}` : 'Triagem'}</span>
                         <span className={`${styles.tagSigla} ${tag.classe}`}>
                           {tag.sigla}
                         </span>
@@ -291,7 +292,7 @@ export default function ModalGaleriaVistoria({
         <ModalVisualizarFoto
           aberto={!!itemSelecionado}
           foto={itemSelecionado.foto}
-          numero={itemSelecionado.item.id}
+          numero={numeroItem(itemSelecionado.item) ?? ''}
           subgrupo={itemSelecionado.item.subgrupo || 'Critério NBR'}
           pergunta={itemSelecionado.item.pergunta}
           resultado={itemSelecionado.resposta}

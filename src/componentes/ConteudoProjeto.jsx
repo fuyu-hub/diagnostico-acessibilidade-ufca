@@ -6,6 +6,15 @@ export default function ConteudoProjeto({ nivelTitulo: Titulo = 'h3' }) {
   return (
     <div className={styles.conteudo}>
       <section>
+        <Titulo className={styles.titulo}>Como funciona</Titulo>
+        <p>
+          Você responde {ITENS_TECNICOS.length} itens em {SECOES.length} seções e recebe o Índice de Avaliação
+          de Acessibilidade (IAA), com relatório em PDF e planilha. O app funciona sem internet depois de aberto
+          pela primeira vez.
+        </p>
+      </section>
+
+      <section>
         <Titulo className={styles.titulo}>O projeto</Titulo>
         <p>{PROJETO.objetivo}</p>
         <p className={styles.detalhe}>
@@ -23,15 +32,6 @@ export default function ConteudoProjeto({ nivelTitulo: Titulo = 'h3' }) {
             <li key={nome}>{nome} <span className={styles.detalhe}>· Equipe discente</span></li>
           ))}
         </ul>
-      </section>
-
-      <section>
-        <Titulo className={styles.titulo}>Como funciona</Titulo>
-        <p>
-          Você responde {ITENS_TECNICOS.length} itens em {SECOES.length} seções e recebe o Índice de Avaliação
-          de Acessibilidade (IAA), com relatório em PDF e planilha. O app funciona sem internet depois de aberto
-          pela primeira vez.
-        </p>
       </section>
 
       <section>

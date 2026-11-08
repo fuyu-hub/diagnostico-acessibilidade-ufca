@@ -13,6 +13,11 @@
   max-width: 440px;
 }
 
+/* Celular deitado: num canto, para não cobrir as respostas */
+@media (max-height: 500px) {
+  .container { top: 60px; bottom: auto; left: auto; right: 12px; transform: none; width: min(46%, 360px); }
+}
+
 .toast {
   pointer-events: auto;
   display: flex;
@@ -84,6 +89,9 @@
   border: none;
   color: var(--text-muted);
   cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  margin: -8px -12px -8px 0;
   padding: 4px;
   display: flex;
   align-items: center;

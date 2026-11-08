@@ -1,9 +1,9 @@
-import { useNavigate } from 'react-router-dom';
 import { IconAlertCircle, IconArrowLeft } from '@tabler/icons-react';
+import { useNavegacao } from '../utilitarios/navegacao';
 import Topbar from '../componentes/Topbar';
 
 export default function NaoEncontrada() {
-  const navigate = useNavigate();
+  const { navegar } = useNavegacao();
 
   return (
     <div className="app-shell">
@@ -22,7 +22,7 @@ export default function NaoEncontrada() {
           type="button"
           className="btn-nav primario"
           style={{ maxWidth: 280 }}
-          onClick={() => navigate('/')}
+          onClick={() => navegar('/')}
         >
           <IconArrowLeft size={18} /> Voltar ao Início
         </button>

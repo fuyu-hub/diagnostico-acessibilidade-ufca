@@ -1,13 +1,14 @@
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigationType } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import {
   IconCheck, IconX, IconMinus, IconCircle, IconChevronRight,
-  IconChevronDown, IconChevronUp, IconArrowRight
+  IconChevronDown, IconChevronUp, IconArrowRight, IconAlertCircle
 } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
-import { TODOS_ITENS, SECOES, ITENS_POR_SECAO, ITENS_TECNICOS } from '../dados/checklist';
+import { TODOS_ITENS, SECOES, ITENS_POR_SECAO, ITENS_TECNICOS, numeroItem } from '../dados/checklist';
 import { calcularIndiceItens } from '../dados/classificacao';
 import Topbar from '../componentes/Topbar';
+import { useNavegacao, lerEstadoLista, guardarEstadoLista } from '../utilitarios/navegacao';
 import styles from './ListaItens.module.css';
 
 const FILTROS = ['Todos', 'Pendentes', 'Não conforme'];
@@ -29,45 +30,44 @@ function iconeResposta(valor) {
 
 export default function ListaItens() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { navegar } = useNavegacao();
+  const [searchParams] = useSearchParams();
+  const tipoNavegacao = useNavigationType();
   const { getVistoria, carregando } = useVistoria();
   const vistoria = getVistoria(id);
 
-  const secaoParam = searchParams.get('secao') ? parseInt(searchParams.get('secao'), 10) : null;
-  const subgrupoParam = searchParams.get('subgrupo');
+  const secaoAberta = searchParams.get('secao') ? parseInt(searchParams.get('secao'), 10) : null;
 
   const [filtro, setFiltro] = useState('Todos');
-  const [secaoAberta, setSecaoAberta] = useState(secaoParam);
   const [expandidos, setExpandidos] = useState({});
 
   const respostas = vistoria?.respostas || {};
   const respondidos = ITENS_TECNICOS.filter(i => respostas[i.id]?.valor).length;
 
-  // Deixa tudo recolhido por padrão (nenhum subgrupo expandido)
+  // Ao voltar, a seção reaparece como estava; ao entrar de novo, começa recolhida
   useEffect(() => {
-    if (secaoParam) {
-      setSecaoAberta(secaoParam);
-      const exp = {};
-      if (subgrupoParam) exp[subgrupoParam] = true;
-      setExpandidos(exp);
-    } else {
-      setSecaoAberta(null);
+    if (!secaoAberta) return;
+    const salvo = tipoNavegacao === 'POP' ? lerEstadoLista(id, secaoAberta) : {};
+    if (tipoNavegacao !== 'POP') guardarEstadoLista(id, secaoAberta, { filtro: 'Todos', expandidos: {}, ultimoItem: null });
+    setFiltro(salvo.filtro || 'Todos');
+    setExpandidos(salvo.expandidos || {});
+    if (salvo.ultimoItem) {
+      requestAnimationFrame(() => document.querySelector(`[data-item="${salvo.ultimoItem}"]`)?.scrollIntoView({ block: 'center' }));
     }
-  }, [secaoParam, subgrupoParam]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, secaoAberta]);
 
   function abrirSecao(sId) {
-    setSecaoAberta(sId);
-    setSearchParams({ secao: sId });
+    navegar(`/checklist/${id}/itens?secao=${sId}`);
   }
 
-  function fecharSecao() {
-    setSecaoAberta(null);
-    setSearchParams({});
+  function mudarExpandidos(novos) {
+    setExpandidos(novos);
+    guardarEstadoLista(id, secaoAberta, { expandidos: novos });
   }
 
   function recolherTodos() {
-    setExpandidos({});
+    mudarExpandidos({});
   }
 
   if (!vistoria) {
@@ -81,11 +81,24 @@ export default function ListaItens() {
         </div>
       );
     }
-    return null;
+    return (
+      <div className="app-shell">
+        <Topbar titulo="Vistoria não encontrada" voltar="/" />
+        <main className="tela-body" style={{ padding: '48px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <IconAlertCircle size={56} color="var(--text-muted)" style={{ opacity: 0.6, marginBottom: 16 }} aria-hidden="true" />
+          <p style={{ color: 'var(--text-secondary)', marginBottom: 24, maxWidth: 360, lineHeight: 1.5 }}>
+            A vistoria solicitada não foi encontrada ou foi removida deste aparelho.
+          </p>
+          <button type="button" className="btn-nav primario" style={{ maxWidth: 260 }} onClick={() => navegar('/')}>
+            Voltar ao Início
+          </button>
+        </main>
+      </div>
+    );
   }
 
   function toggleSubgrupo(sg) {
-    setExpandidos(prev => ({ ...prev, [sg]: !prev[sg] }));
+    mudarExpandidos({ ...expandidos, [sg]: !expandidos[sg] });
   }
 
   const itensDaSecao = secaoAberta ? (ITENS_POR_SECAO[secaoAberta] || []) : [];
@@ -95,13 +108,20 @@ export default function ListaItens() {
     itensDaSecao.forEach(item => {
       if (item.subgrupo) exp[item.subgrupo] = true;
     });
-    setExpandidos(exp);
+    mudarExpandidos(exp);
+  }
+
+  function escolherFiltro(novo) {
+    setFiltro(novo);
+    guardarEstadoLista(id, secaoAberta, { filtro: novo });
+    // Com filtro, o que interessa já aparece aberto
+    if (novo !== 'Todos') expandirTodos();
   }
 
   const itensFiltrados = itensDaSecao.filter(item => {
     const resp = respostas[item.id]?.valor;
     if (filtro === 'Pendentes')     return !resp;
-    if (filtro === 'Não conforme')  return resp === 'nao-conforme';
+    if (filtro === 'Não conforme')  return resp === 'nao-conforme' && item.tipo === 'tecnico';
     return true;
   });
 
@@ -126,9 +146,9 @@ export default function ListaItens() {
   if (!secaoAberta) {
     return (
       <div className="app-shell">
-        <Topbar titulo={`Seções — ${vistoria.nome}`} voltar={`/vistoria/${id}`} />
+        <Topbar titulo={`Seções — ${vistoria.nome}`} inicio />
 
-        <div className="tela-body" style={{ padding: '0 0 32px' }}>
+        <main className="tela-body" style={{ padding: '0 0 32px' }}>
           <div style={{ padding: '20px 20px 0' }}>
             <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: 20 }}>
               {respondidos} de {ITENS_TECNICOS.length} itens avaliados no total
@@ -140,7 +160,8 @@ export default function ListaItens() {
                 const itensSecaoTecnicos = itensSecao.filter(i => i.tipo === 'tecnico');
                 const respondidosSecao = itensSecaoTecnicos.filter(i => respostas[i.id]?.valor).length;
                 const pctSecao = itensSecaoTecnicos.length > 0 ? Math.round((respondidosSecao / itensSecaoTecnicos.length) * 100) : 0;
-                const pendenteSecao = itensSecaoTecnicos.find(item => !respostas[item.id]?.valor);
+                const restaTecnico = itensSecaoTecnicos.some(item => !respostas[item.id]?.valor);
+                const pendenteSecao = restaTecnico ? itensSecao.find(item => !respostas[item.id]?.valor) : null;
                 const indiceSecao = calcularIndiceItens(itensSecaoTecnicos, respostas);
                 const { classificacao } = indiceSecao;
 
@@ -149,15 +170,6 @@ export default function ListaItens() {
                     key={s.id}
                     className={styles.cardSecao}
                     onClick={() => abrirSecao(s.id)}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Seção ${s.id}: ${s.nome}. ${respondidosSecao} de ${itensSecaoTecnicos.length} respondidos (${pctSecao}%). ${pendenteSecao ? 'Possui pendências' : 'Concluída'}. Toque para abrir subgrupos.`}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        abrirSecao(s.id);
-                      }
-                    }}
                   >
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div className={styles.cardSecaoTopo}>
@@ -191,9 +203,9 @@ export default function ListaItens() {
                             className={styles.btnSecaoRapida}
                             onClick={(e) => {
                               e.stopPropagation();
-                              navigate(`/checklist/${id}/item/${idxGlobal(pendenteSecao) + 1}`);
+                              navegar(`/checklist/${id}/item/${idxGlobal(pendenteSecao) + 1}`);
                             }}
-                            title={`Ir para o primeiro item pendente: #${pendenteSecao.id}`}
+                            aria-label={`${respondidosSecao > 0 ? 'Continuar' : 'Iniciar'} a seção ${s.nome}`}
                           >
                             {respondidosSecao > 0 ? 'Continuar' : 'Iniciar'}
                             <IconArrowRight size={14} />
@@ -203,9 +215,14 @@ export default function ListaItens() {
                             Seção concluída
                           </span>
                         )}
-                        <span className={styles.verSubgruposLink}>
-                          Ver subgrupos <IconChevronRight size={14} />
-                        </span>
+                        <button
+                          type="button"
+                          className={styles.verSubgruposLink}
+                          aria-label={`Abrir a seção ${s.nome}. ${respondidosSecao} de ${itensSecaoTecnicos.length} respondidos.`}
+                          onClick={e => { e.stopPropagation(); abrirSecao(s.id); }}
+                        >
+                          Ver subgrupos <IconChevronRight size={14} aria-hidden="true" />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -213,7 +230,7 @@ export default function ListaItens() {
               })}
             </div>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
@@ -222,9 +239,9 @@ export default function ListaItens() {
 
   return (
     <div className="app-shell">
-      <Topbar titulo={secao.nome} voltar={fecharSecao} />
+      <Topbar titulo={secao.nome} inicio />
 
-      <div className={`tela-body ${styles.slideIn}`} style={{ padding: '0 0 32px' }}>
+      <main className={`tela-body ${styles.slideIn}`} style={{ padding: '0 0 32px' }}>
 
         {/* Card de Ação no Topo da Seção */}
         <div style={{ padding: '16px 20px 0' }}>
@@ -241,7 +258,7 @@ export default function ListaItens() {
                 </div>
                 <p className={styles.proximoPergunta}>
                   <strong>
-                    {primeiroPendenteSecao.tipo === 'triagem' ? 'Triagem:' : `Item #${primeiroPendenteSecao.id}:`}
+                    {primeiroPendenteSecao.tipo === 'triagem' ? 'Triagem:' : `Item ${numeroItem(primeiroPendenteSecao)}:`}
                   </strong> {primeiroPendenteSecao.pergunta}
                 </p>
               </div>
@@ -249,7 +266,7 @@ export default function ListaItens() {
               <button
                 type="button"
                 className={`btn-nav primario ${styles.btnContinuarSecao}`}
-                onClick={() => navigate(`/checklist/${id}/item/${idxGlobal(primeiroPendenteSecao) + 1}`)}
+                onClick={() => navegar(`/checklist/${id}/item/${idxGlobal(primeiroPendenteSecao) + 1}`)}
               >
                 {itensSecaoRespondidos > 0 ? 'Continuar' : 'Começar'}
                 <IconArrowRight size={18} />
@@ -276,7 +293,7 @@ export default function ListaItens() {
                 onClick={() => {
                   const proxSecao = SECOES.find(s => (ITENS_POR_SECAO[s.id] || []).some(i => !respostas[i.id]?.valor));
                   if (proxSecao) abrirSecao(proxSecao.id);
-                  else navigate(`/checklist/${id}/resultado`);
+                  else navegar(`/checklist/${id}/resultado`);
                 }}
               >
                 Próxima Seção <IconArrowRight size={16} />
@@ -291,7 +308,8 @@ export default function ListaItens() {
                 <button
                   key={f}
                   className={`chip ${filtro === f ? 'ativo' : ''}`}
-                  onClick={() => setFiltro(f)}
+                  aria-pressed={filtro === f}
+                  onClick={() => escolherFiltro(f)}
                 >
                   {f}
                 </button>
@@ -334,7 +352,7 @@ export default function ListaItens() {
                     onClick={() => toggleSubgrupo(subgrupo)}
                     aria-expanded={isExpanded}
                     aria-controls={`subgrupo-corpo-${encodeURIComponent(subgrupo)}`}
-                    aria-label={`Subgrupo ${subgrupo}, ${itens.length} itens. ${todosRespondidosNoSg ? 'Concluído' : `${itensPendentesNoSg} pendentes`}. ${isExpanded ? 'Toque para recolher' : 'Toque para expandir'}`}
+                    aria-label={`Subgrupo ${subgrupo}, ${itens.length} itens. ${filtro === 'Não conforme' ? 'Não conformes' : todosRespondidosNoSg ? 'Concluído' : `${itensPendentesNoSg} pendentes`}. ${isExpanded ? 'Toque para recolher' : 'Toque para expandir'}`}
                   >
                     <div className={styles.subgrupoHeaderEsquerda}>
                       <span className={styles.subgrupoLabel}>{subgrupo}</span>
@@ -342,7 +360,11 @@ export default function ListaItens() {
                     </div>
 
                     <div className={styles.subgrupoHeaderDireita}>
-                      {todosRespondidosNoSg ? (
+                      {filtro === 'Não conforme' ? (
+                        <span className={`tag triagem ${styles.tagStatusSubgrupo}`}>
+                          {itens.length} não {itens.length === 1 ? 'conforme' : 'conformes'}
+                        </span>
+                      ) : todosRespondidosNoSg ? (
                         <span className={`tag salva ${styles.tagStatusSubgrupo}`}>
                           <IconCheck size={13} color="var(--text-success)" /> Concluído
                         </span>
@@ -363,15 +385,16 @@ export default function ListaItens() {
                       return (
                         <div
                           key={item.id}
+                          data-item={item.id}
                           className={styles.listaLinhaResponsiva}
-                          onClick={() => navigate(`/checklist/${id}/item/${idx + 1}`)}
+                          onClick={() => navegar(`/checklist/${id}/item/${idx + 1}`)}
                           role="button"
                           tabIndex={0}
-                          aria-label={`Item #${item.id}: ${item.pergunta}. Status: ${obterTextoResposta(resp, respostas[item.id]?.automatico)}`}
+                          aria-label={`${item.tipo === 'triagem' ? 'Triagem' : `Item ${numeroItem(item)}`}: ${item.pergunta}. Status: ${obterTextoResposta(resp, respostas[item.id]?.automatico)}`}
                           onKeyDown={e => {
                             if (e.key === 'Enter' || e.key === ' ') {
                               e.preventDefault();
-                              navigate(`/checklist/${id}/item/${idx + 1}`);
+                              navegar(`/checklist/${id}/item/${idx + 1}`);
                             }
                           }}
                         >
@@ -382,7 +405,7 @@ export default function ListaItens() {
                             </p>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginTop: 4 }}>
                               <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: item.tipo === 'triagem' ? 600 : 400 }}>
-                                {item.tipo === 'triagem' ? 'Triagem' : `Item #${item.id}`}
+                                {item.tipo === 'triagem' ? 'Triagem' : `Item ${numeroItem(item)}`}
                               </span>
                               {respostas[item.id]?.automatico && (
                                 <span className={styles.badgeTriagemNA}>
@@ -401,7 +424,7 @@ export default function ListaItens() {
             );
           })}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

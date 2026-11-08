@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { IconTrash, IconDownload } from '@tabler/icons-react';
 import { useTravaScroll } from '../utilitarios/travaScroll';
 import { useFocusTrap } from '../utilitarios/focusTrap';
+import { useFecharComVoltar } from '../utilitarios/navegacao';
 import styles from './ModalExcluirVistoria.module.css';
 
 export default function ModalExcluirVistoria({
@@ -16,6 +17,7 @@ export default function ModalExcluirVistoria({
 
   useTravaScroll(aberto);
   useFocusTrap(aberto, modalRef);
+  useFecharComVoltar(aberto, onCancelar);
 
   useEffect(() => {
     if (aberto) {

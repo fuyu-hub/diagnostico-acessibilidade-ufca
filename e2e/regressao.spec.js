@@ -183,7 +183,7 @@ test('popup aparece no primeiro acesso, some depois e o Sobre continua acessíve
   await expect(popup).toBeHidden();
 
   await page.getByRole('button', { name: 'Sobre' }).click();
-  await expect(page.getByRole('heading', { name: 'Em construção' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'O projeto' })).toBeVisible();
 });
 
 test('tema: padrão segue o sistema, a escolha manual prevalece e persiste', async ({ page }) => {
@@ -331,6 +331,86 @@ test('corrimãos externos saem só sem escada e sem rampa, e voltam se uma exist
   await responder(page, id, 1003, 'Sim');
   await page.goto(`/checklist/${id}/item/${n(24)}`);
   await expect(radio(page, 'Não se aplica')).toHaveAttribute('aria-checked', 'false');
+});
+
+test('voltar: janela fecha primeiro, itens não acumulam histórico e sobe um nível por vez', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Iniciar vistoria de Escola de Teste' }).click();
+  await expect(page).toHaveURL(new RegExp(`/item/1$`));
+
+  await page.getByRole('button', { name: 'Ir para o próximo item' }).click();
+  await page.getByRole('button', { name: 'Ir para o próximo item' }).click();
+  await expect(page).toHaveURL(/\/item\/3$/);
+
+  await page.getByRole('button', { name: 'Orientações' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.waitForTimeout(100);
+  await page.goBack();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(page).toHaveURL(/\/item\/3$/);
+
+  await page.goBack();
+  await expect(page).toHaveURL(/\/itens\?secao=1$/);
+  await page.goBack();
+  await expect(page).toHaveURL(new RegExp(`/checklist/${id}/itens$`));
+  await page.goBack();
+  await expect(page).toHaveURL(new RegExp(`/vistoria/${id}$`));
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('heading', { name: 'Vistorias' })).toBeVisible();
+});
+
+test('seta e voltar do aparelho levam ao mesmo lugar, sem criar voltas no histórico', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Acessar painel de vistoria de Escola de Teste' }).click();
+  await page.getByRole('button', { name: 'Seções', exact: true }).click();
+  for (let i = 0; i < 3; i++) {
+    await page.getByRole('button', { name: 'Voltar', exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`/vistoria/${id}$`));
+    await page.getByRole('button', { name: 'Seções', exact: true }).click();
+    await expect(page).toHaveURL(/\/itens$/);
+  }
+  await page.goBack();
+  await expect(page).toHaveURL(new RegExp(`/vistoria/${id}$`));
+  await page.goBack();
+  await expect(page.getByRole('heading', { name: 'Vistorias' })).toBeVisible();
+});
+
+test('confirmação de apagar é cancelada ao voltar e nada se perde', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await responder(page, id, 9, 'Conforme');
+  await page.goto(`/checklist/${id}/item/${n(1001)}`);
+  await radio(page, 'Não').click();
+  await expect(page.getByRole('alertdialog')).toBeVisible();
+  await page.waitForTimeout(100);
+  await page.goBack();
+  await expect(page.getByRole('alertdialog')).toHaveCount(0);
+  await page.waitForTimeout(500);
+  await page.goto(`/checklist/${id}/item/${n(9)}`);
+  await expect(radio(page, 'Conforme')).toHaveAttribute('aria-checked', 'true');
+});
+
+test('ficha pela metade é recuperada e, depois de criar, voltar não reabre o formulário', async ({ page }) => {
+  await page.goto('/nova');
+  await page.fill('input[placeholder*="Ex: Universidade Federal do Cariri"]', 'Escola Rascunho');
+  await page.getByRole('button', { name: 'Voltar', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Vistorias' })).toBeVisible();
+  await page.goto('/nova');
+  await expect(page.locator('input[value="Escola Rascunho"]')).toBeVisible();
+
+  await page.getByRole('button', { name: /Salvar Ficha/ }).click();
+  await expect(page.getByText('Escolha a rede de ensino.')).toBeVisible();
+});
+
+test('item definido pela triagem não aceita resposta até alterar a triagem', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await responder(page, id, 1001, 'Não');
+  await page.goto(`/checklist/${id}/item/${n(9)}`);
+  await expect(radio(page, 'Conforme')).toBeDisabled();
+  await page.getByRole('button', { name: 'Alterar' }).click();
+  await expect(page).toHaveURL(new RegExp(`/item/${n(1001)}$`));
 });
 
 test('não se aplica fica no item, sem abrir a evidência nem mostrar Desfazer', async ({ page }) => {
