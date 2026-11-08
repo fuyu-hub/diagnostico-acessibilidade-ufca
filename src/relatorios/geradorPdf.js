@@ -700,7 +700,7 @@ export async function gerarRelatorioPdf(vistoria, { observacoes = 'coluna' } = {
   doc.setProperties({
     title: `Relatório de acessibilidade — ${nomeInst}`,
     subject: 'Diagnóstico das condições de acessibilidade (ABNT NBR 9050:2020)',
-    creator: 'Diagnóstico Acessibilidade',
+    creator: 'Rota Acessível',
   });
 
   // Fotos são preparadas antes, porque os hooks da tabela são síncronos

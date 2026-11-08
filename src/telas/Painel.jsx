@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconArrowRight, IconSearch, IconBuilding } from '@tabler/icons-react';
+import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconArrowRight, IconSearch } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
+import MarcaRota from '../componentes/MarcaRota';
 import CartaoVistoria from '../componentes/CartaoVistoria';
 import ModalConflito from '../componentes/ModalConflito';
 import { lerArquivoImportacao } from '../dados/exportacao';
@@ -139,10 +140,9 @@ export default function Painel() {
       <main className="tela-body" style={{ padding: '24px 20px' }}>
         <header className={styles.header}>
           <div className={styles.marcaTitulo}>
-            {/* Marca provisória até a logo oficial do app */}
-            <span className={styles.marca} aria-hidden="true"><IconBuilding size={26} /></span>
+            <span className={styles.marca}><MarcaRota tamanho={52} /></span>
             <div>
-              <span className={styles.eyebrow}>Acessibilidade</span>
+              <span className={styles.eyebrow}>Rota Acessível</span>
               <h1 className={styles.titulo}>Vistorias</h1>
             </div>
           </div>

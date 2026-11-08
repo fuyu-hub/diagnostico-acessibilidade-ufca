@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<rect width="512" height="512" rx="112" fill="#1d4ed8"/>
-<g transform="translate(97.28 97.28) scale(13.226666666666667)" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-<path d="M3 21l18 0M9 8l1 0M9 12l1 0M9 16l1 0M14 8l1 0M14 12l1 0M14 16l1 0M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16"/>
-</g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Rota Acessível"><title>Rota Acessível</title><rect width="256" height="256" rx="44" fill="#FFFFFF"/><path d="M92 234H50A32 32 0 0 1 18 202V54A32 32 0 0 1 50 22H206A32 32 0 0 1 238 54V202A32 32 0 0 1 206 234H164" fill="none" stroke="#0F172A" stroke-width="24" stroke-linecap="round"/><path d="M128 235V184Q128 160 148 160Q168 160 168 136V120" fill="none" stroke="#1D4ED8" stroke-width="36" stroke-linecap="round"/><rect x="122" y="50" width="92" height="92" rx="8" fill="#FFDF00" stroke="#0F172A" stroke-width="16"/></svg>

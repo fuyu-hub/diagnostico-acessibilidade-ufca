@@ -14,9 +14,9 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['favicon.svg', 'icons.svg', 'apple-touch-icon.png', 'imagens/*.{png,svg}', 'modelo_planilha.xlsx'],
       manifest: {
-        name: 'Diagnóstico de Acessibilidade — NBR 9050',
-        short_name: 'Diagnóstico 9050',
-        description: 'Checklist e diagnóstico de acessibilidade em instituições com base na NBR 9050:2020',
+        name: 'Rota Acessível',
+        short_name: 'Rota Acessível',
+        description: 'Rota Acessível: vistoria de acessibilidade em escolas com base na NBR 9050:2020',
         theme_color: '#0a0a0a',
         background_color: '#0a0a0a',
         display: 'standalone',

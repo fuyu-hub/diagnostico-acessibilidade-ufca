@@ -27,7 +27,7 @@ function AoTrocarDeTela() {
     if (tipo !== 'POP') window.scrollTo(0, 0);
 
     const titulo = document.querySelector('h1');
-    document.title = titulo?.textContent ? `${titulo.textContent} · Acessibilidade` : 'Acessibilidade';
+    document.title = titulo?.textContent ? `${titulo.textContent} · Rota Acessível` : 'Rota Acessível';
 
     if (primeira.current) {
       primeira.current = false;

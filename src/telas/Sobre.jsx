@@ -1,6 +1,5 @@
 import { IconTools } from '@tabler/icons-react';
 import Topbar from '../componentes/Topbar';
-import { PROJETO } from '../dados/projeto';
 import { VERSAO_APP } from '../dados/exportacao';
 import styles from './Sobre.module.css';
 
@@ -19,7 +18,7 @@ export default function Sobre() {
             </p>
           </section>
           <p className={styles.texto} style={{ color: 'var(--text-secondary)' }}>
-            {PROJETO.nome} · versão {VERSAO_APP}
+            Rota Acessível · versão {VERSAO_APP}
           </p>
         </div>
       </main>
