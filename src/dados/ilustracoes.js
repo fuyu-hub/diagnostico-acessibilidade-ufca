@@ -11,9 +11,23 @@ export const QUADRADA = { largura: 720, altura: 720 };
 
 // Desenhos que já têm a versão quadrada (mesmo nome de arquivo)
 export const ILUSTRACOES_QUADRADAS = new Set([
+  // Pilotos
   'calcada_faixa_livre.svg',
   'escada_largura_patamar.svg',
   'corrimao_alturas.svg',
+  // Lote 1 (desenhos/quadradas_lote1.mjs)
+  'rota_acessivel.svg',
+  'piso_firme_regular.svg',
+  'piso_tatil_externo.svg',
+  'calcada_inclinacao_transversal.svg',
+  'altura_livre.svg',
+  'desniveis_piso.svg',
+  'objetos_salientes.svg',
+  'rebaixamento_calcada.svg',
+  'escada_degrau_dimensoes.svg',
+  'escada_sinal_visual.svg',
+  'escada_inclinacao.svg',
+  'rampa_dimensoes.svg',
 ]);
 
 // A mesma regra do layout de duas colunas em ItemChecklist.module.css
