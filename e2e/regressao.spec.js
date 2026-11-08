@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }, info) => {
     });
   }
   if (info.title.includes('popup')) return;
-  await page.addInitScript(() => localStorage.setItem('ufca:boasVindas:v1', 'visto'));
+  await page.addInitScript(() => localStorage.setItem('ufca:boasVindas:v2', 'visto'));
 });
 
 async function criarVistoria(page, nome = 'Escola de Teste') {
@@ -173,8 +173,8 @@ test('erro em uma tela mostra saída em vez de tela branca', async ({ page }) =>
 test('popup aparece no primeiro acesso, some depois e o Sobre continua acessível', async ({ page }) => {
   await page.goto('/');
 
-  const popup = page.getByRole('dialog', { name: 'Boas-vindas ao Diagnóstico NBR 9050' });
-  await expect(popup).toContainText('Profa. Antonia Fabiana Marques Almeida');
+  const popup = page.getByRole('dialog', { name: 'Avalie a acessibilidade da sua escola' });
+  await expect(popup).toContainText('Percorra e responda');
   await popup.getByRole('button', { name: 'Começar' }).click();
   await expect(popup).toBeHidden();
 
@@ -183,7 +183,7 @@ test('popup aparece no primeiro acesso, some depois e o Sobre continua acessíve
   await expect(popup).toBeHidden();
 
   await page.getByRole('button', { name: 'Sobre' }).click();
-  await expect(page.getByRole('heading', { name: 'O projeto' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Em construção' })).toBeVisible();
 });
 
 test('tema: padrão segue o sistema, a escolha manual prevalece e persiste', async ({ page }) => {
