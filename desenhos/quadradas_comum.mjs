@@ -48,7 +48,8 @@ export function gerarLote(lista) {
     const perguntas = f.itens.map(pergunta).join(' ');
     const textos = [...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map(m => m[1]);
     const medidas = textos.flatMap(t => t.match(/\d+(?:,\d+)?\s?(?:cm|mm|m\b|%)/g) || []).map(m => m.replace(/\s+/g, ''));
-    const faltando = [...new Set(medidas.filter(m => !perguntas.includes(m)))];
+    // aConfirmar: medidas que vêm do desenho original e ainda dependem de confirmação na norma
+    const faltando = [...new Set(medidas.filter(m => !perguntas.includes(m) && !(f.aConfirmar || []).includes(m)))];
     const tamanhos = [...svg.matchAll(/font-size="([\d.]+)"/g)].map(m => +m[1]);
     if (faltando.length) { erros++; console.log(`✗ ${f.nome}: medidas fora das perguntas: ${faltando.join(', ')}`); }
     if (Math.min(...tamanhos) < A) { erros++; console.log(`✗ ${f.nome}: rótulo menor que ${A}`); }
