@@ -41,6 +41,19 @@ export const ILUSTRACOES_QUADRADAS = new Set([
   'estacionamento_percurso.svg',
   'corredor_largura.svg',
   'iluminacao_uniforme.svg',
+  // Lote 3 (desenhos/quadradas_lote3.mjs)
+  'comandos_alturas.svg',
+  'inclinacao_longitudinal.svg',
+  'piso_tatil_interno.svg',
+  'escada_piso_tatil.svg',
+  'elevador_botoeira.svg',
+  'elevador_entrada.svg',
+  'bebedouro_bica.svg',
+  'bebedouro_alturas.svg',
+  'sinalizacao_porta.svg',
+  'porta_espaco_lateral.svg',
+  'mesa_vao_livre.svg',
+  'giro_360.svg',
 ]);
 
 // A mesma regra do layout de duas colunas em ItemChecklist.module.css
