@@ -1,5 +1,5 @@
 /**
- * Marca do Rota Acessível (planejamento/logo/kit/marca.svg) desenhada aqui para acompanhar o tema:
+ * Marca do Rota Acessível (arquivo original: logo/marca.svg, na raiz do projeto) desenhada aqui para acompanhar o tema:
  * o contorno e a rota usam as cores do tema, o piso de alerta é sempre amarelo.
  */
 const PONTOS = [148, 168, 188].flatMap(x => [76, 96, 116].map(y => [x, y]));
