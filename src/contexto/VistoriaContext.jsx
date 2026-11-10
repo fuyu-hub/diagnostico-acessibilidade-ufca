@@ -28,6 +28,8 @@ import { gravarLote } from '../dados/gravacao.js';
 import { resolverConflito } from '../dados/conflito.js';
 import { calcularStatusVistoria } from '../dados/checklist.js';
 import { listarFotos, camposFotos } from '../dados/fotos.js';
+import { carimbarResposta, extrairCarimbos } from '../dados/mescla.js';
+import { obterAutorLocal } from '../dados/identidade.js';
 import { useNotificacao } from './NotificacaoContext.jsx';
 import ModalErroCota from '../componentes/ModalErroCota.jsx';
 
@@ -57,6 +59,7 @@ function enriquecerParaUI(canonica) {
       resposta: d.resposta,
       observacao: d.observacao || '',
       ...extrairMarcaTriagem(d),
+      ...extrairCarimbos(d),
     };
   }
 
@@ -105,6 +108,7 @@ function converterUIParaCanonica(vistoriaUI) {
       observacao: typeof obs === 'string' ? obs : String(obs),
       ...camposFotos(fotos),
       ...extrairMarcaTriagem(item),
+      ...extrairCarimbos(item),
     };
   }
 
@@ -497,23 +501,28 @@ export function VistoriaProvider({ children }) {
 
         const dadosAtuais = { ...(v.dadosVistoria || {}) };
         const idStr = String(itemId);
+        const anterior = dadosAtuais[idStr];
+        let nova;
 
         if (!resposta) {
-          // Limpa a resposta
-          dadosAtuais[idStr] = { resposta: null, observacao: '', ...camposFotos([]) };
+          // Limpa a resposta. O registro vazio e carimbado leva a remoção aos outros aparelhos.
+          nova = { resposta: null, observacao: '', ...camposFotos([]) };
         } else {
           const valorBruto = typeof resposta === 'object' ? (resposta.resposta || resposta.valor) : resposta;
           const respostaNorm = normalizarValorResposta(valorBruto);
           const obs = typeof resposta === 'object' ? (resposta.observacao || resposta.obs || '') : '';
           const fotos = listarFotos(resposta);
 
-          dadosAtuais[idStr] = {
+          nova = {
             resposta: respostaNorm,
             observacao: obs,
             ...camposFotos(fotos),
             ...extrairMarcaTriagem(resposta),
           };
         }
+
+        // Responder de novo um item com divergência também a encerra
+        dadosAtuais[idStr] = carimbarResposta(nova, anterior, obterAutorLocal());
 
         // Determina novo status canônico conforme §2.1 e §7.1 do Escopo 1
         const novoStatus = calcularStatusVistoria(dadosAtuais, v.triagem);

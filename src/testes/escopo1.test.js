@@ -123,6 +123,8 @@ describe('Suíte de Testes — Requisitos Mínimos do Escopo 1 (§10)', () => {
     const resMesclar = resolverConflito(local, remota, 'mesclar');
     expect(resMesclar.acao).toBe('salvar');
     expect(resMesclar.vistoria.dadosVistoria['1'].resposta).toBe('nao_conforme'); // remota venceu por revisão 5 > 3
+    // a resposta local não é descartada: fica guardada como divergência (Escopo 09)
+    expect(resMesclar.vistoria.dadosVistoria['1'].alternativas).toMatchObject([{ resposta: 'conforme', observacao: 'Obs Local' }]);
     expect(resMesclar.vistoria.dadosVistoria['2'].resposta).toBe('nao_conforme'); // mantido do local
     expect(resMesclar.vistoria.dadosVistoria['3'].resposta).toBe('conforme'); // herdado da remota
 

@@ -1,5 +1,6 @@
 ﻿import { Vistoria } from './esquema.js';
 import { gerarUUID } from './migracoes.js';
+import { mesclarCopias } from './mescla.js';
 
 /**
  * Gera um novo nome com sufixo de cópia inteligente (" - Cópia", " - Cópia (2)")
@@ -66,23 +67,11 @@ export function resolverConflito(local, remota, estrategia, nomesExistentes = []
     }
 
     case 'mesclar': {
-      // Deep merge de dadosVistoria item a item
-      // Critério primário: se revisão da remota for maior, a resposta remota vence
-      // Em caso de empate de revisão, respostas preenchidas (não nulas) vencem nulas
-      const dadosMesclados = { ...vLocal.dadosVistoria };
-
-      for (const [idItem, respRemota] of Object.entries(vRemota.dadosVistoria || {})) {
-        const respLocal = dadosMesclados[idItem];
-
-        if (!respLocal || respLocal.resposta === null) {
-          dadosMesclados[idItem] = respRemota;
-        } else if (respRemota && respRemota.resposta !== null) {
-          if (vRemota.revisao > vLocal.revisao) {
-            dadosMesclados[idItem] = respRemota;
-          }
-          // se empate ou local for mais recente, mantém o local
-        }
-      }
+      // Mescla item a item pelos carimbos de cada resposta (mescla.js). Respostas diferentes
+      // dadas sem uma conhecer a outra ficam guardadas como divergência, sem perda.
+      // Em respostas antigas, sem carimbo, a cópia de revisão maior vence; no empate, a local.
+      const ordem = vRemota.revisao > vLocal.revisao ? [vLocal, vRemota] : [vRemota, vLocal];
+      const dadosMesclados = mesclarCopias(ordem.map(v => v.dadosVistoria));
 
       const mesclada = {
         ...vLocal,

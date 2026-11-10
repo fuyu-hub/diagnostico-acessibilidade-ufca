@@ -1,12 +1,25 @@
 import { z } from 'zod';
 
-export const RespostaCriterio = z.object({
+const CamposResposta = {
   resposta: z.enum(['conforme', 'nao_conforme', 'nao_aplica']).nullable(),
   observacao: z.string().default(''),
   foto: z.string().nullable().optional(),
   fotos: z.array(z.string()).optional(),
   automatico: z.boolean().optional(),
   origemTriagem: z.number().int().optional(),
+  // Carimbos da mescla entre aparelhos (Escopo 09). Respostas antigas não os têm.
+  atualizadaEm: z.string().optional(), // quando a resposta foi dada
+  autor: z.string().optional(), // id do aparelho ou participante que respondeu
+  base: z.string().optional(), // carimbo mais recente que quem respondeu tinha na tela
+};
+
+// Resposta dada ao mesmo tempo por outra pessoa, guardada até alguém decidir. Sem fotos:
+// as fotos de todas ficam na resposta principal.
+export const RespostaAlternativa = z.object(CamposResposta);
+
+export const RespostaCriterio = z.object({
+  ...CamposResposta,
+  alternativas: z.array(RespostaAlternativa).optional(),
 });
 
 export const Consentimento = z.object({

@@ -1,5 +1,6 @@
 import { Vistoria } from './esquema.js';
 import { listarFotos, camposFotos } from './fotos.js';
+import { extrairCarimbos } from './mescla.js';
 
 /**
  * Gera UUID v4 seguro com fallback
@@ -129,6 +130,7 @@ export function converterLegadoParaCanonica(legada) {
       observacao: typeof obs === 'string' ? obs : String(obs),
       ...camposFotos(fotos),
       ...extrairMarcaTriagem(item),
+      ...extrairCarimbos(item),
     };
   }
 
