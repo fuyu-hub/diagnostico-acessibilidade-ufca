@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconArrowRight, IconSearch } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
-import MarcaRota from '../componentes/MarcaRota';
+import MarcaPercurso from '../componentes/MarcaPercurso';
 import CartaoVistoria from '../componentes/CartaoVistoria';
 import ModalConflito from '../componentes/ModalConflito';
 import { lerArquivoImportacao } from '../dados/exportacao';
@@ -140,9 +140,9 @@ export default function Painel() {
       <main className="tela-body" style={{ padding: '24px 20px' }}>
         <header className={styles.header}>
           <div className={styles.marcaTitulo}>
-            <span className={styles.marca}><MarcaRota tamanho={52} /></span>
+            <span className={styles.marca}><MarcaPercurso tamanho={52} /></span>
             <div>
-              <span className={styles.eyebrow}>Rota Acessível</span>
+              <span className={styles.eyebrow}>Percurso Acessível</span>
               <h1 className={styles.titulo}>Vistorias</h1>
             </div>
           </div>

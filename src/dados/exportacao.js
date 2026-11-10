@@ -95,7 +95,7 @@ export async function compartilharOuBaixarEnvelope(envelope, nomeArquivoCustomiz
       if (navigator.canShare({ files: [arquivo] })) {
         await navigator.share({
           title: 'Exportação de Vistorias UFCA',
-          text: `Rota Acessível: vistoria exportada em ${new Date().toLocaleDateString('pt-BR')}`,
+          text: `Percurso Acessível: vistoria exportada em ${new Date().toLocaleDateString('pt-BR')}`,
           files: [arquivo],
         });
         return { metodo: 'share', sucesso: true };
