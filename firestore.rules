@@ -1,0 +1,93 @@
+rules_version = '2';
+
+// Regras do Firestore (Escopo 09, §3.2). Tudo que não está liberado aqui é negado.
+// Toda mudança precisa de teste em regras/regras.test.js (npm run test:regras).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logado() {
+      return request.auth != null;
+    }
+
+    function ehEquipe() {
+      return logado() && exists(/databases/$(database)/documents/equipe/$(request.auth.uid));
+    }
+
+    function textoAte(valor, max) {
+      return valor is string && valor.size() <= max;
+    }
+
+    // ---- Coleta para pesquisa: cópia reduzida, sem fotos, nomes, endereço ou observações ----
+
+    function copiaPesquisaValida() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['uidAutor', 'enviadaEm', 'versaoTermo', 'versaoChecklist',
+                               'versaoApp', 'ficha', 'triagem', 'respostas', 'resultado'])
+        && d.keys().hasAll(['uidAutor', 'enviadaEm', 'versaoTermo', 'respostas'])
+        && d.uidAutor == request.auth.uid
+        && d.enviadaEm == request.time
+        && textoAte(d.versaoTermo, 10)
+        && (!('ficha' in d) || (d.ficha is map && d.ficha.keys().hasOnly(
+              ['cidade', 'rede', 'nivelEnsino', 'numAlunos', 'numPavimentos', 'anoConstrucao'])))
+        && d.respostas is map && d.respostas.size() <= 400;
+    }
+
+    match /coleta/{vistoriaId} {
+      allow read: if ehEquipe();
+      allow create: if logado() && copiaPesquisaValida();
+      allow update: if logado() && resource.data.uidAutor == request.auth.uid && copiaPesquisaValida();
+    }
+
+    // Quem pode ler a coleta. Cadastrado à mão no console; o app não escreve aqui.
+    match /equipe/{uid} {
+      allow get: if logado() && request.auth.uid == uid;
+    }
+
+    // ---- Vistoria em grupo. O código do grupo é o segredo do link: ler exige sabê-lo,
+    // e listar grupos é proibido. ----
+
+    match /grupos/{codigo} {
+      function grupoValido() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['vistoriaId', 'criadoPor', 'criadoEm', 'status',
+                                 'versaoChecklist', 'ficha', 'blocoAvaliado'])
+          && d.status in ['aberta', 'concluida']
+          && textoAte(d.blocoAvaliado, 200);
+      }
+
+      allow get: if logado();
+      allow create: if logado()
+        && codigo.size() >= 22
+        && request.resource.data.criadoPor == request.auth.uid
+        && request.resource.data.status == 'aberta'
+        && grupoValido();
+      allow update: if logado()
+        && resource.data.criadoPor == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'ficha', 'blocoAvaliado'])
+        && grupoValido();
+
+      // Cada pessoa grava só a própria cópia, e só com o grupo aberto
+      match /participantes/{uid} {
+        function participante() {
+          return exists(/databases/$(database)/documents/grupos/$(codigo)/participantes/$(request.auth.uid));
+        }
+
+        function grupoAberto() {
+          return get(/databases/$(database)/documents/grupos/$(codigo)).data.status == 'aberta';
+        }
+
+        function copiaValida() {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['nome', 'autor', 'entrouEm', 'ultimaSincronizacao', 'respostas'])
+            && d.nome is string && d.nome.size() > 0 && d.nome.size() <= 60
+            && textoAte(d.autor, 64)
+            && d.respostas is map && d.respostas.size() <= 400;
+        }
+
+        allow read: if logado() && participante();
+        allow create, update: if logado() && request.auth.uid == uid && grupoAberto() && copiaValida();
+      }
+    }
+  }
+}
