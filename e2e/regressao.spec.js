@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }, info) => {
   if (info.title.includes('popup')) return;
   await page.addInitScript(() => {
     localStorage.setItem('ufca:boasVindas:v3', 'visto');
-    localStorage.setItem('ufca:consentimento:v2', JSON.stringify({ aceito: false, versaoTermo: '2.0', data: '2026-11-10T00:00:00.000Z' }));
+    localStorage.setItem('ufca:consentimento:v2', JSON.stringify({ aceito: true, versaoTermo: '2.0', data: '2026-11-10T00:00:00.000Z' }));
   });
 });
 
@@ -176,14 +176,13 @@ test('erro em uma tela mostra saída em vez de tela branca', async ({ page }) =>
 test('popup aparece no primeiro acesso, some depois e o Sobre continua acessível', async ({ page }) => {
   await page.goto('/');
 
-  const popup = page.getByRole('dialog', { name: 'Avalie a acessibilidade da sua escola' });
+  const popup = page.getByRole('alertdialog', { name: 'Avalie a acessibilidade da sua escola' });
   await expect(popup).toContainText('Percorra e responda');
 
-  // Esc fecha sem decidir: o aviso volta na próxima abertura
+  // Envio obrigatório: Esc não fecha, e não há opção de recusar
   await page.keyboard.press('Escape');
-  await expect(popup).toBeHidden();
-  await page.reload();
   await expect(popup).toBeVisible();
+  await expect(popup.getByRole('button', { name: 'Usar sem enviar' })).toHaveCount(0);
 
   await popup.getByRole('button', { name: 'Li e concordo' }).click();
   await expect(popup).toBeHidden();

@@ -17,8 +17,7 @@ export default function TermoPesquisa({ className }) {
         <p><strong>O que não é enviado:</strong> fotos, nomes de avaliadores, endereço, bairro e observações.</p>
         <p><strong>Quando:</strong> ao concluir uma vistoria, assim que houver internet.</p>
         <p><strong>Para quê:</strong> estudar a acessibilidade das escolas. Resultados publicados não identificam pessoas.</p>
-        <p><strong>Como mudar de ideia:</strong> em Ajustes, a qualquer momento. Os envios param a partir daí. Para pedir a exclusão do que já foi enviado, fale com a coordenação do projeto.</p>
-        <p>Sem aceitar, o app funciona do mesmo jeito, e as vistorias ficam só neste aparelho.</p>
+        <p><strong>Envio obrigatório:</strong> faz parte do uso do app. Vistorias criadas antes deste aviso não são enviadas. Para pedir a exclusão do que já foi enviado, fale com a coordenação do projeto.</p>
         <p>Versão {VERSAO_TERMO} do termo.</p>
       </div>
     </details>

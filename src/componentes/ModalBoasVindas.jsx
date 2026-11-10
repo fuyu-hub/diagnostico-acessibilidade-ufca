@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTravaScroll } from '../utilitarios/travaScroll';
 import { useFocusTrap } from '../utilitarios/focusTrap';
 import { IconBuilding, IconClipboardCheck, IconChartBar } from '@tabler/icons-react';
@@ -7,7 +7,7 @@ import TermoPesquisa, { RESUMO_PESQUISA } from './TermoPesquisa';
 import styles from './ModalBoasVindas.module.css';
 
 // Aumentar a versão faz o popup reaparecer para todos quando o texto mudar de forma relevante.
-// v3: termo da pesquisa. O aviso também volta enquanto a pessoa não decidir sobre ele.
+// v3: termo da pesquisa. O aviso também volta enquanto não houver ciência do termo atual.
 const CHAVE_BOAS_VINDAS = 'ufca:boasVindas:v3';
 
 const PASSOS = [
@@ -36,9 +36,9 @@ export default function ModalBoasVindas() {
     setTimeout(() => document.querySelector('h1')?.focus?.(), 0);
   }
 
-  // Só os botões registram decisão. Esc fecha sem decidir, e o aviso volta na próxima abertura.
-  function decidir(aceito) {
-    registrarConsentimento(aceito);
+  // O envio à pesquisa é obrigatório: o aviso só fecha com a ciência, e Esc não o fecha.
+  function concordar() {
+    registrarConsentimento();
     try {
       localStorage.setItem(CHAVE_BOAS_VINDAS, new Date().toISOString());
     } catch (err) {
@@ -47,15 +47,6 @@ export default function ModalBoasVindas() {
     fechar();
   }
 
-  useEffect(() => {
-    if (!aberto) return undefined;
-    function aoTeclar(e) {
-      if (e.key === 'Escape') fechar();
-    }
-    document.addEventListener('keydown', aoTeclar);
-    return () => document.removeEventListener('keydown', aoTeclar);
-  }, [aberto]);
-
   if (!aberto) return null;
 
   return (
@@ -63,7 +54,7 @@ export default function ModalBoasVindas() {
       <div
         ref={modalRef}
         className={styles.modal}
-        role="dialog"
+        role="alertdialog"
         aria-modal="true"
         aria-labelledby="boas-vindas-titulo"
       >
@@ -91,19 +82,16 @@ export default function ModalBoasVindas() {
           {/* Fica fora da rolagem: o que se aceita está sempre visível junto do botão */}
           <div className={styles.pesquisa}>
             <h3 id="boas-vindas-pesquisa" className={styles.pesquisaTitulo}>Pesquisa da UFCA</h3>
-            <p className={styles.pesquisaTexto}>{RESUMO_PESQUISA} Você pode mudar isso em Ajustes.</p>
+            <p className={styles.pesquisaTexto}>{RESUMO_PESQUISA} O termo fica disponível em Ajustes.</p>
           </div>
           <button
             type="button"
             className="btn-nav primario"
-            onClick={() => decidir(true)}
+            onClick={concordar}
             aria-describedby="boas-vindas-pesquisa"
             autoFocus
           >
             Li e concordo
-          </button>
-          <button type="button" className="btn-nav" onClick={() => decidir(false)}>
-            Usar sem enviar
           </button>
         </div>
       </div>
