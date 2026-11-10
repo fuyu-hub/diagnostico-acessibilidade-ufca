@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { describe, it, beforeAll, afterAll, beforeEach } from 'vitest';
 import { initializeTestEnvironment, assertSucceeds, assertFails } from '@firebase/rules-unit-testing';
 import { doc, getDoc, getDocs, setDoc, updateDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { montarCopiaPesquisa } from '../src/dados/coleta.js';
 
 let ambiente;
 const CODIGO = 'codigo-secreto-do-grupo-123';
@@ -41,6 +42,17 @@ beforeEach(async () => {
 describe('coleta para pesquisa', () => {
   it('aparelho envia a própria cópia', () =>
     assertSucceeds(setDoc(doc(banco('ana'), 'coleta/v1'), copiaPesquisa('ana'))));
+
+  it('a cópia montada pelo app passa nas regras', () =>
+    assertSucceeds(setDoc(doc(banco('ana'), 'coleta/v2'), {
+      ...montarCopiaPesquisa({
+        versaoChecklist: '1.0', consentimento: { versaoTermo: '2.0' },
+        instituicao: { cidade: 'Crato', rede: 'Municipal', nivelEnsino: ['Fundamental'], numAlunos: '300' },
+        triagem: { nivelEnsino: 'fundamental', respostas: { 1001: true } },
+        dadosVistoria: { 1: { resposta: 'conforme' }, 2: { resposta: 'nao_aplica' } },
+      }),
+      uidAutor: 'ana', enviadaEm: serverTimestamp(),
+    })));
 
   it('sem login não envia', () =>
     assertFails(setDoc(doc(banco(null), 'coleta/v1'), copiaPesquisa('ana'))));

@@ -31,6 +31,8 @@ import { listarFotos, camposFotos } from '../dados/fotos.js';
 import { carimbarResposta, extrairCarimbos } from '../dados/mescla.js';
 import { obterAutorLocal } from '../dados/identidade.js';
 import { consentimentoParaNovaVistoria } from '../dados/consentimento.js';
+import { enviarPendentes, lerEnvios } from '../dados/coleta.js';
+import { nuvemDisponivel, conectarNuvem } from '../dados/nuvem.js';
 import { useNotificacao } from './NotificacaoContext.jsx';
 import ModalErroCota from '../componentes/ModalErroCota.jsx';
 
@@ -161,6 +163,34 @@ export function VistoriaProvider({ children }) {
   const [erroCota, setErroCota] = useState(null); // objeto com vistoria para escape emergencial
   const [armazenamentoPersistido, setArmazenamentoPersistido] = useState(false);
   const [ultimoBackup, setUltimoBackup] = useState(() => obterDataUltimoBackup());
+  const [enviosPesquisa, setEnviosPesquisa] = useState(() => lerEnvios());
+  const vistoriasRef = useRef(vistorias);
+
+  useEffect(() => {
+    vistoriasRef.current = vistorias;
+  }, [vistorias]);
+
+  /**
+   * Envio das vistorias concluídas à pesquisa (Escopo 09, Etapa 4): alguns segundos depois
+   * de cada mudança, ao abrir o app e quando a internet volta. Sem servidor configurado, nada.
+   */
+  const enviarParaPesquisa = useCallback(() => {
+    if (!nuvemDisponivel()) return;
+    enviarPendentes(vistoriasRef.current, conectarNuvem)
+      .then(setEnviosPesquisa)
+      .catch(err => console.warn('Envio à pesquisa adiado:', err));
+  }, []);
+
+  useEffect(() => {
+    if (carregando) return undefined;
+    const timer = setTimeout(enviarParaPesquisa, 5000);
+    return () => clearTimeout(timer);
+  }, [vistorias, carregando, enviarParaPesquisa]);
+
+  useEffect(() => {
+    window.addEventListener('online', enviarParaPesquisa);
+    return () => window.removeEventListener('online', enviarParaPesquisa);
+  }, [enviarParaPesquisa]);
 
   /**
    * Solicitação e verificação de persistência durável no navegador (§3.1/B5)
@@ -732,6 +762,7 @@ export function VistoriaProvider({ children }) {
         armazenamentoPersistido,
         solicitarPersistenciaManual: pedirPersistenciaManual,
         ultimoBackup,
+        enviosPesquisa,
         registrarBackupManual: () => {
           const d = registrarDataUltimoBackup();
           setUltimoBackup(d);

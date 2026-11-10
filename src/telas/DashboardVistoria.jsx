@@ -4,8 +4,10 @@ import {
   IconMapPin, IconCalendar, IconUserPlus, IconTrash,
   IconArrowRight, IconListCheck, IconFileTypePdf, IconTable,
   IconDeviceFloppy, IconCheck, IconChartBar,
-  IconClock, IconDownload, IconPhoto
+  IconClock, IconDownload, IconPhoto, IconCloudCheck, IconCloudUpload
 } from '@tabler/icons-react';
+import { estadoEnvio } from '../dados/coleta.js';
+import { nuvemDisponivel } from '../dados/nuvem.js';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
 import { ITENS_TECNICOS, SECOES, ITENS_POR_SECAO, resumoProgresso } from '../dados/checklist';
@@ -63,7 +65,8 @@ export default function DashboardVistoria() {
 function ConteudoVistoria({ id, vistoria }) {
   const { navegar } = useNavegacao();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { atualizarVistoria, removerVistoria, exportarVistoria, responderItem } = useVistoria();
+  const { atualizarVistoria, removerVistoria, exportarVistoria, responderItem, enviosPesquisa } = useVistoria();
+  const envio = nuvemDisponivel() ? estadoEnvio(vistoria, enviosPesquisa) : null;
   const { mostrarToast, mostrarConfirmacao } = useNotificacao();
 
   const aba = ABAS.some(a => a.id === searchParams.get('aba')) ? searchParams.get('aba') : 'resumo';
@@ -294,6 +297,16 @@ function ConteudoVistoria({ id, vistoria }) {
                   </span>
                 )}
               </div>
+              {envio && (
+                <p className={styles.metaItem} role="status">
+                  {envio.estado === 'enviada' ? <IconCloudCheck size={15} aria-hidden="true" /> : <IconCloudUpload size={15} aria-hidden="true" />}
+                  <span>
+                    {envio.estado === 'enviada'
+                      ? `Enviada para a pesquisa em ${new Date(envio.enviadaEm).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}`
+                      : 'Envio para a pesquisa pendente: segue sozinho quando houver internet'}
+                  </span>
+                </p>
+              )}
             </div>
           </div>
 

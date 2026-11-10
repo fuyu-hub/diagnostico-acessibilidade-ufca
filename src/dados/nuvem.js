@@ -14,6 +14,9 @@ const config = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
+// `npm run dev:emulador` (arquivo .env.emulador): usa o Firebase local, sem tocar no projeto real
+const EMULADOR = import.meta.env.VITE_FIREBASE_EMULADOR === '1';
+
 export function nuvemDisponivel() {
   return Boolean(config.apiKey && config.projectId && config.appId);
 }
@@ -44,6 +47,10 @@ export function conectarNuvem() {
       });
 
       const autenticacao = auth.getAuth(app);
+      if (EMULADOR) {
+        fs.connectFirestoreEmulator(db, '127.0.0.1', 8080);
+        auth.connectAuthEmulator(autenticacao, 'http://127.0.0.1:9099', { disableWarnings: true });
+      }
       await autenticacao.authStateReady();
       if (!autenticacao.currentUser) {
         await auth.signInAnonymously(autenticacao);
