@@ -18,7 +18,10 @@ test.beforeEach(async ({ page }, info) => {
     });
   }
   if (info.title.includes('popup')) return;
-  await page.addInitScript(() => localStorage.setItem('ufca:boasVindas:v2', 'visto'));
+  await page.addInitScript(() => {
+    localStorage.setItem('ufca:boasVindas:v3', 'visto');
+    localStorage.setItem('ufca:consentimento:v2', JSON.stringify({ aceito: false, versaoTermo: '2.0', data: '2026-11-10T00:00:00.000Z' }));
+  });
 });
 
 async function criarVistoria(page, nome = 'Escola de Teste') {
@@ -175,8 +178,17 @@ test('popup aparece no primeiro acesso, some depois e o Sobre continua acessíve
 
   const popup = page.getByRole('dialog', { name: 'Avalie a acessibilidade da sua escola' });
   await expect(popup).toContainText('Percorra e responda');
-  await popup.getByRole('button', { name: 'Começar' }).click();
+
+  // Esc fecha sem decidir: o aviso volta na próxima abertura
+  await page.keyboard.press('Escape');
   await expect(popup).toBeHidden();
+  await page.reload();
+  await expect(popup).toBeVisible();
+
+  await popup.getByRole('button', { name: 'Li e concordo' }).click();
+  await expect(popup).toBeHidden();
+  const decisao = await page.evaluate(() => JSON.parse(localStorage.getItem('ufca:consentimento:v2')));
+  expect(decisao).toMatchObject({ aceito: true, versaoTermo: '2.0' });
 
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Vistorias' })).toBeVisible();

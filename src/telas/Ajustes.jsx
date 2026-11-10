@@ -3,7 +3,10 @@ import {
   IconVolume, IconVolumeOff, IconCheck, IconX, IconMinus, IconInfoCircle,
   IconShieldCheck, IconDownload, IconUpload, IconPalette, IconChevronRight,
   IconListCheck, IconPlayerPlayFilled, IconPlayerStopFilled, IconDeviceMobile, IconRefresh,
+  IconChartDots,
 } from '@tabler/icons-react';
+import TermoPesquisa, { RESUMO_PESQUISA } from '../componentes/TermoPesquisa';
+import { lerConsentimento, registrarConsentimento } from '../dados/consentimento';
 import Topbar from '../componentes/Topbar';
 import ModalConflito from '../componentes/ModalConflito';
 import { lerArquivoImportacao } from '../dados/exportacao';
@@ -88,6 +91,7 @@ function GrupoOpcoes({ nome, titulo, descricao, opcoes, valor, onMudar }) {
 
 export default function Ajustes() {
   const [somAtivo, setSomAtivo] = useState(isSomHabilitado);
+  const [enviaPesquisa, setEnviaPesquisa] = useState(() => lerConsentimento()?.aceito === true);
   const fileInputRef = useRef(null);
   const { navegar } = useNavegacao();
   const [tema, setTema] = useState(obterPreferenciaTema);
@@ -471,6 +475,31 @@ export default function Ajustes() {
                 </p>
               )}
             </div>
+          </section>
+
+          {/* Card da pesquisa: aceitar depois ou revogar o envio (Escopo 09) */}
+          <section className={styles.secaoCard} aria-labelledby="titulo-pesquisa">
+            <div className={styles.secaoInfo}>
+              <h2 id="titulo-pesquisa" className={styles.secaoTitulo}>
+                <IconChartDots size={20} color="var(--accent)" aria-hidden="true" />
+                <span>Pesquisa da UFCA</span>
+              </h2>
+              <p className={styles.secaoDesc}>{RESUMO_PESQUISA}</p>
+            </div>
+            <Interruptor
+              id="ajuste-pesquisa"
+              titulo="Enviar vistorias concluídas"
+              descricao={enviaPesquisa
+                ? 'Ligado: vale para as vistorias criadas depois do aceite.'
+                : 'Desligado: nada é enviado, e o app funciona do mesmo jeito.'}
+              ativo={enviaPesquisa}
+              onMudar={ligado => {
+                registrarConsentimento(ligado);
+                setEnviaPesquisa(ligado);
+                mostrarToast(ligado ? 'Envio para a pesquisa ligado' : 'Envio para a pesquisa desligado', 'sucesso');
+              }}
+            />
+            <TermoPesquisa className={styles.secaoDesc} />
           </section>
 
           {/* Card de Backup */}

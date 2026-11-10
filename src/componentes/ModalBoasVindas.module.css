@@ -92,3 +92,52 @@
   text-align: left;
   margin-top: 14px;
 }
+
+.pesquisa {
+  padding: 8px 0 4px;
+  text-align: left;
+}
+
+.pesquisaTitulo {
+  color: var(--text-strong);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.pesquisaTexto {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.termo {
+  margin-top: 6px;
+  text-align: left;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.termo summary {
+  color: var(--accent-text);
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.termo p {
+  margin: 0 0 8px;
+}
+
+.rodape {
+  display: grid;
+  gap: 8px;
+}
+
+.rodape :global(.btn-nav) {
+  margin-top: 0;
+}

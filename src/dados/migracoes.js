@@ -175,10 +175,11 @@ export function converterLegadoParaCanonica(legada) {
     dataUltimaEdicao,
     sincronizada: Boolean(legada.sincronizada),
     dataUltimaSincronizacao: legada.dataUltimaSincronizacao || null,
+    // Vistorias antigas não tiveram aceite registrado: nunca são enviadas à pesquisa
     consentimento: legada.consentimento || {
-      aceito: true,
+      aceito: false,
       versaoTermo: '1.0',
-      dataAceite: dataCriacao,
+      dataAceite: null,
     },
     blocoAvaliado: blocoAvaliado || 'Bloco sem nome',
     instituicao,

@@ -2,10 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { useTravaScroll } from '../utilitarios/travaScroll';
 import { useFocusTrap } from '../utilitarios/focusTrap';
 import { IconBuilding, IconClipboardCheck, IconChartBar } from '@tabler/icons-react';
+import { lerConsentimento, registrarConsentimento } from '../dados/consentimento';
+import TermoPesquisa, { RESUMO_PESQUISA } from './TermoPesquisa';
 import styles from './ModalBoasVindas.module.css';
 
-// Aumentar a versão faz o popup reaparecer para todos quando o texto mudar de forma relevante
-const CHAVE_BOAS_VINDAS = 'ufca:boasVindas:v2';
+// Aumentar a versão faz o popup reaparecer para todos quando o texto mudar de forma relevante.
+// v3: termo da pesquisa. O aviso também volta enquanto a pessoa não decidir sobre ele.
+const CHAVE_BOAS_VINDAS = 'ufca:boasVindas:v3';
 
 const PASSOS = [
   { Icone: IconBuilding, texto: 'Cadastre a escola' },
@@ -15,7 +18,7 @@ const PASSOS = [
 
 function jaVisto() {
   try {
-    return localStorage.getItem(CHAVE_BOAS_VINDAS) !== null;
+    return localStorage.getItem(CHAVE_BOAS_VINDAS) !== null && lerConsentimento() !== null;
   } catch {
     return false;
   }
@@ -29,13 +32,19 @@ export default function ModalBoasVindas() {
   useFocusTrap(aberto, modalRef);
 
   function fechar() {
+    setAberto(false);
+    setTimeout(() => document.querySelector('h1')?.focus?.(), 0);
+  }
+
+  // Só os botões registram decisão. Esc fecha sem decidir, e o aviso volta na próxima abertura.
+  function decidir(aceito) {
+    registrarConsentimento(aceito);
     try {
       localStorage.setItem(CHAVE_BOAS_VINDAS, new Date().toISOString());
     } catch (err) {
       console.warn('Não foi possível registrar as boas-vindas:', err);
     }
-    setAberto(false);
-    setTimeout(() => document.querySelector('h1')?.focus?.(), 0);
+    fechar();
   }
 
   useEffect(() => {
@@ -74,11 +83,27 @@ export default function ModalBoasVindas() {
             ))}
           </ol>
 
-          <p className={styles.nota}>Funciona sem internet, e os dados ficam só neste aparelho.</p>
+          <p className={styles.nota}>Funciona sem internet, e as vistorias ficam salvas neste aparelho.</p>
+
+          <TermoPesquisa className={styles.termo} />
         </div>
         <div className={styles.rodape}>
-          <button type="button" className="btn-nav primario" onClick={fechar} autoFocus>
-            Começar
+          {/* Fica fora da rolagem: o que se aceita está sempre visível junto do botão */}
+          <div className={styles.pesquisa}>
+            <h3 id="boas-vindas-pesquisa" className={styles.pesquisaTitulo}>Pesquisa da UFCA</h3>
+            <p className={styles.pesquisaTexto}>{RESUMO_PESQUISA} Você pode mudar isso em Ajustes.</p>
+          </div>
+          <button
+            type="button"
+            className="btn-nav primario"
+            onClick={() => decidir(true)}
+            aria-describedby="boas-vindas-pesquisa"
+            autoFocus
+          >
+            Li e concordo
+          </button>
+          <button type="button" className="btn-nav" onClick={() => decidir(false)}>
+            Usar sem enviar
           </button>
         </div>
       </div>

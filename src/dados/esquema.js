@@ -22,8 +22,9 @@ export const RespostaCriterio = z.object({
   alternativas: z.array(RespostaAlternativa).optional(),
 });
 
+// Sem registro de aceite, a vistoria nunca é enviada à pesquisa (Escopo 09, Etapa 2)
 export const Consentimento = z.object({
-  aceito: z.boolean().default(true),
+  aceito: z.boolean().default(false),
   versaoTermo: z.string().default('1.0'),
   dataAceite: z.string().nullable().default(null),
 });
@@ -72,7 +73,7 @@ export const Vistoria = z.object({
   dataUltimaEdicao: z.string(),
   sincronizada: z.boolean().default(false),
   dataUltimaSincronizacao: z.string().nullable().default(null),
-  consentimento: Consentimento.default({ aceito: true, versaoTermo: '1.0', dataAceite: null }),
+  consentimento: Consentimento.default({ aceito: false, versaoTermo: '1.0', dataAceite: null }),
   blocoAvaliado: z.string().min(1),
   instituicao: FichaInstituicao.optional(),
   triagem: Triagem.default({ nivelEnsino: 'nao_aplicavel', respostas: {} }),

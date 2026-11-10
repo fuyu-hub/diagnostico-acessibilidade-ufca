@@ -30,6 +30,7 @@ import { calcularStatusVistoria } from '../dados/checklist.js';
 import { listarFotos, camposFotos } from '../dados/fotos.js';
 import { carimbarResposta, extrairCarimbos } from '../dados/mescla.js';
 import { obterAutorLocal } from '../dados/identidade.js';
+import { consentimentoParaNovaVistoria } from '../dados/consentimento.js';
 import { useNotificacao } from './NotificacaoContext.jsx';
 import ModalErroCota from '../componentes/ModalErroCota.jsx';
 
@@ -140,7 +141,7 @@ function converterUIParaCanonica(vistoriaUI) {
     dataUltimaEdicao: dataAgora,
     sincronizada: Boolean(vistoriaUI.sincronizada),
     dataUltimaSincronizacao: vistoriaUI.dataUltimaSincronizacao || null,
-    consentimento: vistoriaUI.consentimento || { aceito: true, versaoTermo: '1.0', dataAceite: null },
+    consentimento: vistoriaUI.consentimento || { aceito: false, versaoTermo: '1.0', dataAceite: null },
     blocoAvaliado: (vistoriaUI.blocoAvaliado || vistoriaUI.nome || 'Instituição / Bloco').trim(),
     instituicao,
     triagem: vistoriaUI.triagem || { nivelEnsino: 'nao_aplicavel', respostas: {} },
@@ -467,7 +468,7 @@ export function VistoriaProvider({ children }) {
       dataUltimaEdicao: dataAgora,
       sincronizada: false,
       dataUltimaSincronizacao: null,
-      consentimento: { aceito: true, versaoTermo: '1.0', dataAceite: dataAgora },
+      consentimento: consentimentoParaNovaVistoria(),
       blocoAvaliado: bloco,
       instituicao,
       triagem: { nivelEnsino: 'nao_aplicavel', respostas: {} },
