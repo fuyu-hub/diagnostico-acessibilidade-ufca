@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   IconUsersGroup, IconRefresh, IconCopy, IconShare, IconCloudCheck, IconCloudUpload, IconWifiOff, IconAlertTriangle,
 } from '@tabler/icons-react';
@@ -35,13 +36,64 @@ function Estado({ estado }) {
   return <p className={`${styles.estado} ${styles.ok}`}><IconCloudCheck size={18} aria-hidden="true" /> {hora ? `Sincronizado às ${hora}` : 'Sincronizado'}</p>;
 }
 
+/** QR code do link, para quem está perto entrar apontando a câmera. */
+function QrDoLink({ link }) {
+  const [imagem, setImagem] = useState('');
+
+  useEffect(() => {
+    let ativo = true;
+    import('qrcode')
+      .then(({ default: QRCode }) => QRCode.toDataURL(link, { margin: 2, width: 480, color: { dark: '#000000', light: '#ffffff' } }))
+      .then(url => { if (ativo) setImagem(url); })
+      .catch(err => console.warn('Não foi possível gerar o QR code:', err));
+    return () => { ativo = false; };
+  }, [link]);
+
+  return (
+    <figure className={styles.qr}>
+      {imagem
+        ? <img src={imagem} alt="QR code com o link da vistoria" width={240} height={240} />
+        : <span className={styles.texto} aria-busy="true">Gerando QR code…</span>}
+      <figcaption className={styles.nota}>Quem estiver perto aponta a câmera do celular, ou usa "Ler QR code" na tela inicial do app.</figcaption>
+    </figure>
+  );
+}
+
 /** Aba "Grupo" do painel da vistoria: compartilhar, estado da sincronização e participantes. */
 export default function AbaGrupo({ vistoria }) {
   const { compartilharVistoria, sincronizarGrupo, estadoGrupos } = useVistoria();
   const { mostrarToast } = useNotificacao();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [nome, setNome] = useState(vistoria.avaliadores?.[0] || '');
   const [ocupado, setOcupado] = useState(false);
   const [erro, setErro] = useState('');
+  const automatico = useRef(false);
+
+  async function criarLink(nomeEscolhido) {
+    if (!nomeEscolhido.trim()) {
+      setErro('Informe seu nome, para o grupo saber quem respondeu.');
+      return;
+    }
+    setOcupado(true);
+    setErro('');
+    try {
+      await compartilharVistoria(vistoria, nomeEscolhido);
+      mostrarToast('Vistoria compartilhada. Envie o link ou mostre o QR code.', 'sucesso');
+    } catch (err) {
+      setErro(err.message || 'Não foi possível compartilhar agora.');
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  // Vindo da criação com "Preencher em grupo": cria o link sem pedir outro clique
+  useEffect(() => {
+    if (searchParams.get('compartilhar') !== '1' || automatico.current) return;
+    automatico.current = true;
+    setSearchParams({ aba: 'grupo' }, { replace: true });
+    if (!vistoria.grupo && nuvemDisponivel()) criarLink(vistoria.avaliadores?.[0] || '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!nuvemDisponivel()) {
     return (
@@ -52,22 +104,9 @@ export default function AbaGrupo({ vistoria }) {
     );
   }
 
-  async function compartilhar(e) {
+  function compartilhar(e) {
     e.preventDefault();
-    if (!nome.trim()) {
-      setErro('Informe seu nome, para o grupo saber quem respondeu.');
-      return;
-    }
-    setOcupado(true);
-    setErro('');
-    try {
-      await compartilharVistoria(vistoria.vistoriaId, nome);
-      mostrarToast('Vistoria compartilhada. Envie o link ao grupo.', 'sucesso');
-    } catch (err) {
-      setErro(err.message || 'Não foi possível compartilhar agora.');
-    } finally {
-      setOcupado(false);
-    }
+    criarLink(nome);
   }
 
   if (!vistoria.grupo) {
@@ -155,6 +194,7 @@ export default function AbaGrupo({ vistoria }) {
       </ul>
 
       <h4 className={styles.subtitulo}>Convidar pessoas</h4>
+      <QrDoLink link={link} />
       <label htmlFor="grupo-link" className={styles.rotulo}>Link da vistoria</label>
       <input id="grupo-link" type="text" readOnly value={link} onFocus={e => e.target.select()} />
       <div className={styles.acoes}>

@@ -346,3 +346,11 @@
   flex-shrink: 0;
   display: flex;
 }
+
+/* Importar e Ler QR dividem o espaço de um botão, meio a meio */
+.acoesArquivo {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+}

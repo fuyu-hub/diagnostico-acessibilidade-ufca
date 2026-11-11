@@ -4,6 +4,7 @@ import { useVistoria } from '../contexto/VistoriaContext';
 import Topbar from '../componentes/Topbar';
 import { useNavegacao } from '../utilitarios/navegacao';
 import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/SeletorNivel';
+import { nuvemDisponivel } from '../dados/nuvem';
 
 // O que foi digitado fica guardado: sair da ficha pela metade não perde o preenchimento
 const CHAVE_RASCUNHO = 'ufca:rascunhoNovaVistoria';
@@ -42,6 +43,7 @@ const estiloErro = { display: 'block', marginTop: 6, fontSize: '0.82rem', color:
 export default function NovaVistoria() {
   const { navegar } = useNavegacao();
   const { criarVistoria } = useVistoria();
+  const [emGrupo, setEmGrupo] = useState(false);
 
   const [form, setForm] = useState(() => ({ ...fichaVazia(), ...(lerRascunho() || {}) }));
   const [recuperado, setRecuperado] = useState(() => {
@@ -117,7 +119,8 @@ export default function NovaVistoria() {
     } catch {
       // Sem armazenamento não há rascunho para remover
     }
-    navegar(`/vistoria/${id}`);
+    // Em grupo: a aba Grupo cria o link sozinha e mostra o QR code
+    navegar(emGrupo ? `/vistoria/${id}?aba=grupo&compartilhar=1` : `/vistoria/${id}`);
   }
 
   return (
@@ -352,12 +355,37 @@ export default function NovaVistoria() {
             </div>
 
 
+            {nuvemDisponivel() && (
+              <label
+                htmlFor="nova-em-grupo"
+                style={{
+                  display: 'flex', gap: 12, alignItems: 'flex-start', padding: 16, marginTop: 8,
+                  border: '1px solid var(--border)', borderRadius: 16, cursor: 'pointer',
+                }}
+              >
+                <input
+                  id="nova-em-grupo"
+                  type="checkbox"
+                  checked={emGrupo}
+                  onChange={e => setEmGrupo(e.target.checked)}
+                  aria-describedby="nova-em-grupo-desc"
+                  style={{ width: 22, height: 22, marginTop: 2, flexShrink: 0, accentColor: 'var(--accent)' }}
+                />
+                <span>
+                  <span style={{ display: 'block', fontWeight: 600, color: 'var(--text-primary)' }}>Preencher em grupo</span>
+                  <span id="nova-em-grupo-desc" style={{ display: 'block', fontSize: '0.86rem', color: 'var(--text-secondary)', marginTop: 4, lineHeight: 1.45 }}>
+                    Ao salvar, o app gera um link e um QR code para outras pessoas entrarem nesta vistoria. Precisa de internet.
+                  </span>
+                </span>
+              </label>
+            )}
+
             <button
               type="submit"
               className="btn-nav primario"
               style={{ height: 52 }}
             >
-              <IconCheck size={20} /> Salvar Ficha e Acessar Vistoria
+              <IconCheck size={20} /> {emGrupo ? 'Salvar e compartilhar' : 'Salvar Ficha e Acessar Vistoria'}
             </button>
           </form>
         </div>

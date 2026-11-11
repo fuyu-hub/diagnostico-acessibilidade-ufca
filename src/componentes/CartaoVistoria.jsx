@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { IconMapPin, IconArrowRight, IconListCheck, IconTrash } from '@tabler/icons-react';
+import { IconMapPin, IconArrowRight, IconListCheck, IconTrash, IconShare } from '@tabler/icons-react';
+import { nuvemDisponivel } from '../dados/nuvem';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { resumoProgresso } from '../dados/checklist';
 import ModalExcluirVistoria from './ModalExcluirVistoria';
@@ -27,6 +28,11 @@ export default function CartaoVistoria({ vistoria, semContinuar = false }) {
     } else {
       navegar(`/checklist/${vistoria.id}/resultado`);
     }
+  }
+
+  function handleCompartilhar(e) {
+    e?.stopPropagation();
+    navegar(`/vistoria/${vistoria.id}?aba=grupo`);
   }
 
   function handleVerSecoes(e) {
@@ -66,12 +72,10 @@ export default function CartaoVistoria({ vistoria, semContinuar = false }) {
           }}
           style={{ cursor: 'pointer' }}
         >
-          <h3 className={styles.nome}>
-            {vistoria.nome}
-            {vistoria.grupo && <>{' '}<span className="tag em-andamento" style={{ marginLeft: 8, verticalAlign: 'middle' }}>Em grupo</span></>}
-          </h3>
+          <h3 className={styles.nome}>{vistoria.nome}</h3>
           <p className={styles.detalhe}>
             <IconMapPin size={14} /> {vistoria.cidade} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : ''}
+            {vistoria.grupo && <>{' '}<span className={`tag em-andamento ${styles.selo}`}>Em grupo</span></>}
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -113,6 +117,19 @@ export default function CartaoVistoria({ vistoria, semContinuar = false }) {
           <IconListCheck size={16} /> Seções
         </button>
 
+        <div className={styles.acoesDireita}>
+        {nuvemDisponivel() && (
+          <button
+            type="button"
+            className={styles.btnCompartilhar}
+            onClick={handleCompartilhar}
+            aria-label={`${vistoria.grupo ? 'Ver o grupo' : 'Compartilhar'} da vistoria de ${vistoria.nome}`}
+            title={vistoria.grupo ? 'Ver o grupo' : 'Compartilhar'}
+          >
+            <IconShare size={20} aria-hidden="true" />
+          </button>
+        )}
+
         {!semContinuar && <button
           type="button"
           className={`btn-nav ${ativa ? 'primario' : ''} ${styles.btnContinuar}`}
@@ -126,6 +143,7 @@ export default function CartaoVistoria({ vistoria, semContinuar = false }) {
               : 'Ver Resultado'}
           <IconArrowRight size={16} />
         </button>}
+        </div>
       </div>
 
       <ModalExcluirVistoria

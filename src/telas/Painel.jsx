@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconArrowRight, IconSearch } from '@tabler/icons-react';
+import { IconSettings, IconPlus, IconUpload, IconInfoCircle, IconArrowRight, IconSearch, IconQrcode } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
 import MarcaRota from '../componentes/MarcaRota';
 import CartaoVistoria from '../componentes/CartaoVistoria';
+import { nuvemDisponivel } from '../dados/nuvem';
 import ModalConflito from '../componentes/ModalConflito';
 import { lerArquivoImportacao } from '../dados/exportacao';
 import { resumoProgresso } from '../dados/checklist';
@@ -202,6 +203,7 @@ export default function Painel() {
             </div>
           </button>
 
+          <div className={styles.acoesArquivo}>
           <button
             type="button"
             className={`${styles.btnImportarPrincipal} ${arrastando ? styles.arrastando : ''}`}
@@ -212,8 +214,20 @@ export default function Painel() {
             title="Clique para selecionar ou arraste um arquivo de vistoria (.json) até aqui"
           >
             <IconUpload size={18} aria-hidden="true" />
-            <span>{arrastando ? 'Solte o arquivo para importar' : 'Importar arquivo'}</span>
+            <span>{arrastando ? 'Solte aqui' : 'Importar'}</span>
           </button>
+          {nuvemDisponivel() && (
+            <button
+              type="button"
+              className={styles.btnImportarPrincipal}
+              onClick={() => navegar('/ler-qr')}
+              aria-label="Ler QR code de uma vistoria em grupo"
+            >
+              <IconQrcode size={18} aria-hidden="true" />
+              <span>Ler QR</span>
+            </button>
+          )}
+          </div>
         </div>
 
 

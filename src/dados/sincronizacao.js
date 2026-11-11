@@ -23,6 +23,12 @@ export function linkDoGrupo(codigo, origem = globalThis.location?.origin || '') 
   return `${origem}/grupo/${codigo}`;
 }
 
+/** Código do grupo dentro de um link `/grupo/<codigo>` (lido no QR code ou colado), ou `null`. */
+export function extrairCodigoGrupo(texto) {
+  const achado = String(texto || '').match(/\/grupo\/([A-Za-z0-9_-]{22,})/);
+  return achado ? achado[1] : null;
+}
+
 const CAMPOS_FICHA = ['nome', 'cidade', 'endereco', 'bairro', 'rede', 'nivelEnsino', 'numAlunos',
   'numPavimentos', 'anoConstrucao', 'data', 'dataTermino', 'horarioInicio', 'horarioTermino'];
 

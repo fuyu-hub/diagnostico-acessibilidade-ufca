@@ -717,12 +717,13 @@ export function VistoriaProvider({ children }) {
     );
   }
 
-  /** Compartilha uma vistoria: cria o grupo e devolve o código do link. */
-  async function compartilharVistoria(vistoriaId, nome) {
-    const v = vistoriasRef.current.find(x => x.vistoriaId === vistoriaId);
-    if (!v) throw new Error('Vistoria não encontrada.');
-    const grupo = await criarGrupo(converterUIParaCanonica(v), nome, conectarNuvem);
-    atualizarVistoria(vistoriaId, { grupo });
+  /**
+   * Compartilha uma vistoria: cria o grupo e devolve o código do link.
+   * Recebe a vistoria da tela, que pode ter acabado de ser criada.
+   */
+  async function compartilharVistoria(vistoria, nome) {
+    const grupo = await criarGrupo(converterUIParaCanonica(vistoria), nome, conectarNuvem);
+    atualizarVistoria(vistoria.vistoriaId, { grupo });
     return grupo.codigo;
   }
 

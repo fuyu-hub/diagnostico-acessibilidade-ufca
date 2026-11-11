@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { gerarCodigoGrupo, copiaParaGrupo, aplicarCopiasRemotas, fichaDoGrupo } from '../dados/sincronizacao.js';
+import {
+  gerarCodigoGrupo, copiaParaGrupo, aplicarCopiasRemotas, fichaDoGrupo, linkDoGrupo, extrairCodigoGrupo,
+} from '../dados/sincronizacao.js';
 import { precisaEnviar } from '../dados/coleta.js';
 import { VERSAO_TERMO } from '../dados/consentimento.js';
 
@@ -11,6 +13,13 @@ describe('Vistoria em grupo', () => {
     const a = gerarCodigoGrupo();
     expect(a).toMatch(/^[A-Za-z0-9_-]{22}$/);
     expect(gerarCodigoGrupo()).not.toBe(a);
+  });
+
+  it('o código sai do link lido no QR code, e outros textos são recusados', () => {
+    const codigo = gerarCodigoGrupo();
+    expect(extrairCodigoGrupo(linkDoGrupo(codigo, 'https://rota.app'))).toBe(codigo);
+    expect(extrairCodigoGrupo('https://exemplo.com/outra-coisa')).toBeNull();
+    expect(extrairCodigoGrupo('/grupo/curto')).toBeNull();
   });
 
   it('a cópia enviada ao grupo não leva fotos', () => {
