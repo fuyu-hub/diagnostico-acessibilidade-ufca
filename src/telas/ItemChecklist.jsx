@@ -4,7 +4,7 @@ import {
   IconCheck, IconX, IconMinus, IconBulb, IconRuler2, IconBook,
   IconCamera, IconTrash, IconHome, IconFilter, IconChevronLeft, IconChevronRight,
   IconPhoto, IconAlertCircle, IconVolume, IconPlayerStopFilled,
-  IconPlayerPauseFilled, IconPlayerPlayFilled, IconHelpCircle, IconCloudCheck, IconCloudUpload, IconCloudOff } from '@tabler/icons-react';
+  IconPlayerPauseFilled, IconPlayerPlayFilled, IconHelpCircle } from '@tabler/icons-react';
 import { useVistoria } from '../contexto/VistoriaContext';
 import DivergenciaItem from '../componentes/DivergenciaItem';
 import { useNotificacao } from '../contexto/NotificacaoContext';
@@ -55,7 +55,7 @@ function valorExibido(item, valor) {
 export default function ItemChecklist() {
   const { id, n } = useParams();
   const { navegar, voltar } = useNavegacao();
-  const { getVistoria, responderItem, salvando, carregando, estadoGrupos } = useVistoria();
+  const { getVistoria, responderItem, salvando, carregando } = useVistoria();
   const { mostrarConfirmacao, mostrarToast } = useNotificacao();
   const prefs = usePreferencias();
   const voz = useLeituraVoz();
@@ -498,19 +498,6 @@ export default function ItemChecklist() {
           <span className={styles.rotuloSecao}>{secao?.nome}</span>
           <h1 className={styles.tituloSubgrupo}>{item.subgrupo || 'Item'}</h1>
         </div>
-        {vistoria?.grupo && (() => {
-          const g = estadoGrupos?.[vistoria.vistoriaId];
-          const [Icone, texto] = !g || g.erro || g.semInternet
-            ? [IconCloudOff, 'Grupo: sem conexão agora. Suas respostas estão salvas neste aparelho.']
-            : g.pendente
-              ? [IconCloudUpload, 'Grupo: enviando suas alterações.']
-              : [IconCloudCheck, 'Grupo: sincronizado.'];
-          return (
-            <span className={styles.btnIcone} role="img" aria-label={texto} title={texto}>
-              <Icone size={22} aria-hidden="true" />
-            </span>
-          );
-        })()}
         <button type="button" className={styles.btnIcone} aria-label="Ir para o Início" title="Início" onClick={() => navegar('/')}>
           <IconHome size={22} aria-hidden="true" />
         </button>
