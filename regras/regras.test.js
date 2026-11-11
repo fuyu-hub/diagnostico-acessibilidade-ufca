@@ -104,6 +104,11 @@ describe('participantes', () => {
   it('entra no grupo gravando a própria cópia', () =>
     assertSucceeds(setDoc(copia('joao', 'joao'), copiaGrupo({ nome: 'João' }))));
 
+  it('a cópia pode levar a contagem de fotos, mas nada além dos campos previstos', async () => {
+    await assertSucceeds(setDoc(copia('joao', 'joao'), copiaGrupo({ nome: 'João', fotos: { 1: 2 } })));
+    await assertFails(setDoc(copia('joao', 'joao'), copiaGrupo({ nome: 'João', imagens: ['x'] })));
+  });
+
   it('não grava a cópia de outra pessoa', () =>
     assertFails(setDoc(copia('joao', 'ana'), copiaGrupo())));
 
