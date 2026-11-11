@@ -23,7 +23,7 @@ const normalizar = texto => String(texto || '').normalize('NFD').replace(/[\u030
 
 export default function Painel() {
   const app = useAplicativo();
-  const { vistorias, carregando, importarConteudoJson, aplicarResolucaoConflito } = useVistoria();
+  const { vistorias, carregando, importarConteudoJson, aplicarResolucaoConflito, importarFotosDoGrupo } = useVistoria();
   const { mostrarToast, mostrarAlerta } = useNotificacao();
   const { navegar } = useNavegacao();
   const fileInputRef = useRef(null);
@@ -91,6 +91,21 @@ export default function Painel() {
 
     try {
       const texto = await lerArquivoImportacao(file);
+
+      // Pacote de fotos de uma vistoria em grupo: junta as fotos em vez de importar uma vistoria
+      let json = null;
+      try { json = JSON.parse(texto); } catch { /* o importador avisa sobre JSON inválido */ }
+      const fotos = json ? importarFotosDoGrupo(json) : null;
+      if (fotos) {
+        mostrarToast(
+          fotos.adicionadas > 0
+            ? `${fotos.adicionadas} foto(s)${fotos.enviadoPor ? ` de ${fotos.enviadoPor}` : ''} adicionada(s) à vistoria`
+            : 'Essas fotos já estavam neste aparelho',
+          'sucesso'
+        );
+        return;
+      }
+
       const res = await importarConteudoJson(texto, (conflitos) => {
         setConflitosFila(conflitos);
         setIndiceConflito(0);

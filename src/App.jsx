@@ -14,6 +14,7 @@ import Sobre from './telas/Sobre';
 import NaoEncontrada from './telas/NaoEncontrada';
 import EntrarGrupo from './telas/EntrarGrupo';
 import LerQr from './telas/LerQr';
+import Divergencias from './telas/Divergencias';
 import ModalBoasVindas from './componentes/ModalBoasVindas';
 import AtualizacaoApp from './componentes/AtualizacaoApp';
 
@@ -66,6 +67,7 @@ export default function App() {
               <Route path="/checklist/:id/resultado" element={<Resultado />} />
               <Route path="/grupo/:codigo" element={<EntrarGrupo />} />
               <Route path="/ler-qr" element={<LerQr />} />
+              <Route path="/checklist/:id/divergencias" element={<Divergencias />} />
               <Route path="*" element={<NaoEncontrada />} />
             </Routes>
           </BrowserRouter>

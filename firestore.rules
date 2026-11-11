@@ -79,7 +79,8 @@ service cloud.firestore {
 
         function copiaValida() {
           let d = request.resource.data;
-          return d.keys().hasOnly(['nome', 'autor', 'entrouEm', 'ultimaSincronizacao', 'respostas'])
+          return d.keys().hasOnly(['nome', 'autor', 'entrouEm', 'ultimaSincronizacao', 'respostas', 'fotos'])
+            && (!('fotos' in d) || (d.fotos is map && d.fotos.size() <= 400))
             && d.nome is string && d.nome.size() > 0 && d.nome.size() <= 60
             && textoAte(d.autor, 64)
             && d.respostas is map && d.respostas.size() <= 400;

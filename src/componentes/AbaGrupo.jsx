@@ -2,7 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   IconUsersGroup, IconRefresh, IconCopy, IconShare, IconCloudCheck, IconCloudUpload, IconWifiOff, IconAlertTriangle,
+  IconPhotoUp, IconPhotoDown, IconLock, IconLockOpen, IconCircleCheck,
 } from '@tabler/icons-react';
+import { listarDivergencias } from '../dados/mescla';
+import { fotosFaltando } from '../dados/sincronizacao';
+import { ITENS_TECNICOS, TODOS_ITENS } from '../dados/checklist';
+import { useNavegacao } from '../utilitarios/navegacao';
 import { useVistoria } from '../contexto/VistoriaContext';
 import { useNotificacao } from '../contexto/NotificacaoContext';
 import { linkDoGrupo } from '../dados/sincronizacao';
@@ -61,8 +66,13 @@ function QrDoLink({ link }) {
 
 /** Aba "Grupo" do painel da vistoria: compartilhar, estado da sincronização e participantes. */
 export default function AbaGrupo({ vistoria }) {
-  const { compartilharVistoria, sincronizarGrupo, estadoGrupos } = useVistoria();
-  const { mostrarToast } = useNotificacao();
+  const {
+    compartilharVistoria, sincronizarGrupo, estadoGrupos,
+    mudarStatusDoGrupo, exportarFotosDoGrupo, importarFotosDoGrupo,
+  } = useVistoria();
+  const { mostrarToast, mostrarConfirmacao } = useNotificacao();
+  const { navegar } = useNavegacao();
+  const arquivoFotosRef = useRef(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [nome, setNome] = useState(vistoria.avaliadores?.[0] || '');
   const [ocupado, setOcupado] = useState(false);
@@ -140,6 +150,85 @@ export default function AbaGrupo({ vistoria }) {
 
   const estado = estadoGrupos?.[vistoria.vistoriaId];
   const link = linkDoGrupo(vistoria.grupo.codigo);
+  const concluida = estado?.status === 'concluida';
+  const participantes = estado?.participantes || [];
+  const divergencias = listarDivergencias(vistoria.dadosVistoria);
+  const faltando = fotosFaltando(vistoria.dadosVistoria, participantes);
+  const semResposta = ITENS_TECNICOS.filter(i => !vistoria.respostas?.[i.id]?.valor).length;
+  const atrasados = participantes.filter(p => !p.voce && (!p.ultimaSincronizacao
+    || Date.now() - Date.parse(p.ultimaSincronizacao) > 15 * 60000));
+  const numeroItem = id => TODOS_ITENS.findIndex(i => String(i.id) === String(id)) + 1;
+
+  async function enviarFotos() {
+    try {
+      const r = await exportarFotosDoGrupo(vistoria.vistoriaId);
+      if (!r.cancelado) mostrarToast(`${r.total} foto(s) prontas para enviar`, 'sucesso');
+    } catch (err) {
+      mostrarToast(err.message || 'Não foi possível preparar as fotos.', 'erro');
+    }
+  }
+
+  async function receberFotos(e) {
+    const arquivo = e.target.files?.[0];
+    e.target.value = '';
+    if (!arquivo) return;
+    try {
+      const resultado = importarFotosDoGrupo(JSON.parse(await arquivo.text()));
+      if (!resultado) {
+        mostrarToast('Este arquivo não é um pacote de fotos de vistoria.', 'erro');
+        return;
+      }
+      if (resultado.vistoriaId !== vistoria.vistoriaId) {
+        mostrarToast('Estas fotos são de outra vistoria. Elas foram adicionadas a ela.', 'info');
+        return;
+      }
+      mostrarToast(resultado.adicionadas > 0
+        ? `${resultado.adicionadas} foto(s)${resultado.enviadoPor ? ` de ${resultado.enviadoPor}` : ''} adicionada(s)`
+        : 'Essas fotos já estavam neste aparelho', 'sucesso');
+    } catch (err) {
+      mostrarToast(err.message || 'Não foi possível ler o arquivo.', 'erro');
+    }
+  }
+
+  async function concluir() {
+    const pendencias = [
+      semResposta > 0 && `${semResposta} item(ns) sem resposta`,
+      divergencias.length > 0 && `${divergencias.length} divergência(s)`,
+      atrasados.length > 0 && `${atrasados.map(p => p.nome).join(', ')} sem sincronizar há mais de 15 minutos`,
+      faltando.length > 0 && `fotos de ${faltando.length} item(ns) ainda em outro aparelho`,
+    ].filter(Boolean);
+    const ok = await mostrarConfirmacao({
+      titulo: 'Concluir a vistoria do grupo?',
+      mensagem: (pendencias.length ? `Ainda há: ${pendencias.join('; ')}. ` : '')
+        + 'Depois de concluir, o grupo fecha: ninguém mais envia respostas. Você pode reabrir depois.',
+      textoConfirmar: 'Concluir e fechar',
+      textoCancelar: 'Voltar',
+      perigo: pendencias.length > 0,
+    });
+    if (!ok) return;
+    setOcupado(true);
+    try {
+      await sincronizarGrupo(vistoria.vistoriaId).catch(() => {});
+      await mudarStatusDoGrupo(vistoria.vistoriaId, 'concluida');
+      mostrarToast('Vistoria do grupo concluída', 'sucesso');
+    } catch (err) {
+      mostrarToast(err.message || 'Não foi possível concluir agora.', 'erro');
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  async function reabrir() {
+    setOcupado(true);
+    try {
+      await mudarStatusDoGrupo(vistoria.vistoriaId, 'aberta');
+      mostrarToast('Grupo reaberto', 'sucesso');
+    } catch (err) {
+      mostrarToast(err.message || 'Não foi possível reabrir agora.', 'erro');
+    } finally {
+      setOcupado(false);
+    }
+  }
 
   async function sincronizar() {
     setOcupado(true);
@@ -183,6 +272,19 @@ export default function AbaGrupo({ vistoria }) {
         <IconRefresh size={20} aria-hidden="true" /> {ocupado ? 'Sincronizando…' : 'Sincronizar agora'}
       </button>
 
+      {concluida && (
+        <p className={`${styles.estado} ${styles.alerta}`}>
+          <IconLock size={18} aria-hidden="true" />
+          Vistoria concluída por quem compartilhou. O grupo está fechado: o que mudar agora fica só neste aparelho.
+        </p>
+      )}
+      {divergencias.length > 0 && (
+        <button type="button" className="btn-nav" onClick={() => navegar(`/checklist/${vistoria.id}/divergencias`)}>
+          <IconAlertTriangle size={20} aria-hidden="true" />
+          {divergencias.length === 1 ? '1 divergência para decidir' : `${divergencias.length} divergências para decidir`}
+        </button>
+      )}
+
       <h4 className={styles.subtitulo}>Participantes</h4>
       <ul className={styles.lista}>
         {(estado?.participantes || []).map(p => (
@@ -205,6 +307,50 @@ export default function AbaGrupo({ vistoria }) {
         Você está como {vistoria.grupo.nome}{vistoria.grupo.papel === 'responsavel' ? ', responsável pela vistoria' : ''}.
         Quem tem o link pode ver e editar.
       </p>
+
+      <h4 className={styles.subtitulo}>Fotos</h4>
+      <p className={styles.texto}>
+        As fotos não passam pelo servidor. Envie as suas como arquivo para quem vai gerar o relatório, por
+        WhatsApp (como documento), Drive ou compartilhamento por proximidade.
+      </p>
+      {faltando.length > 0 ? (
+        <p className={`${styles.estado} ${styles.alerta}`}>
+          <IconAlertTriangle size={18} aria-hidden="true" />
+          Fotos ainda em outro aparelho: {faltando.slice(0, 6).map(f => `item ${numeroItem(f.itemId)} (${f.nomes.join(', ')})`).join('; ')}
+          {faltando.length > 6 ? ` e mais ${faltando.length - 6}` : ''}.
+        </p>
+      ) : participantes.length > 1 && (
+        <p className={`${styles.estado} ${styles.ok}`}><IconCircleCheck size={18} aria-hidden="true" /> Todas as fotos do grupo estão neste aparelho.</p>
+      )}
+      <div className={styles.acoes}>
+        <button type="button" className="btn-nav" onClick={enviarFotos}><IconPhotoUp size={20} aria-hidden="true" /> Enviar minhas fotos</button>
+        <button type="button" className="btn-nav" onClick={() => arquivoFotosRef.current?.click()}><IconPhotoDown size={20} aria-hidden="true" /> Receber fotos</button>
+      </div>
+      <input ref={arquivoFotosRef} type="file" accept=".json,application/json" hidden onChange={receberFotos} aria-hidden="true" tabIndex={-1} />
+
+      {vistoria.grupo.papel === 'responsavel' && (
+        <>
+          <h4 className={styles.subtitulo}>Concluir</h4>
+          {concluida ? (
+            <button type="button" className="btn-nav" onClick={reabrir} disabled={ocupado}>
+              <IconLockOpen size={20} aria-hidden="true" /> Reabrir o grupo
+            </button>
+          ) : (
+            <>
+              <ul className={styles.lista}>
+                <li className={styles.participante}><span>Itens sem resposta</span><span className={styles.quando}>{semResposta}</span></li>
+                <li className={styles.participante}><span>Divergências</span><span className={styles.quando}>{divergencias.length}</span></li>
+                <li className={styles.participante}><span>Sem sincronizar há mais de 15 min</span><span className={styles.quando}>{atrasados.length ? atrasados.map(p => p.nome).join(', ') : 'ninguém'}</span></li>
+                <li className={styles.participante}><span>Itens com fotos em outro aparelho</span><span className={styles.quando}>{faltando.length}</span></li>
+              </ul>
+              <button type="button" className="btn-nav primario" onClick={concluir} disabled={ocupado}>
+                <IconLock size={20} aria-hidden="true" /> Concluir e fechar o grupo
+              </button>
+              <p className={styles.nota}>Ao concluir, ninguém mais envia respostas. Você gera o PDF e o Excel com tudo o que chegou.</p>
+            </>
+          )}
+        </>
+      )}
     </section>
   );
 }

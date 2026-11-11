@@ -153,3 +153,13 @@ export function listarDivergencias(dadosVistoria = {}) {
     .filter(([, valor]) => (valor?.alternativas || []).some(a => a.resposta !== valor.resposta))
     .map(([itemId, valor]) => ({ itemId, opcoes: registrosDoItem(valor) }));
 }
+
+/** Opções guardadas de um item: a resposta que aparece e as alternativas dadas ao mesmo tempo. */
+export function opcoesDoItem(valor) {
+  return registrosDoItem(valor);
+}
+
+/** O item tem respostas diferentes que ninguém decidiu ainda. */
+export function temDivergencia(valor) {
+  return (valor?.alternativas || []).some(a => a.resposta !== valor.resposta);
+}

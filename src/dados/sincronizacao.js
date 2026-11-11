@@ -94,11 +94,22 @@ function exigirInternet() {
   }
 }
 
+/** Quantas fotos este aparelho tem em cada item: `{ itemId: n }`. As fotos em si não saem do aparelho. */
+export function contarFotos(dadosVistoria = {}) {
+  const contagem = {};
+  for (const [id, valor] of Object.entries(dadosVistoria)) {
+    const n = listarFotos(valor).length;
+    if (n > 0) contagem[id] = n;
+  }
+  return contagem;
+}
+
 function copiaDoParticipante(nome, dadosVistoria, fs, inicial = false) {
   return {
     nome: String(nome).trim().slice(0, 60),
     autor: obterAutorLocal(),
     respostas: copiaParaGrupo(dadosVistoria),
+    fotos: contarFotos(dadosVistoria),
     ultimaSincronizacao: fs.serverTimestamp(),
     ...(inicial ? { entrouEm: fs.serverTimestamp() } : {}),
   };
@@ -175,11 +186,12 @@ export async function entrarNoGrupo(codigo, nome, conectar, dadosLocais = {}) {
  * @param {Function} opcoes.aplicarRemoto - recebe as respostas mescladas para salvar
  * @param {Function} opcoes.aoMudarEstado - recebe o estado para a tela
  */
-export function iniciarSincronizacao({ codigo, conectar, obterLocal, aplicarRemoto, aoMudarEstado }) {
+export function iniciarSincronizacao({ codigo, conectar, obterLocal, aplicarRemoto, aplicarFicha, aoMudarEstado }) {
   let parado = false;
   let nuvem = null;
   let timer = null;
   let ultimaEnviada = null;
+  let fichaNoServidor = null;
   const cancelar = [];
   const estado = { participantes: [], pendente: false, semInternet: false, ultimaSincronizacao: null, erro: null };
 
@@ -200,15 +212,30 @@ export function iniciarSincronizacao({ codigo, conectar, obterLocal, aplicarRemo
     clearTimeout(timer);
     timer = null;
     const local = obterLocal();
+    // Grupo concluído: as regras recusam escritas, e o que mudar fica só neste aparelho
+    if (estado.status === 'concluida') {
+      emitir({ pendente: false });
+      return Promise.resolve();
+    }
     if (!nuvem || !local?.grupo || local.dataUltimaEdicao === ultimaEnviada) return Promise.resolve();
     const { db, fs, uid } = nuvem;
     ultimaEnviada = local.dataUltimaEdicao;
     emitir({ pendente: true });
+
+    // Quem compartilhou leva as mudanças da ficha da escola aos outros
+    if (estado.responsavel && fichaNoServidor !== null) {
+      const ficha = { ficha: fichaDoGrupo(local), blocoAvaliado: String(local.blocoAvaliado || 'Vistoria').slice(0, 200) };
+      if (JSON.stringify(ficha) !== fichaNoServidor) {
+        fichaNoServidor = JSON.stringify(ficha);
+        fs.updateDoc(fs.doc(db, 'grupos', codigo), ficha).catch(err => console.warn('Ficha do grupo não enviada:', err));
+      }
+    }
+
     // mergeFields substitui as respostas inteiras e preserva `entrouEm`
     return fs.setDoc(
       fs.doc(db, 'grupos', codigo, 'participantes', uid),
       copiaDoParticipante(local.grupo.nome, local.dadosVistoria, fs),
-      { mergeFields: ['nome', 'autor', 'respostas', 'ultimaSincronizacao'] },
+      { mergeFields: ['nome', 'autor', 'respostas', 'fotos', 'ultimaSincronizacao'] },
     ).catch(err => {
       ultimaEnviada = null;
       emitir({ erro: err.code || err.message });
@@ -234,6 +261,8 @@ export function iniciarSincronizacao({ codigo, conectar, obterLocal, aplicarRemo
             return {
               uid: d.id,
               nome: dados.nome,
+              autor: dados.autor,
+              fotos: dados.fotos || {},
               voce: d.id === uid,
               ultimaSincronizacao: dados.ultimaSincronizacao?.toDate?.().toISOString() ?? null,
             };
@@ -243,7 +272,12 @@ export function iniciarSincronizacao({ codigo, conectar, obterLocal, aplicarRemo
       }, err => emitir({ erro: err.code || err.message })));
 
       cancelar.push(fs.onSnapshot(fs.doc(db, 'grupos', codigo), snap => {
-        if (snap.exists()) emitir({ status: snap.data().status, responsavel: snap.data().criadoPor === uid });
+        if (!snap.exists()) return;
+        const g = snap.data();
+        const responsavel = g.criadoPor === uid;
+        fichaNoServidor = JSON.stringify({ ficha: g.ficha || {}, blocoAvaliado: g.blocoAvaliado || '' });
+        emitir({ status: g.status, responsavel, erro: g.status === 'concluida' ? null : estado.erro });
+        if (!responsavel && aplicarFicha) aplicarFicha(g.ficha || {}, g.blocoAvaliado);
       }, () => {}));
 
       enviar();
@@ -282,4 +316,88 @@ export function iniciarSincronizacao({ codigo, conectar, obterLocal, aplicarRemo
       cancelar.forEach(fn => fn());
     },
   };
+}
+
+/** Conclui (fecha para edição) ou reabre o grupo. Só quem compartilhou consegue. */
+export async function mudarStatusGrupo(codigo, status, conectar) {
+  exigirInternet();
+  const { db, fs } = await comPrazo(conectar(), SEM_INTERNET);
+  await comPrazo(fs.updateDoc(fs.doc(db, 'grupos', codigo), { status }), SEM_INTERNET);
+}
+
+/** Nome de quem deu uma resposta, pelos participantes do grupo. */
+export function nomeDoAutor(autor, participantes = [], autorLocal = obterAutorLocal()) {
+  if (autor && autor === autorLocal) return 'Você';
+  return participantes.find(p => p.autor === autor)?.nome || 'Outra pessoa';
+}
+
+/**
+ * Itens com foto em outro aparelho que não chegou a este.
+ * @returns {{ itemId: string, nomes: string[] }[]}
+ */
+export function fotosFaltando(dadosLocais = {}, participantes = []) {
+  const faltando = {};
+  for (const p of participantes) {
+    if (p.voce) continue;
+    for (const [id, n] of Object.entries(p.fotos || {})) {
+      if (listarFotos(dadosLocais[id]).length < n) {
+        (faltando[id] ||= []).push(p.nome);
+      }
+    }
+  }
+  return Object.entries(faltando).map(([itemId, nomes]) => ({ itemId, nomes }));
+}
+
+// ---- Pacote de fotos: as fotos passam de um aparelho a outro por arquivo, nunca pelo servidor ----
+
+export const FORMATO_PACOTE_FOTOS = 'fotos-vistoria-ufca';
+
+/** Arquivo com as fotos deste aparelho para uma vistoria. */
+export function montarPacoteFotos(vistoria, nome) {
+  const fotos = {};
+  for (const [id, valor] of Object.entries(vistoria.dadosVistoria || {})) {
+    const lista = listarFotos(valor);
+    if (lista.length > 0) fotos[id] = lista;
+  }
+  return {
+    formato: FORMATO_PACOTE_FOTOS,
+    versaoFormato: 1,
+    vistoriaId: vistoria.vistoriaId,
+    blocoAvaliado: vistoria.blocoAvaliado,
+    enviadoPor: nome || '',
+    geradoEm: new Date().toISOString(),
+    fotos,
+  };
+}
+
+/** Reconhece um pacote de fotos em um JSON já lido; `null` se não for um. */
+export function lerPacoteFotos(json) {
+  if (json?.formato !== FORMATO_PACOTE_FOTOS || typeof json.vistoriaId !== 'string' || typeof json.fotos !== 'object') {
+    return null;
+  }
+  return json;
+}
+
+/**
+ * Junta as fotos do pacote às respostas deste aparelho, sem repetir e sem mudar as respostas.
+ * Itens que ainda não têm resposta neste aparelho ficam de fora.
+ */
+export function juntarFotos(dadosLocais = {}, pacote) {
+  const dados = { ...dadosLocais };
+  let adicionadas = 0;
+  let semResposta = 0;
+  for (const [id, lista] of Object.entries(pacote.fotos || {})) {
+    const fotosValidas = (Array.isArray(lista) ? lista : []).filter(f => typeof f === 'string' && f.startsWith('data:image'));
+    if (fotosValidas.length === 0) continue;
+    if (!dados[id]) {
+      semResposta += fotosValidas.length;
+      continue;
+    }
+    const atuais = listarFotos(dados[id]);
+    const novas = fotosValidas.filter(f => !atuais.includes(f));
+    if (novas.length === 0) continue;
+    dados[id] = { ...dados[id], ...camposFotos([...atuais, ...novas]) };
+    adicionadas += novas.length;
+  }
+  return { dados, adicionadas, semResposta };
 }

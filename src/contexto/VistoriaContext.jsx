@@ -33,7 +33,10 @@ import { obterAutorLocal } from '../dados/identidade.js';
 import { consentimentoParaNovaVistoria } from '../dados/consentimento.js';
 import { enviarPendentes, lerEnvios } from '../dados/coleta.js';
 import { nuvemDisponivel, conectarNuvem } from '../dados/nuvem.js';
-import { criarGrupo, entrarNoGrupo, iniciarSincronizacao, aplicarCopiasRemotas } from '../dados/sincronizacao.js';
+import {
+  criarGrupo, entrarNoGrupo, iniciarSincronizacao, aplicarCopiasRemotas,
+  mudarStatusGrupo, montarPacoteFotos, lerPacoteFotos, juntarFotos,
+} from '../dados/sincronizacao.js';
 import { useNotificacao } from './NotificacaoContext.jsx';
 import ModalErroCota from '../componentes/ModalErroCota.jsx';
 
@@ -390,6 +393,30 @@ export function VistoriaProvider({ children }) {
     }));
   }, [agendarGravacao]);
 
+  const CAMPOS_FICHA_GRUPO = ['nome', 'cidade', 'endereco', 'bairro', 'rede', 'nivelEnsino', 'numAlunos',
+    'numPavimentos', 'anoConstrucao', 'data', 'dataTermino', 'horarioInicio', 'horarioTermino'];
+
+  // Ficha da escola editada por quem compartilhou: os avaliadores deste aparelho ficam como estão
+  const aplicarFichaDoGrupo = useCallback((vistoriaId, ficha, bloco) => {
+    setVistorias(prev => prev.map(v => {
+      if (v.vistoriaId !== vistoriaId) return v;
+      const inst = v.instituicao || {};
+      const mudou = CAMPOS_FICHA_GRUPO.some(c => ficha[c] !== undefined && JSON.stringify(ficha[c]) !== JSON.stringify(inst[c]))
+        || (bloco && bloco !== v.blocoAvaliado);
+      if (!mudou) return v;
+      const atualizada = {
+        ...v,
+        blocoAvaliado: bloco || v.blocoAvaliado,
+        instituicao: { ...inst, ...ficha, avaliadores: inst.avaliadores || [] },
+        dataUltimaEdicao: new Date().toISOString(),
+      };
+      const ui = enriquecerParaUI(atualizada);
+      agendarGravacao(ui);
+      return ui;
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agendarGravacao]);
+
   useEffect(() => {
     if (carregando || !nuvemDisponivel()) return;
     const sessoes = sessoesRef.current;
@@ -416,13 +443,14 @@ export function VistoriaProvider({ children }) {
         conectar: conectarNuvem,
         obterLocal: () => vistoriasRef.current.find(x => x.vistoriaId === id),
         aplicarRemoto: dados => aplicarRespostasRemotas(id, dados),
+        aplicarFicha: (ficha, bloco) => aplicarFichaDoGrupo(id, ficha, bloco),
         aoMudarEstado: estado => setEstadoGrupos(prev => ({ ...prev, [id]: estado })),
       });
       sessao.codigo = v.grupo.codigo;
       sessao.edicao = v.dataUltimaEdicao;
       sessoes.set(id, sessao);
     }
-  }, [vistorias, carregando, aplicarRespostasRemotas]);
+  }, [vistorias, carregando, aplicarRespostasRemotas, aplicarFichaDoGrupo]);
 
   useEffect(() => {
     const sessoes = sessoesRef.current;
@@ -758,6 +786,66 @@ export function VistoriaProvider({ children }) {
     return canonica.vistoriaId;
   }
 
+  /** Quem compartilhou conclui (fecha para edição) ou reabre o grupo. */
+  async function mudarStatusDoGrupo(vistoriaId, status) {
+    const v = vistoriasRef.current.find(x => x.vistoriaId === vistoriaId);
+    if (!v?.grupo) throw new Error('Esta vistoria não está em grupo.');
+    await mudarStatusGrupo(v.grupo.codigo, status, conectarNuvem);
+  }
+
+  /** Envia as fotos deste aparelho por arquivo (WhatsApp, Drive, proximidade...). */
+  async function exportarFotosDoGrupo(vistoriaId) {
+    const v = vistoriasRef.current.find(x => x.vistoriaId === vistoriaId);
+    if (!v) throw new Error('Vistoria não encontrada.');
+    const nome = v.grupo?.nome || v.avaliadores?.[0] || '';
+    const pacote = montarPacoteFotos(v, nome);
+    const total = Object.values(pacote.fotos).reduce((n, l) => n + l.length, 0);
+    if (total === 0) throw new Error('Este aparelho ainda não tem fotos nesta vistoria.');
+    const arquivo = new File(
+      [JSON.stringify(pacote)],
+      `Fotos - ${v.blocoAvaliado || 'Vistoria'}${nome ? ` - ${nome}` : ''}.json`,
+      { type: 'application/json' },
+    );
+    if (navigator.canShare?.({ files: [arquivo] })) {
+      try {
+        await navigator.share({ title: `Fotos da vistoria ${v.blocoAvaliado}`, files: [arquivo] });
+        return { total, metodo: 'share' };
+      } catch (err) {
+        if (err?.name === 'AbortError') return { total: 0, cancelado: true };
+      }
+    }
+    const url = URL.createObjectURL(arquivo);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = arquivo.name;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    return { total, metodo: 'download' };
+  }
+
+  /**
+   * Recebe um pacote de fotos já lido como JSON. Devolve `null` se não for um pacote.
+   * As fotos entram nos itens sem mudar as respostas nem os carimbos da mescla.
+   */
+  function importarFotosDoGrupo(json) {
+    const pacote = lerPacoteFotos(json);
+    if (!pacote) return null;
+    const v = vistoriasRef.current.find(x => x.vistoriaId === pacote.vistoriaId);
+    if (!v) throw new Error('A vistoria destas fotos não está neste aparelho. Entre no grupo antes de receber as fotos.');
+    const { dados, adicionadas, semResposta } = juntarFotos(v.dadosVistoria, pacote);
+    if (adicionadas > 0) {
+      setVistorias(prev => prev.map(x => {
+        if (x.vistoriaId !== pacote.vistoriaId) return x;
+        const ui = enriquecerParaUI({ ...x, dadosVistoria: dados, dataUltimaEdicao: new Date().toISOString() });
+        agendarGravacao(ui);
+        return ui;
+      }));
+    }
+    return { vistoriaId: pacote.vistoriaId, adicionadas, semResposta, enviadoPor: pacote.enviadoPor };
+  }
+
   /** Botão "Sincronizar agora" de uma vistoria em grupo. */
   async function sincronizarGrupo(vistoriaId) {
     const sessao = sessoesRef.current.get(vistoriaId);
@@ -887,6 +975,9 @@ export function VistoriaProvider({ children }) {
         compartilharVistoria,
         entrarEmGrupo,
         sincronizarGrupo,
+        mudarStatusDoGrupo,
+        exportarFotosDoGrupo,
+        importarFotosDoGrupo,
         registrarBackupManual: () => {
           const d = registrarDataUltimoBackup();
           setUltimoBackup(d);
