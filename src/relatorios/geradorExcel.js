@@ -130,7 +130,7 @@ export async function gerarPlanilhaVistoria(vistoria) {
   if (!vistoria) throw new Error('Vistoria não fornecida para planilha.');
 
   const workbook = new ExcelJS.Workbook();
-  workbook.creator = 'Rota Acessível';
+  workbook.creator = 'Percurso Acessível';
   workbook.created = new Date();
 
   const dados = extrairDadosInstituicao(vistoria);

@@ -59,7 +59,7 @@ export default function ModalBoasVindas() {
         aria-labelledby="boas-vindas-titulo"
       >
         <div className={styles.rolagem} tabIndex={0} role="region" aria-label="Como o app funciona">
-          <span className={styles.eyebrow}>Boas-vindas ao Rota Acessível</span>
+          <span className={styles.eyebrow}>Boas-vindas ao Percurso Acessível</span>
           <h2 id="boas-vindas-titulo" className={styles.titulo}>Avalie a acessibilidade da sua escola</h2>
           <p className={styles.intro}>
             Um guia de vistoria com base na NBR 9050, para mostrar o que já atende e o que precisa melhorar.

@@ -18,7 +18,7 @@ export default function Sobre() {
             </p>
           </section>
           <p className={styles.texto} style={{ color: 'var(--text-secondary)' }}>
-            Rota Acessível · versão {VERSAO_APP}
+            Percurso Acessível · versão {VERSAO_APP}
           </p>
         </div>
       </main>

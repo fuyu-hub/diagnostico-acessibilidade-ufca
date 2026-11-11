@@ -1,4 +1,4 @@
-# Rota Acessível
+# Percurso Acessível
 
 Repositório da aplicação web desenvolvida no âmbito do Projeto de Extensão Universitária **"Diagnóstico das condições de acessibilidade em estabelecimentos públicos de ensino da cidade de Juazeiro do Norte/CE"** (Código: PJ180-2026), vinculado à Universidade Federal do Cariri (UFCA).
 
