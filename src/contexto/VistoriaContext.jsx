@@ -33,6 +33,7 @@ import { obterAutorLocal } from '../dados/identidade.js';
 import { consentimentoParaNovaVistoria } from '../dados/consentimento.js';
 import { enviarPendentes, lerEnvios } from '../dados/coleta.js';
 import { nuvemDisponivel, conectarNuvem } from '../dados/nuvem.js';
+import { criarGrupo, entrarNoGrupo, iniciarSincronizacao, aplicarCopiasRemotas } from '../dados/sincronizacao.js';
 import { useNotificacao } from './NotificacaoContext.jsx';
 import ModalErroCota from '../componentes/ModalErroCota.jsx';
 
@@ -149,6 +150,7 @@ function converterUIParaCanonica(vistoriaUI) {
     triagem: vistoriaUI.triagem || { nivelEnsino: 'nao_aplicavel', respostas: {} },
     dadosVistoria,
     resultadoSnapshot: vistoriaUI.resultadoSnapshot || null,
+    grupo: vistoriaUI.grupo || null,
   };
 
   return Vistoria.parse(canonica);
@@ -364,6 +366,76 @@ export function VistoriaProvider({ children }) {
       flushPendentes();
     }, 500);
   }, [flushPendentes]);
+
+  /**
+   * Vistorias em grupo (Escopo 09, Etapa 5): uma sessão de sincronização por vistoria
+   * compartilhada, enquanto o app está aberto.
+   */
+  const [estadoGrupos, setEstadoGrupos] = useState({});
+  const sessoesRef = useRef(new Map());
+
+  const aplicarRespostasRemotas = useCallback((vistoriaId, dados) => {
+    setVistorias(prev => prev.map(v => {
+      if (v.vistoriaId !== vistoriaId) return v;
+      const atualizada = {
+        ...v,
+        dadosVistoria: dados,
+        status: calcularStatusVistoria(dados, v.triagem),
+        revisao: (v.revisao || 0) + 1,
+        dataUltimaEdicao: new Date().toISOString(),
+      };
+      const ui = enriquecerParaUI(atualizada);
+      agendarGravacao(ui);
+      return ui;
+    }));
+  }, [agendarGravacao]);
+
+  useEffect(() => {
+    if (carregando || !nuvemDisponivel()) return;
+    const sessoes = sessoesRef.current;
+    const emGrupo = new Map(vistorias.filter(v => v.grupo).map(v => [v.vistoriaId, v]));
+
+    for (const [id, sessao] of sessoes) {
+      if (!emGrupo.has(id) || emGrupo.get(id).grupo.codigo !== sessao.codigo) {
+        sessao.parar();
+        sessoes.delete(id);
+      }
+    }
+
+    for (const [id, v] of emGrupo) {
+      const existente = sessoes.get(id);
+      if (existente) {
+        if (existente.edicao !== v.dataUltimaEdicao) {
+          existente.edicao = v.dataUltimaEdicao;
+          existente.avisarMudanca();
+        }
+        continue;
+      }
+      const sessao = iniciarSincronizacao({
+        codigo: v.grupo.codigo,
+        conectar: conectarNuvem,
+        obterLocal: () => vistoriasRef.current.find(x => x.vistoriaId === id),
+        aplicarRemoto: dados => aplicarRespostasRemotas(id, dados),
+        aoMudarEstado: estado => setEstadoGrupos(prev => ({ ...prev, [id]: estado })),
+      });
+      sessao.codigo = v.grupo.codigo;
+      sessao.edicao = v.dataUltimaEdicao;
+      sessoes.set(id, sessao);
+    }
+  }, [vistorias, carregando, aplicarRespostasRemotas]);
+
+  useEffect(() => {
+    const sessoes = sessoesRef.current;
+    const descarregar = () => {
+      if (document.visibilityState === 'hidden') sessoes.forEach(s => s.descarregar());
+    };
+    document.addEventListener('visibilitychange', descarregar);
+    return () => {
+      document.removeEventListener('visibilitychange', descarregar);
+      sessoes.forEach(s => s.parar());
+      sessoes.clear();
+    };
+  }, []);
 
   /**
    * Descarrega dados no fechamento ou suspensão da aba (mobile)
@@ -645,6 +717,53 @@ export function VistoriaProvider({ children }) {
     );
   }
 
+  /** Compartilha uma vistoria: cria o grupo e devolve o código do link. */
+  async function compartilharVistoria(vistoriaId, nome) {
+    const v = vistoriasRef.current.find(x => x.vistoriaId === vistoriaId);
+    if (!v) throw new Error('Vistoria não encontrada.');
+    const grupo = await criarGrupo(converterUIParaCanonica(v), nome, conectarNuvem);
+    atualizarVistoria(vistoriaId, { grupo });
+    return grupo.codigo;
+  }
+
+  /** Entra em uma vistoria em grupo pelo código do link e devolve o id da vistoria local. */
+  async function entrarEmGrupo(codigo, nome) {
+    const existente = vistoriasRef.current.find(x => x.grupo?.codigo === codigo);
+    if (existente) return existente.vistoriaId;
+
+    const { grupoDoc, copias, grupo } = await entrarNoGrupo(codigo, nome, conectarNuvem);
+    const local = vistoriasRef.current.find(x => x.vistoriaId === grupoDoc.vistoriaId);
+    if (local) {
+      atualizarVistoria(local.vistoriaId, { grupo });
+      return local.vistoriaId;
+    }
+
+    const agora = new Date().toISOString();
+    const dadosVistoria = aplicarCopiasRemotas({}, copias) || {};
+    const canonica = Vistoria.parse({
+      vistoriaId: grupoDoc.vistoriaId,
+      versaoChecklist: grupoDoc.versaoChecklist || '1.0',
+      status: calcularStatusVistoria(dadosVistoria, {}),
+      dataCriacao: agora,
+      dataUltimaEdicao: agora,
+      consentimento: consentimentoParaNovaVistoria(),
+      blocoAvaliado: grupoDoc.blocoAvaliado || 'Vistoria em grupo',
+      instituicao: { ...(grupoDoc.ficha || {}), avaliadores: [nome.trim()] },
+      dadosVistoria,
+      grupo,
+    });
+    setVistorias(prev => [enriquecerParaUI(canonica), ...prev]);
+    await salvarVistoria(canonica);
+    return canonica.vistoriaId;
+  }
+
+  /** Botão "Sincronizar agora" de uma vistoria em grupo. */
+  async function sincronizarGrupo(vistoriaId) {
+    const sessao = sessoesRef.current.get(vistoriaId);
+    if (!sessao) throw new Error('Esta vistoria não está em grupo.');
+    await sessao.sincronizarAgora();
+  }
+
   /**
    * Exporta uma vistoria individual em Envelope JSON
    */
@@ -763,6 +882,10 @@ export function VistoriaProvider({ children }) {
         solicitarPersistenciaManual: pedirPersistenciaManual,
         ultimoBackup,
         enviosPesquisa,
+        estadoGrupos,
+        compartilharVistoria,
+        entrarEmGrupo,
+        sincronizarGrupo,
         registrarBackupManual: () => {
           const d = registrarDataUltimoBackup();
           setUltimoBackup(d);

@@ -69,16 +69,20 @@ function registrarEnvio(vistoriaId, edicao, agora = new Date().toISOString()) {
   return envios;
 }
 
+// Em grupo, só quem compartilhou envia: a mesma vistoria não chega várias vezes
+const enviaPorEsteAparelho = v => !v?.grupo || v.grupo.papel === 'responsavel';
+
 /** A versão atual da vistoria deve ir para a pesquisa e ainda não foi confirmada. */
 export function precisaEnviar(vistoria, envios = lerEnvios()) {
   return vistoria?.status === 'concluida'
+    && enviaPorEsteAparelho(vistoria)
     && podeEnviarParaPesquisa(vistoria)
     && envios[vistoria.vistoriaId]?.edicao !== vistoria.dataUltimaEdicao;
 }
 
 /** Estado do envio para mostrar na tela: 'enviada', 'pendente' ou `null` (não se aplica). */
 export function estadoEnvio(vistoria, envios = lerEnvios()) {
-  if (vistoria?.status !== 'concluida' || !podeEnviarParaPesquisa(vistoria)) return null;
+  if (vistoria?.status !== 'concluida' || !enviaPorEsteAparelho(vistoria) || !podeEnviarParaPesquisa(vistoria)) return null;
   const envio = envios[vistoria.vistoriaId];
   return envio?.edicao === vistoria.dataUltimaEdicao
     ? { estado: 'enviada', enviadaEm: envio.enviadaEm }

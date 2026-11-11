@@ -14,7 +14,7 @@
     "regras:publicar": "firebase deploy --only firestore:rules,firestore:indexes",
     "coleta:exportar": "node scripts/exportar-coleta.mjs",
     "emuladores": "firebase emulators:start --only auth,firestore --project demo-rota",
-    "dev:emulador": "vite --mode emulador"
+    "dev:emulador": "vite --mode emulador --host 127.0.0.1"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",

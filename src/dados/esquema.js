@@ -63,6 +63,14 @@ export const SnapshotResultado = z.object({
   rotulo: z.string().optional(),
 });
 
+// Vistoria em grupo (Escopo 09): o código é o segredo do link
+export const GrupoVistoria = z.object({
+  codigo: z.string().min(22),
+  nome: z.string(),
+  papel: z.enum(['responsavel', 'participante']),
+  entrouEm: z.string(),
+});
+
 export const Vistoria = z.object({
   vistoriaId: z.string().uuid(),
   versaoChecklist: z.string().default('1.0'),
@@ -79,6 +87,7 @@ export const Vistoria = z.object({
   triagem: Triagem.default({ nivelEnsino: 'nao_aplicavel', respostas: {} }),
   dadosVistoria: z.record(z.string(), RespostaCriterio).default({}),
   resultadoSnapshot: SnapshotResultado.nullable().default(null),
+  grupo: GrupoVistoria.nullable().default(null),
 });
 
 export const EnvelopeExportacao = z.object({

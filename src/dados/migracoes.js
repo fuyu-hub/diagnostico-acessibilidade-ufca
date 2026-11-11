@@ -189,6 +189,7 @@ export function converterLegadoParaCanonica(legada) {
     },
     dadosVistoria,
     resultadoSnapshot: legada.resultadoSnapshot || null,
+    grupo: legada.grupo || null,
   };
 
   return Vistoria.parse(canonica);

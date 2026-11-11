@@ -17,6 +17,7 @@ import Topbar from '../componentes/Topbar';
 import SeletorNivel, { OPCOES_REDE, OPCOES_NIVEL_ENSINO } from '../componentes/SeletorNivel';
 import ModalExcluirVistoria from '../componentes/ModalExcluirVistoria';
 import ModalGaleriaVistoria from '../componentes/ModalGaleriaVistoria';
+import AbaGrupo from '../componentes/AbaGrupo';
 import { useNavegacao } from '../utilitarios/navegacao';
 import styles from './DashboardVistoria.module.css';
 
@@ -24,6 +25,7 @@ const ABAS = [
   { id: 'resumo', rotulo: 'Resumo' },
   { id: 'ficha', rotulo: 'Ficha' },
   { id: 'relatorios', rotulo: 'Relatórios' },
+  { id: 'grupo', rotulo: 'Grupo' },
 ];
 
 // Cartões de exportação são divs clicáveis: Enter e Espaço também acionam
@@ -665,6 +667,8 @@ function ConteudoVistoria({ id, vistoria }) {
             </form>
           </section>
           )}
+
+          {aba === 'grupo' && <AbaGrupo vistoria={vistoria} />}
 
           {/* Card de Exportação / Relatórios / Backup */}
           {aba === 'relatorios' && (

@@ -66,7 +66,10 @@ export default function CartaoVistoria({ vistoria, semContinuar = false }) {
           }}
           style={{ cursor: 'pointer' }}
         >
-          <h3 className={styles.nome}>{vistoria.nome}</h3>
+          <h3 className={styles.nome}>
+            {vistoria.nome}
+            {vistoria.grupo && <>{' '}<span className="tag em-andamento" style={{ marginLeft: 8, verticalAlign: 'middle' }}>Em grupo</span></>}
+          </h3>
           <p className={styles.detalhe}>
             <IconMapPin size={14} /> {vistoria.cidade} · {vistoria.data ? vistoria.data.split('-').reverse().join('/') : ''}
           </p>
