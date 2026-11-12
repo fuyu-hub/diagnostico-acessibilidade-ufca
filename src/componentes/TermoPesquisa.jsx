@@ -12,7 +12,7 @@ export default function TermoPesquisa({ className }) {
     <details className={className}>
       <summary>Ler o termo completo</summary>
       <div>
-        <p><strong>Quem recebe:</strong> a equipe do projeto de extensão Percurso Acessível, da Universidade Federal do Cariri (UFCA).</p>
+        <p><strong>Quem recebe:</strong> a equipe do projeto de extensão Caminho Acessível, da Universidade Federal do Cariri (UFCA).</p>
         <p><strong>O que é enviado:</strong> as respostas do checklist, a triagem, a nota, a cidade, a rede e o nível de ensino, o número de alunos e de pavimentos, o ano de construção e a versão do app.</p>
         <p><strong>O que não é enviado:</strong> fotos, nomes de avaliadores, endereço, bairro e observações.</p>
         <p><strong>Quando:</strong> ao concluir uma vistoria, assim que houver internet.</p>
