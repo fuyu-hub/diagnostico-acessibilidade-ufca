@@ -1,11 +1,11 @@
 /**
- * Marca do Percurso Acessível (arquivo original: logo/marca.svg, na raiz do projeto): três ladrilhos em L,
+ * Marca do Caminho Acessível (arquivo original: logo/marca.svg, na raiz do projeto): três ladrilhos em L,
  * o piso direcional que faz uma curva com o piso de alerta na mudança de direção.
  * O azul dos ladrilhos segue o tema; o piso de alerta é sempre amarelo.
  */
 const PONTOS = [48, 72, 96].flatMap(x => [48, 72, 96].map(y => [x, y]));
 
-export default function MarcaPercurso({ tamanho = 48 }) {
+export default function MarcaCaminho({ tamanho = 48 }) {
   return (
     <svg width={tamanho} height={tamanho} viewBox="0 0 256 256" aria-hidden="true" focusable="false">
       <rect x="24" y="128" width="96" height="96" rx="12" fill="var(--accent)" />
