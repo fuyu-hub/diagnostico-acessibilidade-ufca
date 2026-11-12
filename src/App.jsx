@@ -14,10 +14,12 @@ import Sobre from './telas/Sobre';
 import NaoEncontrada from './telas/NaoEncontrada';
 import ModalBoasVindas from './componentes/ModalBoasVindas';
 import AtualizacaoApp from './componentes/AtualizacaoApp';
+import { useHistoricoInicial } from './utilitarios/navegacao';
 
 // Ao trocar de tela: abre do topo (ao voltar, o navegador restaura a rolagem), atualiza o título
 // da aba e leva o foco ao título da tela, para o leitor de tela anunciar onde a pessoa está.
 function AoTrocarDeTela() {
+  useHistoricoInicial();
   const { pathname, search } = useLocation();
   const tipo = useNavigationType();
   const primeira = useRef(true);

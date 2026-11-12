@@ -333,8 +333,8 @@ test('corrimãos externos saem só sem escada e sem rampa, e voltam se uma exist
   await expect(radio(page, 'Não se aplica')).toHaveAttribute('aria-checked', 'false');
 });
 
-test('voltar: janela fecha primeiro, itens não acumulam histórico e sobe um nível por vez', async ({ page }) => {
-  const id = await criarVistoria(page);
+test('voltar: janela fecha primeiro, itens não acumulam histórico e volta à tela de antes', async ({ page }) => {
+  await criarVistoria(page);
   await page.goto('/');
   await page.getByRole('button', { name: 'Iniciar vistoria de Escola de Teste' }).click();
   await expect(page).toHaveURL(new RegExp(`/item/1$`));
@@ -350,15 +350,41 @@ test('voltar: janela fecha primeiro, itens não acumulam histórico e sobe um n�
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(page).toHaveURL(/\/item\/3$/);
 
-  await page.goBack();
-  await expect(page).toHaveURL(/\/itens\?secao=1$/);
-  await page.goBack();
-  await expect(page).toHaveURL(new RegExp(`/checklist/${id}/itens$`));
-  await page.goBack();
-  await expect(page).toHaveURL(new RegExp(`/vistoria/${id}$`));
+  // Os itens não ficam no histórico: voltar leva ao Início, de onde a pessoa veio
   await page.goBack();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByRole('heading', { name: 'Vistorias' })).toBeVisible();
+});
+
+test('voltar do item leva ao painel quando se veio do painel', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await page.getByRole('button', { name: /Iniciar checklist|Continuar checklist/i }).click();
+  await expect(page).toHaveURL(/\/item\/\d+$/);
+  await page.getByRole('button', { name: 'Ir para o próximo item' }).click();
+  await page.getByRole('button', { name: 'Voltar', exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`/vistoria/${id}$`));
+});
+
+test('abas do painel entram no histórico: voltar leva à aba anterior', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await page.getByRole('tab', { name: 'Ficha' }).click();
+  await page.getByRole('tab', { name: 'Relatórios' }).click();
+  await page.goBack();
+  await expect(page.getByRole('tab', { name: 'Ficha' })).toHaveAttribute('aria-selected', 'true');
+  await page.goBack();
+  await expect(page.getByRole('tab', { name: 'Resumo' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page).toHaveURL(new RegExp(`/vistoria/${id}$`));
+});
+
+test('link aberto direto num item: voltar sobe um nível em vez de sair do app', async ({ page }) => {
+  const id = await criarVistoria(page);
+  await page.goto(`/checklist/${id}/item/5`);
+  await expect(page.locator('#rotulo-pergunta-item')).toBeVisible();
+  await expect.poll(() => page.evaluate(() => history.state?.usr?.nivel)).toBe(4);
+  await page.goBack();
+  await expect(page).toHaveURL(new RegExp(`/checklist/${id}/itens\\?secao=1$`));
+  await page.goBack();
+  await expect(page).toHaveURL(new RegExp(`/checklist/${id}/itens$`));
 });
 
 test('seta e voltar do aparelho levam ao mesmo lugar, sem criar voltas no histórico', async ({ page }) => {

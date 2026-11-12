@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import {
   IconMapPin, IconCalendar, IconUserPlus, IconTrash,
   IconArrowRight, IconListCheck, IconFileTypePdf, IconTable,
@@ -63,6 +63,7 @@ export default function DashboardVistoria() {
 function ConteudoVistoria({ id, vistoria }) {
   const { navegar } = useNavegacao();
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const { atualizarVistoria, removerVistoria, exportarVistoria, responderItem } = useVistoria();
   const { mostrarToast, mostrarConfirmacao } = useNotificacao();
 
@@ -73,7 +74,9 @@ function ConteudoVistoria({ id, vistoria }) {
   const [gerandoPdf, setGerandoPdf] = useState(false);
 
   function trocarAba(nova, focar = false) {
-    setSearchParams(nova === 'resumo' ? {} : { aba: nova }, { replace: true });
+    // Cada aba é uma tela: entra no histórico, e voltar leva à aba anterior
+    if (nova === aba) return;
+    setSearchParams(nova === 'resumo' ? {} : { aba: nova }, { state: { nivel: (location.state?.nivel ?? 0) + 1 } });
     if (focar) setTimeout(() => document.getElementById(`aba-${nova}`)?.focus(), 0);
   }
 
