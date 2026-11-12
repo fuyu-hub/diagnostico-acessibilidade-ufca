@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { nivelNoHistorico } from '../utilitarios/navegacao';
 import {
   IconUsersGroup, IconRefresh, IconCopy, IconShare, IconCloudCheck, IconCloudUpload, IconWifiOff, IconAlertTriangle,
   IconPhotoUp, IconPhotoDown, IconLock, IconLockOpen, IconCircleCheck,
@@ -100,7 +101,7 @@ export default function AbaGrupo({ vistoria }) {
   useEffect(() => {
     if (searchParams.get('compartilhar') !== '1' || automatico.current) return;
     automatico.current = true;
-    setSearchParams({ aba: 'grupo' }, { replace: true });
+    setSearchParams({ aba: 'grupo' }, { replace: true, state: { nivel: nivelNoHistorico() } });
     if (!vistoria.grupo && nuvemDisponivel()) criarLink(vistoria.avaliadores?.[0] || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

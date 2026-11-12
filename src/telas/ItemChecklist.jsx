@@ -489,7 +489,7 @@ export default function ItemChecklist() {
         <button
           type="button"
           className={styles.btnIcone}
-          aria-label="Voltar para a seção"
+          aria-label="Voltar"
           onClick={voltar}
         >
           <IconChevronLeft size={26} />

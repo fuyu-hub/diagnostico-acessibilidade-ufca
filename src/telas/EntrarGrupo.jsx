@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { nivelNoHistorico } from '../utilitarios/navegacao';
 import { IconUsersGroup, IconMapPin } from '@tabler/icons-react';
 import Topbar from '../componentes/Topbar';
 import { useVistoria } from '../contexto/VistoriaContext';
@@ -21,7 +22,7 @@ export default function EntrarGrupo() {
   const jaNoGrupo = vistorias.find(v => v.grupo?.codigo === codigo);
 
   useEffect(() => {
-    if (jaNoGrupo) navigate(`/vistoria/${jaNoGrupo.vistoriaId}`, { replace: true });
+    if (jaNoGrupo) navigate(`/vistoria/${jaNoGrupo.vistoriaId}`, { replace: true, state: { nivel: nivelNoHistorico() } });
   }, [jaNoGrupo, navigate]);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function EntrarGrupo() {
     setErro('');
     try {
       const id = await entrarEmGrupo(codigo, nome);
-      navigate(`/vistoria/${id}`, { replace: true });
+      navigate(`/vistoria/${id}`, { replace: true, state: { nivel: nivelNoHistorico() } });
     } catch (err) {
       setErro(err.message || 'Não foi possível entrar agora.');
       setOcupado(false);

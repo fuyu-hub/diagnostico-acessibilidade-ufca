@@ -3,16 +3,25 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { TODOS_ITENS } from '../dados/checklist';
 
 /**
- * Regra única de navegação: voltar sobe um nível, na seta do app e no voltar do aparelho.
+ * Regra única de navegação: voltar leva à tela anterior de verdade, na seta do app e no
+ * voltar do aparelho. Cada entrada do histórico guarda em `nivel` quantas telas do app
+ * existem atrás dela.
+ *
+ * Exceções:
+ * - ir de um item a outro (Próximo, Anterior) substitui a entrada: voltar sai dos itens
+ *   para a tela de antes deles;
+ * - criar a vistoria substitui o formulário pelo painel;
+ * - o Início não empilha: ir a ele volta no histórico até a primeira tela.
+ *
+ * A árvore abaixo só vale quando não há tela anterior (link aberto direto): aí o histórico
+ * é montado pelos níveis acima, e voltar sobe um nível.
  *
  *   Início ─ Ajustes ─ Sobre
  *          ─ Sobre
  *          ─ Nova vistoria
  *          ─ Painel da vistoria ─ Resultado
+ *                               ─ Divergências
  *                               ─ Seções ─ Seção ─ Item
- *
- * O histórico do navegador acompanha essa árvore: ir a uma tela distante empilha os níveis
- * do meio, e cada entrada guarda em `nivel` quantos ancestrais reais tem atrás de si.
  */
 export function cadeiaDaRota(caminho, origem = '') {
   const [pathname, busca = ''] = caminho.split('?');
@@ -29,7 +38,7 @@ export function cadeiaDaRota(caminho, origem = '') {
   const [, id, resto] = checklist;
   const base = ['/', `/vistoria/${id}`];
   const secoes = `/checklist/${id}/itens`;
-  if (resto === 'resultado') return [...base, pathname];
+  if (resto === 'resultado' || resto === 'divergencias') return [...base, pathname];
   if (resto === 'itens') {
     const secao = new URLSearchParams(busca).get('secao');
     return secao ? [...base, secoes, `${secoes}?secao=${secao}`] : [...base, secoes];
@@ -98,41 +107,56 @@ export function useFecharComVoltar(aberto, onFechar) {
   }, [aberto]);
 }
 
+/** Quantas telas do app existem atrás da atual (o react-router guarda o estado em `usr`). */
+export const nivelNoHistorico = () => window.history.state?.usr?.nivel ?? 0;
+
+const ITEM = /^\/checklist\/([^/]+)\/item\//;
+
+/**
+ * Link aberto direto (ou app aberto numa tela interna): sem tela anterior, o histórico
+ * é montado com os níveis acima dela, para voltar subir um nível em vez de sair do app.
+ * Roda uma vez, na primeira tela; ao recarregar, o histórico já tem `nivel`.
+ */
+export function useHistoricoInicial() {
+  const navigate = useNavigate();
+  const { pathname, search, state } = useLocation();
+  const feito = useRef(false);
+
+  useEffect(() => {
+    if (feito.current) return;
+    feito.current = true;
+    if (state?.nivel !== undefined || pathname.startsWith('/grupo/')) return;
+    const cadeia = cadeiaDaRota(pathname + search);
+    if (cadeia.length < 2) return;
+    const destino = pathname + search;
+    navigate(cadeia[0], { replace: true, state: { nivel: 0 } });
+    cadeia.slice(1).forEach((tela, i) => {
+      navigate(i === cadeia.length - 2 ? destino : tela, { state: { nivel: i + 1 } });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+}
+
 export function useNavegacao() {
   const navigate = useNavigate();
   const { pathname, search, state } = useLocation();
   const nivel = state?.nivel ?? 0;
 
   const navegar = useCallback((destino) => {
-    const atual = cadeiaDaRota(pathname + search);
-    const alvo = cadeiaDaRota(destino, pathname);
-
-    let comuns = 0;
-    while (comuns < Math.min(atual.length, alvo.length) && atual[comuns] === alvo[comuns]) comuns += 1;
-    const subir = atual.length - comuns;
-    const descer = alvo.slice(comuns);
-    const urlDe = (nivelDaChave) => (nivelDaChave === alvo[alvo.length - 1] ? destino : nivelDaChave);
-
-    const empilhar = (nivelInicial) => {
-      descer.forEach((chave, i) => navigate(urlDe(chave), { state: { nivel: nivelInicial + i + 1 } }));
-    };
-
     liberarJanelas(() => {
-      if (subir === 0 && descer.length === 0) {
-        if (destino !== pathname + search) navigate(destino, { replace: true, state: { nivel } });
-      } else if (subir === 0) {
-        empilhar(nivel);
-      } else if (subir === 1 && descer.length === 1) {
-        // Tela vizinha, com o mesmo pai (item a item, ou criar a vistoria): não acumula histórico
-        navigate(urlDe(descer[0]), { replace: true, state: { nivel } });
-      } else if (nivel < subir) {
-        navigate(destino, { replace: true, state: { nivel: 0 } });
-      } else if (descer.length === 0) {
-        navigate(-subir);
-      } else {
-        window.addEventListener('popstate', () => setTimeout(() => empilhar(nivel - subir), 0), { once: true });
-        navigate(-subir);
+      if (destino === pathname + search) return;
+      if (destino === '/') {
+        // O Início é a primeira tela: volta até ela em vez de empilhar outra
+        if (nivel > 0) navigate(-nivel);
+        else navigate('/', { replace: true, state: { nivel: 0 } });
+        return;
       }
+      const itemAtual = pathname.match(ITEM);
+      const itemAlvo = destino.match(ITEM);
+      const trocaDeItem = itemAtual && itemAlvo && itemAtual[1] === itemAlvo[1];
+      const criouVistoria = pathname === '/nova' && destino.startsWith('/vistoria/');
+      if (trocaDeItem || criouVistoria) navigate(destino, { replace: true, state: { nivel } });
+      else navigate(destino, { state: { nivel: nivel + 1 } });
     });
   }, [navigate, pathname, search, nivel]);
 

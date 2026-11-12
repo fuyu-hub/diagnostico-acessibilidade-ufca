@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { nivelNoHistorico } from '../utilitarios/navegacao';
 import { IconQrcode } from '@tabler/icons-react';
 import Topbar from '../componentes/Topbar';
 import { extrairCodigoGrupo } from '../dados/sincronizacao';
@@ -65,7 +66,7 @@ export default function LerQr() {
           if (texto) {
             const codigo = extrairCodigoGrupo(texto);
             if (codigo) {
-              navigate(`/grupo/${codigo}`, { replace: true });
+              navigate(`/grupo/${codigo}`, { replace: true, state: { nivel: nivelNoHistorico() } });
               return;
             }
             setAviso('Este QR code não é de uma vistoria em grupo.');
@@ -91,7 +92,8 @@ export default function LerQr() {
       setErroLink('Esse não parece um link de vistoria em grupo. Ele termina com /grupo/ e um código.');
       return;
     }
-    navigate(`/grupo/${codigo}`);
+    // A câmera não volta a abrir: a tela do QR é trocada pela de entrar no grupo
+    navigate(`/grupo/${codigo}`, { replace: true, state: { nivel: nivelNoHistorico() } });
   }
 
   return (
