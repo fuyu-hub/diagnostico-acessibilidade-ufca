@@ -13,29 +13,19 @@ export default defineConfig({
       // A versão nova espera o momento seguro: quem a aplica é o componente AtualizacaoApp
       registerType: 'prompt',
       includeAssets: ['favicon.svg', 'icons.svg', 'apple-touch-icon.png', 'imagens/*.{png,svg}', 'modelo_planilha.xlsx'],
-      manifest: {
-        name: 'Caminho Acessível',
-        short_name: 'Caminho Acessível',
-        description: 'Caminho Acessível: vistoria de acessibilidade em escolas com base na NBR 9050:2020',
-        theme_color: '#0a0a0a',
-        background_color: '#0a0a0a',
-        display: 'standalone',
-        orientation: 'any',
-        start_url: '/',
-        scope: '/',
-        lang: 'pt-BR',
-        categories: ['education', 'productivity', 'utilities'],
-        icons: [
-          { src: '/caminho-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-          { src: '/caminho-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
-          { src: '/caminho-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
-          { src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
-        ],
-      },
+      // O manifesto fica em public/manifest.webmanifest, fora do pré-cache: o Chrome confere nome e
+      // ícones do app instalado por ele, e o service worker antigo responderia com a versão antiga
+      // até a nova ser aplicada. Ele vem sempre da rede, com o cache só para quando não há internet.
+      manifest: false,
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2,xlsx}'],
         cleanupOutdatedCaches: true,
         runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.endsWith('/manifest.webmanifest'),
+            handler: 'NetworkFirst',
+            options: { cacheName: 'manifesto', networkTimeoutSeconds: 4 },
+          },
           {
             urlPattern: ({ request }) => request.destination === 'image',
             handler: 'CacheFirst',
